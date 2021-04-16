@@ -15,12 +15,12 @@ namespace Shelf.Anilist
     public static class AnilistRequest
     {
         private static string AnilistURL = @"https://graphql.anilist.co";
-        public static string MediaQuery(string userId, string media)
+        public static string MediaQuery(string media)
         {
             #region Query
             return @"
             query {
-            MediaListCollection (userId: " + userId + @", type: " + media + @") { 
+            MediaListCollection (type: " + media + @") { 
             lists {
                 status
                 entries
@@ -59,23 +59,25 @@ namespace Shelf.Anilist
         }";
             #endregion
         }
-        public static async Task<string> RequestUserID(string userName)
+        public static async Task<string> RequestUserID(string accessToken)
         {
             string returnObject = String.Empty;
             var client = new RestClient(AnilistURL);
-            string qryString = "query { User(search: \"" + userName + "\") { id } }";
+            //string qryString = "query { User(search: \"" + userName + "\") { id } }";
+            string qryString = "query { Viewer { id } }";
 
             try
             {
                 var request = new RestRequest("application/json");
                 request.AddParameter("query", qryString);
+                request.AddHeader("Authorization", $"Bearer {accessToken}");
 
                 var response = client.Post(request);
 
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     var content = response.Content; // Raw content as string
-                    returnObject = JsonConvert.DeserializeObject<AnilistData>(content).data.user.Id;
+                    returnObject = JsonConvert.DeserializeObject<AnilistData>(content).data.Viewer.Id;
                 }
             }
             catch (Exception ex)
@@ -85,16 +87,17 @@ namespace Shelf.Anilist
             }
             return returnObject;
         }
-        public static async Task<AnilistAnimeManga> RequestMediaList(string userID, string MEDIA = "ANIME")
+        public static async Task<AnilistAnimeManga> RequestMediaList(string accessToken, string MEDIA = "ANIME")
         {
             AnilistAnimeManga returnObject = null;
             var client = new RestClient(AnilistURL);
-            string qryString = MediaQuery(userID, MEDIA);
+            string qryString = MediaQuery(MEDIA);
 
             try
             {
                 var request = new RestRequest("application/json");
                 request.AddParameter("query", qryString);
+                request.AddHeader("Authorization", $"Bearer {accessToken}");
 
                 var response = client.Post(request);
                 var content = response.Content; // Raw content as string

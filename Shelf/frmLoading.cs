@@ -57,7 +57,8 @@ namespace Shelf
             if (BackgroundWorker.IsBusy)
                 e.Cancel = true;
 
-            pictureBox1.Image.Dispose();
+            pictureBox1.Image?.Dispose();
+            Dispose();
         }
 
         private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)

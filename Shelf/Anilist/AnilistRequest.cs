@@ -15,6 +15,9 @@ namespace Shelf.Anilist
     public static class AnilistRequest
     {
         private static string AnilistURL = @"https://graphql.anilist.co";
+        private static string AniClient { get; set; } = "";
+        private static string AniSecret { get; set; } = "";
+
         public static string MediaQuery(string media)
         {
             #region Query

@@ -30,8 +30,6 @@ namespace Shelf
         private void InitializeComponent()
         {
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.label1 = new System.Windows.Forms.Label();
-            this.txtUsername = new System.Windows.Forms.TextBox();
             this.btnRefresh = new System.Windows.Forms.Button();
             this.txtLog = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -40,32 +38,16 @@ namespace Shelf
             // dataGridView1
             // 
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(12, 240);
+            this.dataGridView1.Location = new System.Drawing.Point(12, 305);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 29;
             this.dataGridView1.Size = new System.Drawing.Size(759, 214);
             this.dataGridView1.TabIndex = 0;
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 34);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(82, 20);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Username: ";
-            // 
-            // txtUsername
-            // 
-            this.txtUsername.Location = new System.Drawing.Point(114, 31);
-            this.txtUsername.Name = "txtUsername";
-            this.txtUsername.Size = new System.Drawing.Size(305, 27);
-            this.txtUsername.TabIndex = 2;
-            // 
             // btnRefresh
             // 
-            this.btnRefresh.Location = new System.Drawing.Point(450, 31);
+            this.btnRefresh.Location = new System.Drawing.Point(614, 11);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(157, 29);
             this.btnRefresh.TabIndex = 3;
@@ -75,21 +57,19 @@ namespace Shelf
             // 
             // txtLog
             // 
-            this.txtLog.Location = new System.Drawing.Point(12, 74);
+            this.txtLog.Location = new System.Drawing.Point(453, 46);
             this.txtLog.Multiline = true;
             this.txtLog.Name = "txtLog";
-            this.txtLog.Size = new System.Drawing.Size(407, 153);
+            this.txtLog.Size = new System.Drawing.Size(318, 253);
             this.txtLog.TabIndex = 4;
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(786, 466);
+            this.ClientSize = new System.Drawing.Size(786, 531);
             this.Controls.Add(this.txtLog);
             this.Controls.Add(this.btnRefresh);
-            this.Controls.Add(this.txtUsername);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.dataGridView1);
             this.Name = "frmMain";
             this.Text = "frmMain";
@@ -102,8 +82,6 @@ namespace Shelf
         #endregion
 
         private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox txtUsername;
         private System.Windows.Forms.Button btnRefresh;
         private System.Windows.Forms.TextBox txtLog;
     }

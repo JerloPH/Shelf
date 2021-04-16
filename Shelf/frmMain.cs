@@ -17,9 +17,14 @@ namespace Shelf
     public partial class frmMain : Form
     {
         private bool IsRefreshing = false;
+        private string AccessToken = "";
         public frmMain()
         {
             InitializeComponent();
+            var form = new frmGetAccessTkn();
+            form.ShowDialog(this);
+            AccessToken = form.accessToken;
+            form.Dispose();
         }
 
         private async void btnRefresh_Click(object sender, EventArgs e)
@@ -27,16 +32,13 @@ namespace Shelf
             if (!IsRefreshing)
             {
                 AnilistAnimeManga anilistMedia = null;
-                string userId;
+                string accessToken = "";
 
                 IsRefreshing = true;
                 btnRefresh.Enabled = false;
-                txtLog.AppendText($"Trying to get User ID with username '{txtUsername.Text}'\r\n");
-                userId = await AnilistRequest.RequestUserID(txtUsername.Text);
-                txtLog.AppendText(String.IsNullOrWhiteSpace(userId) ? "No user Id!\n\r" : $"User ID found! [{userId}]\r\n");
 
                 // Get media, and write to json file
-                anilistMedia = await AnilistRequest.RequestMediaList(userId);
+                anilistMedia = await AnilistRequest.RequestMediaList(accessToken);
                 if (anilistMedia != null)
                 {
                     using (StreamWriter sw = new StreamWriter("AnilistMedia.json"))

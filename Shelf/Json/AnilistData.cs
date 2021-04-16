@@ -14,10 +14,10 @@ namespace Shelf.Json
     }
     public class Data
     {
-        [JsonProperty("User")]
-        public User user { get; set; }
+        [JsonProperty("Viewer")]
+        public Viewer Viewer { get; set; }
     }
-    public class User
+    public class Viewer
     {
         [JsonProperty("id")]
         public string Id { get; set; } = "";

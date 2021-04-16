@@ -1,33 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 
 namespace Shelf.Json
 {
-    public partial class AnilistAnimeManga
+    public class AnilistAnimeManga
     {
         [JsonProperty("data")]
         public MediaData Data { get; set; }
     }
 
-    public partial class MediaData
+    public class MediaData
     {
         [JsonProperty("MediaListCollection")]
         public MediaListCollection MediaListCollection { get; set; }
     }
 
-    public partial class MediaListCollection
+    public class MediaListCollection
     {
         [JsonProperty("lists")]
         public List[] Lists { get; set; }
     }
 
-    public partial class List
+    public class List
     {
         [JsonProperty("entries")]
         public Entry[] Entries { get; set; }
@@ -48,7 +42,7 @@ namespace Shelf.Json
         public long Progress { get; set; }
 
         [JsonProperty("progressVolumes")]
-        public object ProgressVolumes { get; set; }
+        public long? ProgressVolumes { get; set; }
 
         [JsonProperty("score")]
         public long Score { get; set; }

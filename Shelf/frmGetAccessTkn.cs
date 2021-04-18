@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Microsoft.Web.WebView2.Core;
 using Newtonsoft.Json;
 using Shelf.Functions;
+using Shelf.Json;
 
 namespace Shelf
 {
@@ -29,7 +30,9 @@ namespace Shelf
             try
             {
                 string content = GlobalFunc.ReadFromFile("");
-                var jsonConfig = JsonConvert.DeserializeObject<>(content);
+                var jsonConfig = JsonConvert.DeserializeObject<AnilistConfig>(content);
+                ANICLIENT = jsonConfig.clientId;
+                ANISECRET = jsonConfig.clientSecret;
             }
             catch { }
             // MessageBox.Show(AnilistUrl);

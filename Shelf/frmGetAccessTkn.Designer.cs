@@ -40,15 +40,14 @@ namespace Shelf
             this.webView.CreationProperties = null;
             this.webView.Location = new System.Drawing.Point(12, 44);
             this.webView.Name = "webView";
-            this.webView.Size = new System.Drawing.Size(928, 369);
+            this.webView.Size = new System.Drawing.Size(928, 444);
             this.webView.TabIndex = 0;
             this.webView.Text = "webView21";
             this.webView.ZoomFactor = 1D;
-            this.webView.Click += new System.EventHandler(this.webView_Click);
             // 
             // txtAccesstkn
             // 
-            this.txtAccesstkn.Location = new System.Drawing.Point(12, 429);
+            this.txtAccesstkn.Location = new System.Drawing.Point(12, 494);
             this.txtAccesstkn.Multiline = true;
             this.txtAccesstkn.Name = "txtAccesstkn";
             this.txtAccesstkn.Size = new System.Drawing.Size(775, 99);
@@ -56,7 +55,7 @@ namespace Shelf
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(794, 429);
+            this.btnOK.Location = new System.Drawing.Point(794, 494);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(146, 99);
             this.btnOK.TabIndex = 2;
@@ -78,11 +77,14 @@ namespace Shelf
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(952, 540);
+            this.ClientSize = new System.Drawing.Size(952, 596);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.txtAccesstkn);
             this.Controls.Add(this.webView);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "frmGetAccessTkn";
             this.Text = "frmGetAccessTkn";
             this.ResumeLayout(false);

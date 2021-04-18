@@ -34,30 +34,29 @@ namespace Shelf
 
             btnOK.DialogResult = DialogResult.OK;
             InitializeAsync();
+            this.FormClosing += frmGetAccessTkn_FormClosing;
         }
         #region Custom Events and Functions
         async void InitializeAsync()
         {
             await webView.EnsureCoreWebView2Async(null);
-        }
-        private async Task NavigateTo(string url)
-        {
-            //await webView.EnsureCoreWebView2Async();
-            if (webView != null && webView.CoreWebView2 != null)
-            {
-                webView.Source = new Uri(url);
-                //webView.CoreWebView2.Navigate(AnilistUrl);
-            }
+            webView.Source = new Uri(AnilistUrl);
         }
         #endregion
-        private async void webView_Click(object sender, EventArgs e)
+        private void frmGetAccessTkn_FormClosing(object sender, CancelEventArgs e)
         {
-            await NavigateTo(AnilistUrl);
+            if (String.IsNullOrWhiteSpace(txtAccesstkn.Text))
+            {
+                GlobalFunc.Alert("Access Token textbox is empty!");
+                txtAccesstkn.Focus();
+                e.Cancel = true;
+                return;
+            }
+            accessToken = txtAccesstkn.Text;
         }
-
         private void btnOK_Click(object sender, EventArgs e)
         {
-            accessToken = txtAccesstkn.Text;
+            Close();
         }
     }
 }

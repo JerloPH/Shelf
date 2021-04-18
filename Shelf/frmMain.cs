@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,7 @@ using System.Windows.Forms;
 using Newtonsoft.Json;
 using Shelf.Anilist;
 using Shelf.Json;
+using Shelf.Functions;
 
 namespace Shelf
 {
@@ -58,6 +60,10 @@ namespace Shelf
             form.ShowDialog(this);
             AccessToken = form.accessToken;
             form.Dispose();
+            if (Debugger.IsAttached)
+            {
+                GlobalFunc.Alert($"AccessTkn: {AccessToken}");
+            }
         }
     }
 }

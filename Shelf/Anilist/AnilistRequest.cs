@@ -95,7 +95,7 @@ namespace Shelf.Anilist
                     client_id = AniClient,
                     client_secret = AniSecret,
                     redirect_uri = RedirectUrl,
-                    code =  publicTkn
+                    code =  publicTkn.Replace("/", "\\/")
                 }
             };
 
@@ -105,6 +105,8 @@ namespace Shelf.Anilist
                 request.AddJsonBody(JsonConvert.SerializeObject(requestBody));
                 //request.AddBody(JsonConvert.SerializeObject(requestBody));
                 request.RequestFormat = DataFormat.Json;
+                request.AddHeader("Content-Type", "application/json");
+                request.AddHeader("Accept", "application/json");
 
                 var response = await client.ExecuteAsync(request);
 

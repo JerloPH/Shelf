@@ -18,7 +18,7 @@ namespace Shelf
 {
     public partial class frmGetAuthCode : Form
     {
-        public string publicToken { get; set; } = "";
+        public string AuthCode { get; set; } = "";
         private string ANICLIENT = "";
         private string ANISECRET = "";
         private string redirect_uri = "";
@@ -32,6 +32,7 @@ namespace Shelf
             redirect_uri = AnilistRequest.RedirectUrl;
             //MessageBox.Show(ANICLIENT + "\n[" + ANISECRET + "]");
             AnilistUrl = $"https://anilist.co/api/v2/oauth/authorize?client_id={ANICLIENT}&redirect_uri={redirect_uri}&response_type=code";
+            //AnilistUrl = $"https://anilist.co/api/v2/oauth/authorize?client_id={ANICLIENT}&response_type=token"; // Implicit grant, public list
 
             btnOK.DialogResult = DialogResult.OK;
             InitializeAsync();
@@ -55,7 +56,7 @@ namespace Shelf
                     e.Cancel = true;
                     return;
                 }
-                publicToken = txtAuthCode.Text;
+                AuthCode = txtAuthCode.Text;
             }
         }
         private void btnOK_Click(object sender, EventArgs e)

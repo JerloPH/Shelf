@@ -22,12 +22,13 @@ namespace Shelf.Anilist
         private static string AniClient { get; set; } = "";
         private static string AniSecret { get; set; } = "";
 
-        public static string MediaQuery(string media)
+        public static string MediaQuery(string media, string userName = "")
         {
             #region Query
+            string userQuery = (!String.IsNullOrWhiteSpace(userName)) ? $"userName: \"{userName}\", " : "";
             return @"
             query {
-            MediaListCollection (type: " + media + @") { 
+            MediaListCollection (" + userQuery + @"type: " + media + @") { 
             lists {
                 status
                 entries

@@ -19,7 +19,7 @@ namespace Shelf
     public partial class frmMain : Form
     {
         private bool IsRefreshing = false;
-        private string Token = "";
+        private string AuthCode = "";
         private string AccessToken = "";
         public frmMain()
         {
@@ -37,8 +37,8 @@ namespace Shelf
                 btnRefresh.Enabled = false;
 
                 txtLog.AppendText("Requesting token..\r\n");
-                // Request Access Token, using Public Token
-                AccessToken = await AnilistRequest.RequestAccessToken(Token);
+                // Request Access Token, using Auth code
+                AccessToken = await AnilistRequest.RequestAccessToken(AuthCode);
                 txtLog.AppendText($"Validating token: [{AccessToken}]\r\n");
 
                 if (!String.IsNullOrWhiteSpace(AccessToken))
@@ -69,7 +69,7 @@ namespace Shelf
             // Get Public Token
             var form = new frmGetAuthCode();
             form.ShowDialog(this);
-            Token = form.publicToken;
+            AuthCode = form.AuthCode;
             form.Dispose();
             if (Debugger.IsAttached)
             {

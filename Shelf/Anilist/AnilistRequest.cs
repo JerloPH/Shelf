@@ -9,6 +9,8 @@ using Newtonsoft.Json;
 using System.Windows.Forms;
 using RestSharp;
 using System.Net;
+using System.IO;
+using Shelf.Functions;
 
 namespace Shelf.Anilist
 {
@@ -61,6 +63,23 @@ namespace Shelf.Anilist
         }
         }";
             #endregion
+        }
+        public static bool Initialize()
+        {
+            try
+            {
+                string configFile = Path.Combine(Application.StartupPath, "Data\\anilistConfig.json");
+                string content = GlobalFunc.ReadFromFile(configFile);
+                var jsonConfig = JsonConvert.DeserializeObject<AnilistConfig>(content);
+                AniClient = jsonConfig?.clientId;
+                AniSecret = jsonConfig?.clientSecret;
+            }
+            catch { }
+            return false;
+        }
+        public static string GetConfig(int index = 0)
+        {
+            return (index == 0) ? AniClient : AniSecret;
         }
         public static async Task<string> RequestUserID(string accessToken)
         {

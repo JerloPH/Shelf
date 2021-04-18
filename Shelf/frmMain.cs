@@ -21,10 +21,7 @@ namespace Shelf
         public frmMain()
         {
             InitializeComponent();
-            var form = new frmGetAccessTkn();
-            form.ShowDialog(this);
-            AccessToken = form.accessToken;
-            form.Dispose();
+            AnilistRequest.Initialize(); // Initialize config
         }
 
         private async void btnRefresh_Click(object sender, EventArgs e)
@@ -52,6 +49,15 @@ namespace Shelf
                 btnRefresh.Enabled = true;
                 IsRefreshing = false;
             }
+        }
+
+        private void frmMain_Load(object sender, EventArgs e)
+        {
+            // Get Access Token
+            var form = new frmGetAccessTkn();
+            form.ShowDialog(this);
+            AccessToken = form.accessToken;
+            form.Dispose();
         }
     }
 }

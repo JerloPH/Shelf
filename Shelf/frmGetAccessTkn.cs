@@ -12,6 +12,7 @@ using Microsoft.Web.WebView2.Core;
 using Newtonsoft.Json;
 using Shelf.Functions;
 using Shelf.Json;
+using Shelf.Anilist;
 
 namespace Shelf
 {
@@ -26,18 +27,12 @@ namespace Shelf
         {
             InitializeComponent();
             // Initialize vars
-            btnOK.DialogResult = DialogResult.OK;
+            ANICLIENT = AnilistRequest.GetConfig();
+            ANISECRET = AnilistRequest.GetConfig(1);
+            //MessageBox.Show(ANICLIENT + "\n[" + ANISECRET + "]");
             AnilistUrl = $"https://anilist.co/api/v2/oauth/authorize?client_id={ANICLIENT}&redirect_uri={redirect_uri}&response_type=code";
-            try
-            {
-                string configFile = Path.Combine(Application.StartupPath, "Data\\anilistConfig.json");
-                string content = GlobalFunc.ReadFromFile(configFile);
-                var jsonConfig = JsonConvert.DeserializeObject<AnilistConfig>(content);
-                ANICLIENT = jsonConfig?.clientId;
-                ANISECRET = jsonConfig?.clientSecret;
-                MessageBox.Show(ANICLIENT + "\n[" + ANISECRET + "]");
-            }
-            catch { }
+
+            btnOK.DialogResult = DialogResult.OK;
             InitializeAsync();
         }
         #region Custom Events and Functions

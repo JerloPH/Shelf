@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,15 +30,17 @@ namespace Shelf
             AnilistUrl = $"https://anilist.co/api/v2/oauth/authorize?client_id={ANICLIENT}&redirect_uri={redirect_uri}&response_type=code";
             try
             {
-                string content = GlobalFunc.ReadFromFile("");
+                string configFile = Path.Combine(Application.StartupPath, "Data\\anilistConfig.json");
+                string content = GlobalFunc.ReadFromFile(configFile);
                 var jsonConfig = JsonConvert.DeserializeObject<AnilistConfig>(content);
-                ANICLIENT = jsonConfig.clientId;
-                ANISECRET = jsonConfig.clientSecret;
+                ANICLIENT = jsonConfig?.clientId;
+                ANISECRET = jsonConfig?.clientSecret;
+                MessageBox.Show(ANICLIENT + "\n[" + ANISECRET + "]");
             }
             catch { }
-            // MessageBox.Show(AnilistUrl);
             InitializeAsync();
         }
+        #region Custom Events and Functions
         async void InitializeAsync()
         {
             await webView.EnsureCoreWebView2Async(null);
@@ -51,9 +54,15 @@ namespace Shelf
                 //webView.CoreWebView2.Navigate(AnilistUrl);
             }
         }
-        private  async void webView_Click(object sender, EventArgs e)
+        #endregion
+        private async void webView_Click(object sender, EventArgs e)
         {
             await NavigateTo(AnilistUrl);
+        }
+
+        private void btnOK_Click(object sender, EventArgs e)
+        {
+            accessToken = txtAccesstkn.Text;
         }
     }
 }

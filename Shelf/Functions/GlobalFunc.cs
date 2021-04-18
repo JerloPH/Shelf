@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Shelf.Functions
 {
@@ -22,6 +23,12 @@ namespace Shelf.Functions
             }
             catch { }
             return content;
+        }
+        #endregion
+        #region Messages
+        public static DialogResult Alert(string message)
+        {
+            return MessageBox.Show(message);
         }
         #endregion
     }

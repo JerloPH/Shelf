@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace Shelf
 {
-    partial class frmGetAccessTkn
+    partial class frmGetAuthCode
     {
         /// <summary>
         /// Required designer variable.

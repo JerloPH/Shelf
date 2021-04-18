@@ -16,14 +16,14 @@ using Shelf.Anilist;
 
 namespace Shelf
 {
-    public partial class frmGetAccessTkn : Form
+    public partial class frmGetAuthCode : Form
     {
         public string publicToken { get; set; } = "";
         private string ANICLIENT = "";
         private string ANISECRET = "";
         private string redirect_uri = "";
         private string AnilistUrl = "";
-        public frmGetAccessTkn()
+        public frmGetAuthCode()
         {
             InitializeComponent();
             // Initialize vars

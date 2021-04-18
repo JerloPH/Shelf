@@ -67,7 +67,7 @@ namespace Shelf
         private void frmMain_Load(object sender, EventArgs e)
         {
             // Get Public Token
-            var form = new frmGetAccessTkn();
+            var form = new frmGetAuthCode();
             form.ShowDialog(this);
             Token = form.publicToken;
             form.Dispose();

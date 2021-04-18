@@ -48,14 +48,14 @@ namespace Shelf
         {
             if (!e.Cancel)
             {
-                if (String.IsNullOrWhiteSpace(txtAccesstkn.Text))
+                if (String.IsNullOrWhiteSpace(txtAuthCode.Text))
                 {
                     GlobalFunc.Alert("Access Token textbox is empty!");
-                    txtAccesstkn.Focus();
+                    txtAuthCode.Focus();
                     e.Cancel = true;
                     return;
                 }
-                publicToken = txtAccesstkn.Text;
+                publicToken = txtAuthCode.Text;
             }
         }
         private void btnOK_Click(object sender, EventArgs e)
@@ -65,9 +65,9 @@ namespace Shelf
 
         private void frmGetAccessTkn_Resize(object sender, EventArgs e)
         {
-            txtAccesstkn.Width = btnOK.Left - 16;
+            txtAuthCode.Width = btnOK.Left - 16;
             webView.Width = this.Width - 16;
-            webView.Height = txtAccesstkn.Top - 48;
+            webView.Height = txtAuthCode.Top - 48;
         }
     }
 }

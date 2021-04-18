@@ -32,7 +32,7 @@ namespace Shelf
         private void InitializeComponent()
         {
             this.webView = new Microsoft.Web.WebView2.WinForms.WebView2();
-            this.txtAccesstkn = new System.Windows.Forms.TextBox();
+            this.txtAuthCode = new System.Windows.Forms.TextBox();
             this.btnOK = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
@@ -47,14 +47,14 @@ namespace Shelf
             this.webView.Text = "webView21";
             this.webView.ZoomFactor = 1D;
             // 
-            // txtAccesstkn
+            // txtAuthCode
             // 
-            this.txtAccesstkn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.txtAccesstkn.Location = new System.Drawing.Point(12, 494);
-            this.txtAccesstkn.Multiline = true;
-            this.txtAccesstkn.Name = "txtAccesstkn";
-            this.txtAccesstkn.Size = new System.Drawing.Size(775, 99);
-            this.txtAccesstkn.TabIndex = 1;
+            this.txtAuthCode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.txtAuthCode.Location = new System.Drawing.Point(12, 494);
+            this.txtAuthCode.Multiline = true;
+            this.txtAuthCode.Name = "txtAuthCode";
+            this.txtAuthCode.Size = new System.Drawing.Size(775, 99);
+            this.txtAuthCode.TabIndex = 1;
             // 
             // btnOK
             // 
@@ -73,9 +73,9 @@ namespace Shelf
             this.label1.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(594, 25);
+            this.label1.Size = new System.Drawing.Size(533, 25);
             this.label1.TabIndex = 3;
-            this.label1.Text = "Log in your Anilist, authorize, and copy access token to the textbox below";
+            this.label1.Text = "Log in your Anilist, authorize, and copy code to the textbox below";
             // 
             // frmGetAccessTkn
             // 
@@ -84,7 +84,7 @@ namespace Shelf
             this.ClientSize = new System.Drawing.Size(952, 596);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnOK);
-            this.Controls.Add(this.txtAccesstkn);
+            this.Controls.Add(this.txtAuthCode);
             this.Controls.Add(this.webView);
             this.MinimizeBox = false;
             this.Name = "frmGetAccessTkn";
@@ -99,7 +99,7 @@ namespace Shelf
         #endregion
 
         private Microsoft.Web.WebView2.WinForms.WebView2 webView;
-        private System.Windows.Forms.TextBox txtAccesstkn;
+        private System.Windows.Forms.TextBox txtAuthCode;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Label label1;
     }

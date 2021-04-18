@@ -45,18 +45,28 @@ namespace Shelf
         #endregion
         private void frmGetAccessTkn_FormClosing(object sender, CancelEventArgs e)
         {
-            if (String.IsNullOrWhiteSpace(txtAccesstkn.Text))
+            if (!e.Cancel)
             {
-                GlobalFunc.Alert("Access Token textbox is empty!");
-                txtAccesstkn.Focus();
-                e.Cancel = true;
-                return;
+                if (String.IsNullOrWhiteSpace(txtAccesstkn.Text))
+                {
+                    GlobalFunc.Alert("Access Token textbox is empty!");
+                    txtAccesstkn.Focus();
+                    e.Cancel = true;
+                    return;
+                }
+                accessToken = txtAccesstkn.Text;
             }
-            accessToken = txtAccesstkn.Text;
         }
         private void btnOK_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void frmGetAccessTkn_Resize(object sender, EventArgs e)
+        {
+            txtAccesstkn.Width = btnOK.Left - 16;
+            webView.Width = this.Width - 16;
+            webView.Height = txtAccesstkn.Top - 48;
         }
     }
 }

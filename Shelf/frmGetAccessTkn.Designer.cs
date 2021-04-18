@@ -1,4 +1,6 @@
 ﻿
+using System.Windows.Forms;
+
 namespace Shelf
 {
     partial class frmGetAccessTkn
@@ -47,6 +49,7 @@ namespace Shelf
             // 
             // txtAccesstkn
             // 
+            this.txtAccesstkn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.txtAccesstkn.Location = new System.Drawing.Point(12, 494);
             this.txtAccesstkn.Multiline = true;
             this.txtAccesstkn.Name = "txtAccesstkn";
@@ -55,6 +58,7 @@ namespace Shelf
             // 
             // btnOK
             // 
+            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.Location = new System.Drawing.Point(794, 494);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(146, 99);
@@ -82,11 +86,11 @@ namespace Shelf
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.txtAccesstkn);
             this.Controls.Add(this.webView);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmGetAccessTkn";
             this.Text = "frmGetAccessTkn";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmGetAccessTkn_FormClosing);
+            this.Resize += new System.EventHandler(this.frmGetAccessTkn_Resize);
             this.ResumeLayout(false);
             this.PerformLayout();
 

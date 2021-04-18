@@ -24,6 +24,19 @@ namespace Shelf.Functions
             catch { }
             return content;
         }
+        public static bool WriteFile(string filename, string content)
+        {
+            try
+            {
+                using (StreamWriter sw = new StreamWriter(filename))
+                {
+                    sw.Write(content);
+                }
+                return true;
+            }
+            catch { }
+            return false;
+        }
         #endregion
         #region Messages
         public static DialogResult Alert(string message)

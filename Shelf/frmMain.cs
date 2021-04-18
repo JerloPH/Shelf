@@ -40,10 +40,7 @@ namespace Shelf
                 anilistMedia = await AnilistRequest.RequestMediaList(accessToken);
                 if (anilistMedia != null)
                 {
-                    using (StreamWriter sw = new StreamWriter("AnilistMedia.json"))
-                    {
-                        sw.Write(JsonConvert.SerializeObject(anilistMedia));
-                    }
+                    GlobalFunc.WriteFile("AnilistMedia.json", JsonConvert.SerializeObject(anilistMedia));
                 }
 
                 txtLog.AppendText(anilistMedia == null ? "No media!\n\r" : "Media files written!\r\n");

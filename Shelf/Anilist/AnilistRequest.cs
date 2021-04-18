@@ -11,12 +11,14 @@ using RestSharp;
 using System.Net;
 using System.IO;
 using Shelf.Functions;
+using Newtonsoft.Json.Linq;
 
 namespace Shelf.Anilist
 {
     public static class AnilistRequest
     {
-        private static string AnilistURL = @"https://graphql.anilist.co";
+        public static string AnilistURL { get; set; } = "https://graphql.anilist.co";
+        public static string RedirectUrl { get; set; } = "https://anilist.co/api/v2/oauth/pin";
         private static string AniClient { get; set; } = "";
         private static string AniSecret { get; set; } = "";
 
@@ -81,18 +83,27 @@ namespace Shelf.Anilist
         {
             return (index == 0) ? AniClient : AniSecret;
         }
-        public static async Task<string> RequestUserID(string accessToken)
+        public static async Task<string> RequestAccessToken(string publicTkn)
         {
-            string returnObject = String.Empty;
-            var client = new RestClient(AnilistURL);
-            //string qryString = "query { User(search: \"" + userName + "\") { id } }";
-            string qryString = "query { Viewer { id } }";
+            string returnString = String.Empty;
+            //var client = new RestClient($"https://anilist.co/api/v2/oauth/authorize?clientid={AniClient}&responsetype=token");
+            var client = new RestClient(@"https://anilist.co/api/v2/oauth/token");
+            var requestBody = new[]
+            {
+                new {
+                    grant_type = "authorization_code",
+                    client_id = AniClient,
+                    client_secret = AniSecret,
+                    redirect_uri = RedirectUrl,
+                    code =  publicTkn
+                }
+            };
 
             try
             {
-                var request = new RestRequest("application/json", Method.POST);
-                request.AddParameter("query", qryString);
-                request.AddHeader("Authorization", $"Bearer {accessToken}");
+                var request = new RestRequest(Method.POST);
+                request.AddJsonBody(JsonConvert.SerializeObject(requestBody));
+                //request.AddBody(JsonConvert.SerializeObject(requestBody));
                 request.RequestFormat = DataFormat.Json;
 
                 var response = await client.ExecuteAsync(request);
@@ -100,15 +111,19 @@ namespace Shelf.Anilist
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     var content = response.Content; // Raw content as string
-                    returnObject = JsonConvert.DeserializeObject<AnilistData>(content).data.Viewer.Id;
+                    var returnJsonObject = JObject.Parse(content);
+                    returnString = (string)returnJsonObject["access_token"];
                 }
+                else { GlobalFunc.Alert("Not 200!"); }
+                //response = null;
+                //request = null;
             }
             catch (Exception ex)
             {
-                returnObject = String.Empty;
+                returnString = String.Empty;
                 MessageBox.Show(ex.ToString());
             }
-            return returnObject;
+            return returnString;
         }
         public static async Task<AnilistAnimeManga> RequestMediaList(string accessToken, string MEDIA = "ANIME")
         {
@@ -124,8 +139,11 @@ namespace Shelf.Anilist
                 request.RequestFormat = DataFormat.Json;
 
                 var response = await client.ExecuteAsync(request);
-                var content = response.Content; // Raw content as string
-                returnObject = JsonConvert.DeserializeObject<AnilistAnimeManga>(content);
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    var content = response.Content; // Raw content as string
+                    returnObject = JsonConvert.DeserializeObject<AnilistAnimeManga>(content);
+                }
             }
             catch (Exception ex)
             {

@@ -19,6 +19,7 @@ namespace Shelf
     public partial class frmMain : Form
     {
         private bool IsRefreshing = false;
+        private string Token = "";
         private string AccessToken = "";
         public frmMain()
         {
@@ -31,19 +32,32 @@ namespace Shelf
             if (!IsRefreshing)
             {
                 AnilistAnimeManga anilistMedia = null;
-                string accessToken = "";
 
                 IsRefreshing = true;
                 btnRefresh.Enabled = false;
 
-                // Get media, and write to json file
-                anilistMedia = await AnilistRequest.RequestMediaList(accessToken);
-                if (anilistMedia != null)
+                txtLog.AppendText("Requesting token..\r\n");
+                // Request Access Token, using Public Token
+                AccessToken = await AnilistRequest.RequestAccessToken(Token);
+                txtLog.AppendText($"Validating token: [{AccessToken}]\r\n");
+
+                if (!String.IsNullOrWhiteSpace(AccessToken))
                 {
-                    GlobalFunc.WriteFile("AnilistMedia.json", JsonConvert.SerializeObject(anilistMedia));
+                    txtLog.AppendText("Token granted!\r\n");
+                    // Get media, and write to json file
+                    anilistMedia = await AnilistRequest.RequestMediaList(AccessToken);
+                    if (anilistMedia != null)
+                    {
+                        GlobalFunc.WriteFile("AnilistMedia.json", JsonConvert.SerializeObject(anilistMedia));
+                    }
+
+                    txtLog.AppendText(anilistMedia == null ? "No media!\n\r" : "Media files written!\r\n");
+                }
+                else
+                {
+                    txtLog.AppendText("Invalid Token!\r\n");
                 }
 
-                txtLog.AppendText(anilistMedia == null ? "No media!\n\r" : "Media files written!\r\n");
                 // Re-enable button
                 btnRefresh.Enabled = true;
                 IsRefreshing = false;
@@ -52,14 +66,14 @@ namespace Shelf
 
         private void frmMain_Load(object sender, EventArgs e)
         {
-            // Get Access Token
+            // Get Public Token
             var form = new frmGetAccessTkn();
             form.ShowDialog(this);
-            AccessToken = form.accessToken;
+            Token = form.publicToken;
             form.Dispose();
             if (Debugger.IsAttached)
             {
-                GlobalFunc.Alert($"AccessTkn: {AccessToken}");
+                //GlobalFunc.Alert($"Public Token: {Token}");
             }
         }
     }

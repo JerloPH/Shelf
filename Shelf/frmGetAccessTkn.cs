@@ -18,10 +18,10 @@ namespace Shelf
 {
     public partial class frmGetAccessTkn : Form
     {
-        public string accessToken { get; set; } = "";
+        public string publicToken { get; set; } = "";
         private string ANICLIENT = "";
         private string ANISECRET = "";
-        private string redirect_uri = @"https://anilist.co/api/v2/oauth/pin";
+        private string redirect_uri = "";
         private string AnilistUrl = "";
         public frmGetAccessTkn()
         {
@@ -29,6 +29,7 @@ namespace Shelf
             // Initialize vars
             ANICLIENT = AnilistRequest.GetConfig();
             ANISECRET = AnilistRequest.GetConfig(1);
+            redirect_uri = AnilistRequest.RedirectUrl;
             //MessageBox.Show(ANICLIENT + "\n[" + ANISECRET + "]");
             AnilistUrl = $"https://anilist.co/api/v2/oauth/authorize?client_id={ANICLIENT}&redirect_uri={redirect_uri}&response_type=code";
 
@@ -54,7 +55,7 @@ namespace Shelf
                     e.Cancel = true;
                     return;
                 }
-                accessToken = txtAccesstkn.Text;
+                publicToken = txtAccesstkn.Text;
             }
         }
         private void btnOK_Click(object sender, EventArgs e)

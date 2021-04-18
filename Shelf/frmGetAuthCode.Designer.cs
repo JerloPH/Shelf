@@ -59,6 +59,7 @@ namespace Shelf
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnOK.Font = new System.Drawing.Font("Segoe UI", 25.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.btnOK.Location = new System.Drawing.Point(794, 494);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(146, 99);
@@ -77,7 +78,7 @@ namespace Shelf
             this.label1.TabIndex = 3;
             this.label1.Text = "Log in your Anilist, authorize, and copy code to the textbox below";
             // 
-            // frmGetAccessTkn
+            // frmGetAuthCode
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -87,7 +88,7 @@ namespace Shelf
             this.Controls.Add(this.txtAuthCode);
             this.Controls.Add(this.webView);
             this.MinimizeBox = false;
-            this.Name = "frmGetAccessTkn";
+            this.Name = "frmGetAuthCode";
             this.Text = "frmGetAccessTkn";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmGetAccessTkn_FormClosing);
             this.Resize += new System.EventHandler(this.frmGetAccessTkn_Resize);

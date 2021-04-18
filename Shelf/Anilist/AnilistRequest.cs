@@ -90,11 +90,12 @@ namespace Shelf.Anilist
 
             try
             {
-                var request = new RestRequest("application/json");
+                var request = new RestRequest("application/json", Method.POST);
                 request.AddParameter("query", qryString);
                 request.AddHeader("Authorization", $"Bearer {accessToken}");
+                request.RequestFormat = DataFormat.Json;
 
-                var response = client.Post(request);
+                var response = await client.ExecuteAsync(request);
 
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
@@ -117,11 +118,12 @@ namespace Shelf.Anilist
 
             try
             {
-                var request = new RestRequest("application/json");
+                var request = new RestRequest("application/json", Method.POST);
                 request.AddParameter("query", qryString);
                 request.AddHeader("Authorization", $"Bearer {accessToken}");
+                request.RequestFormat = DataFormat.Json;
 
-                var response = client.Post(request);
+                var response = await client.ExecuteAsync(request);
                 var content = response.Content; // Raw content as string
                 returnObject = JsonConvert.DeserializeObject<AnilistAnimeManga>(content);
             }

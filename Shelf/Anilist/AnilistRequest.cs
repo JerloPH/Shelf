@@ -140,6 +140,8 @@ namespace Shelf.Anilist
                 request.AddParameter("query", qryString);
                 request.AddHeader("Authorization", $"Bearer {accessToken}");
                 request.RequestFormat = DataFormat.Json;
+                request.AddHeader("Content-Type", "application/json");
+                request.AddHeader("Accept", "application/json");
 
                 var response = await client.ExecuteAsync(request);
                 if (response.StatusCode == HttpStatusCode.OK)

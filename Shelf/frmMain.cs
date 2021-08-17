@@ -106,11 +106,15 @@ namespace Shelf
                     {
                         // Get media, and write to json file
                         media = "ANIME";
+                        Log($"Requesting {media}...");
                         anilistMedia = await AnilistRequest.RequestMediaList(PublicTkn, txtUsername.Text, media);
+                        Log($"{media} data fetched!");
                         GlobalFunc.WriteMediaJsonToFile(media, anilistMedia);
                         Log(anilistMedia == null ? $"No {media} found!" : $"{media} files written!");
                         media = "MANGA";
+                        Log($"Requesting {media}...");
                         anilistMedia = await AnilistRequest.RequestMediaList(PublicTkn, txtUsername.Text, media);
+                        Log($"{media} data fetched!");
                         GlobalFunc.WriteMediaJsonToFile(media, anilistMedia);
                         Log(anilistMedia == null ? $"No {media} found!" : $"{media} files written!");
                     }

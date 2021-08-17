@@ -90,7 +90,7 @@ namespace Shelf
             this.MinimizeBox = false;
             this.Name = "frmGetAuthCode";
             this.Text = "frmGetAccessTkn";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmGetAccessTkn_FormClosing);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmGetAuthCode_FormClosing);
             this.Resize += new System.EventHandler(this.frmGetAccessTkn_Resize);
             this.ResumeLayout(false);
             this.PerformLayout();

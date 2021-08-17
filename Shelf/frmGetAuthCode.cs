@@ -27,25 +27,27 @@ namespace Shelf
         {
             InitializeComponent();
             // Initialize vars
-            ANICLIENT = AnilistRequest.GetConfig();
+            ANICLIENT = AnilistRequest.GetConfig(0);
             ANISECRET = AnilistRequest.GetConfig(1);
             redirect_uri = AnilistRequest.RedirectUrl;
-            //MessageBox.Show(ANICLIENT + "\n[" + ANISECRET + "]");
             AnilistUrl = $"https://anilist.co/api/v2/oauth/authorize?client_id={ANICLIENT}&redirect_uri={redirect_uri}&response_type=code";
             //AnilistUrl = $"https://anilist.co/api/v2/oauth/authorize?client_id={ANICLIENT}&response_type=token"; // Implicit grant, public list
 
             btnOK.DialogResult = DialogResult.OK;
             InitializeAsync();
-            this.FormClosing += frmGetAccessTkn_FormClosing;
         }
         #region Custom Events and Functions
         async void InitializeAsync()
         {
-            await webView.EnsureCoreWebView2Async(null);
-            webView.Source = new Uri(AnilistUrl);
+            try
+            {
+                await webView.EnsureCoreWebView2Async(null);
+                webView.Source = new Uri(AnilistUrl);
+            }
+            catch (Exception ex) { }
         }
         #endregion
-        private void frmGetAccessTkn_FormClosing(object sender, CancelEventArgs e)
+        private void frmGetAuthCode_FormClosing(object sender, CancelEventArgs e)
         {
             if (!e.Cancel)
             {
@@ -58,6 +60,7 @@ namespace Shelf
                 }
                 AuthCode = txtAuthCode.Text;
             }
+            //webView?.Dispose();
         }
         private void btnOK_Click(object sender, EventArgs e)
         {

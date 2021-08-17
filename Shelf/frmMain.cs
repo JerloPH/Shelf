@@ -19,44 +19,57 @@ namespace Shelf
     public partial class frmMain : Form
     {
         private bool IsRefreshing = false;
+        private bool IsFetchingMedia = false;
         private string AuthCode = "";
-        private string AccessToken = "";
+        private string PublicTkn = "";
+
+        // Public Properties
+        public Form ConfigForm { get; set; } = null; // Config form
+
         public frmMain()
         {
             InitializeComponent();
             AnilistRequest.Initialize(); // Initialize config
+        }
+        public void Log(string log)
+        {
+            if (txtLog.InvokeRequired)
+            {
+                txtLog.BeginInvoke((Action) delegate
+                {
+                    txtLog.AppendText($"[{DateTime.Now.ToString("HH:mm:ss")}]: {log}\r\n");
+                });
+            }
+            else
+                txtLog.AppendText($"[{DateTime.Now.ToString("HH:mm:ss")}]: {log}\r\n");
+        }
+
+        private void frmMain_Load(object sender, EventArgs e)
+        {
+            cbMedia.Items.AddRange(new string[] { "ALL", "ANIME", "MANGA" });
+            cbMedia.SelectedIndex = 0;
+            Log("Click on 'Refresh Token' to start!");
+            //btnRefresh.PerformClick(); // Fetch access code and token
         }
 
         private async void btnRefresh_Click(object sender, EventArgs e)
         {
             if (!IsRefreshing)
             {
-                AnilistAnimeManga anilistMedia = null;
+                // Get Public Token
+                var form = new frmGetAuthCode();
+                form.ShowDialog(this);
+                AuthCode = form.AuthCode;
+                form.Dispose();
 
                 IsRefreshing = true;
                 btnRefresh.Enabled = false;
 
-                txtLog.AppendText("Requesting token..\r\n");
+                Log("Requesting token..");
                 // Request Access Token, using Auth code
-                AccessToken = await AnilistRequest.RequestAccessToken(AuthCode);
-                txtLog.AppendText($"Validating token: [{AccessToken}]\r\n");
-
-                if (!String.IsNullOrWhiteSpace(AccessToken))
-                {
-                    txtLog.AppendText("Token granted!\r\n");
-                    // Get media, and write to json file
-                    anilistMedia = await AnilistRequest.RequestMediaList(AccessToken);
-                    if (anilistMedia != null)
-                    {
-                        GlobalFunc.WriteFile("AnilistMedia.json", JsonConvert.SerializeObject(anilistMedia));
-                    }
-
-                    txtLog.AppendText(anilistMedia == null ? "No media!\n\r" : "Media files written!\r\n");
-                }
-                else
-                {
-                    txtLog.AppendText("Invalid Token!\r\n");
-                }
+                PublicTkn = await AnilistRequest.RequestPublicToken(AuthCode);
+                //Log($"Validating Access Code: [{AuthCode}]");
+                Log((!String.IsNullOrWhiteSpace(PublicTkn) ? "Token refreshed!" : "No Public Token!"));
 
                 // Re-enable button
                 btnRefresh.Enabled = true;
@@ -64,17 +77,63 @@ namespace Shelf
             }
         }
 
-        private void frmMain_Load(object sender, EventArgs e)
+        private async void btnFetchMedia_Click(object sender, EventArgs e)
         {
-            // Get Public Token
-            var form = new frmGetAuthCode();
-            form.ShowDialog(this);
-            AuthCode = form.AuthCode;
-            form.Dispose();
-            if (Debugger.IsAttached)
+            if (String.IsNullOrWhiteSpace(txtUsername.Text))
             {
-                //GlobalFunc.Alert($"Public Token: {Token}");
+                Log("Username is empty!");
+                txtUsername.Focus();
+                return;
             }
+            if (!IsFetchingMedia)
+            {
+                IsFetchingMedia = true;
+                btnFetchMedia.Enabled = false;
+                AnilistAnimeManga anilistMedia = null;
+                string media = "";
+                if (!String.IsNullOrWhiteSpace(PublicTkn))
+                {
+                    // What type of media?
+                    if (cbMedia.SelectedIndex > 0)
+                    {
+                        media = cbMedia.Text;
+                        // Get media, and write to json file
+                        anilistMedia = await AnilistRequest.RequestMediaList(PublicTkn, txtUsername.Text, media);
+                        GlobalFunc.WriteMediaJsonToFile(media, anilistMedia);
+                        Log(anilistMedia == null ? $"No {media} found!" : $"{media} files written!");
+                    }
+                    else
+                    {
+                        // Get media, and write to json file
+                        media = "ANIME";
+                        anilistMedia = await AnilistRequest.RequestMediaList(PublicTkn, txtUsername.Text, media);
+                        GlobalFunc.WriteMediaJsonToFile(media, anilistMedia);
+                        Log(anilistMedia == null ? $"No {media} found!" : $"{media} files written!");
+                        media = "MANGA";
+                        anilistMedia = await AnilistRequest.RequestMediaList(PublicTkn, txtUsername.Text, media);
+                        GlobalFunc.WriteMediaJsonToFile(media, anilistMedia);
+                        Log(anilistMedia == null ? $"No {media} found!" : $"{media} files written!");
+                    }
+                }
+                else
+                    Log("No Token!");
+
+                IsFetchingMedia = false;
+                btnFetchMedia.Enabled = true;
+            }
+        }
+
+        private void btnChangeConfig_Click(object sender, EventArgs e)
+        {
+            if (ConfigForm == null)
+            {
+                ConfigForm = new frmChangeAnilistConfig(this);
+                ConfigForm.Show(this);
+            }
+            if (ConfigForm.WindowState == FormWindowState.Minimized)
+                ConfigForm.WindowState = FormWindowState.Normal;
+
+            ConfigForm.Focus();
         }
     }
 }

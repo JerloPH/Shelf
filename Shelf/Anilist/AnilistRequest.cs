@@ -19,63 +19,88 @@ namespace Shelf.Anilist
     {
         public static string AnilistURL { get; set; } = "https://graphql.anilist.co";
         public static string RedirectUrl { get; set; } = "https://anilist.co/api/v2/oauth/pin";
+        public static string ConfigFile { get; set; } = Path.Combine(Application.StartupPath, "Data\\anilistConfig.json");
+
         private static string AniClient { get; set; } = "";
         private static string AniSecret { get; set; } = "";
 
-        public static string MediaQuery(string media, string userName = "")
-        {
-            #region Query
-            string userQuery = (!String.IsNullOrWhiteSpace(userName)) ? $"userName: \"{userName}\", " : "";
-            return @"
-            query {
-            MediaListCollection (" + userQuery + @"type: " + media + @") { 
+        private static readonly string QueryMediaList = @"query ($name: String, $type: MediaType) {
+          MediaListCollection(userName: $name, type: $type) {
             lists {
+              status
+              entries {
                 status
-                entries
-                {
-                    status
-                    completedAt { year month day }
-                    startedAt { year month day }
-                    progress
-                    progressVolumes
-                    score
-                    notes
-                    private
-                    media
-                    {
-                        id
-                        idMal
-                        season
-                        seasonYear
-                        format
-                        source
-                        episodes
-                        chapters
-                        volumes
-                        title
-                        {
-                            english
-                            romaji
-                        }
-                        description
-                        coverImage { medium }
-                        synonyms
-                    }
+                completedAt {
+                  year
+                  month
+                  day
                 }
+                startedAt {
+                  year
+                  month
+                  day
+                }
+                progress
+                progressVolumes
+                score
+                notes
+                private
+                media {
+                  id
+                  idMal
+                  season
+                  seasonYear
+                  format
+                  source
+                  episodes
+                  chapters
+                  volumes
+                  title {
+                    english
+                    romaji
+                  }
+                  description
+                  coverImage {
+                    medium
+                  }
+                  synonyms
+                }
+              }
             }
-        }
+          }
         }";
-            #endregion
-        }
-        public static bool Initialize()
+
+        public static bool Initialize(AnilistConfig jsonConfig = null)
         {
             try
             {
-                string configFile = Path.Combine(Application.StartupPath, "Data\\anilistConfig.json");
-                string content = GlobalFunc.ReadFromFile(configFile);
-                var jsonConfig = JsonConvert.DeserializeObject<AnilistConfig>(content);
+                string content = GlobalFunc.ReadFromFile(ConfigFile);
+                if (jsonConfig == null)
+                    jsonConfig = JsonConvert.DeserializeObject<AnilistConfig>(content);
+
                 AniClient = jsonConfig?.clientId;
                 AniSecret = jsonConfig?.clientSecret;
+                return (!String.IsNullOrWhiteSpace(AniClient) && !String.IsNullOrWhiteSpace(AniSecret));
+            }
+            catch { }
+            return false;
+        }
+        public static bool UpdateConfig(string client, string secret)
+        {
+            string jsonstring = "";
+            var config = new AnilistConfig();
+            config.clientId = client.Trim();
+            config.clientSecret = secret.Trim();
+            try
+            {
+                jsonstring = JsonConvert.SerializeObject(config);
+                if (!String.IsNullOrWhiteSpace(jsonstring))
+                {
+                    if (GlobalFunc.WriteFile(ConfigFile, jsonstring))
+                    {
+                        return Initialize(config);
+                    }
+                }
             }
             catch { }
             return false;
@@ -84,31 +109,30 @@ namespace Shelf.Anilist
         {
             return (index == 0) ? AniClient : AniSecret;
         }
-        public static async Task<string> RequestAccessToken(string publicTkn)
+        public static async Task<string> RequestPublicToken(string publicTkn)
         {
-            string returnString = String.Empty;
-            //var client = new RestClient($"https://anilist.co/api/v2/oauth/authorize?clientid={AniClient}&responsetype=token");
-            var client = new RestClient(@"https://anilist.co/api/v2/oauth/token");
-            var requestBody = new[]
+            if (String.IsNullOrWhiteSpace(publicTkn))
+                return "";
+
+            string returnString = "";
+            try
             {
-                new {
+                var client = new RestClient(@"https://anilist.co/api/v2/oauth/token");
+                var request = new RestRequest("/", Method.POST)
+                {
+                    Timeout = 0,
+                    RequestFormat = DataFormat.Json
+                };
+                request.AddHeader("Content-Type", "application/json");
+                request.AddHeader("Accept", "application/json");
+                request.AddJsonBody(new
+                {
                     grant_type = "authorization_code",
                     client_id = AniClient,
                     client_secret = AniSecret,
                     redirect_uri = RedirectUrl,
-                    code =  publicTkn.Replace("/", "\\/")
-                }
-            };
-
-            try
-            {
-                var request = new RestRequest(Method.POST);
-                request.AddJsonBody(JsonConvert.SerializeObject(requestBody));
-                //request.AddBody(JsonConvert.SerializeObject(requestBody));
-                request.RequestFormat = DataFormat.Json;
-                request.AddHeader("Content-Type", "application/json");
-                request.AddHeader("Accept", "application/json");
-
+                    code = publicTkn.Replace("/", "\\/")
+                });
                 var response = await client.ExecuteAsync(request);
 
                 if (response.StatusCode == HttpStatusCode.OK)
@@ -117,28 +141,31 @@ namespace Shelf.Anilist
                     var returnJsonObject = JObject.Parse(content);
                     returnString = (string)returnJsonObject["access_token"];
                 }
-                else { GlobalFunc.Alert("Not 200!"); }
-                //response = null;
-                //request = null;
+                else { GlobalFunc.Alert("Unsuccessful on Fetching Public Token!"); }
             }
             catch (Exception ex)
             {
-                returnString = String.Empty;
-                MessageBox.Show(ex.ToString());
+                returnString = "";
+                GlobalFunc.Alert(ex.ToString());
             }
             return returnString;
         }
-        public static async Task<AnilistAnimeManga> RequestMediaList(string accessToken, string MEDIA = "ANIME")
+        public static async Task<AnilistAnimeManga> RequestMediaList(string publicTkn, string userName, string MEDIA = "ANIME")
         {
             AnilistAnimeManga returnObject = null;
-            var client = new RestClient(AnilistURL);
-            string qryString = MediaQuery(MEDIA);
-
             try
             {
+                var client = new RestClient(AnilistURL);
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+
                 var request = new RestRequest("application/json", Method.POST);
-                request.AddParameter("query", qryString);
-                request.AddHeader("Authorization", $"Bearer {accessToken}");
+                request.Timeout = 0;
+                request.AddJsonBody(new
+                {
+                    query = QueryMediaList,
+                    variables = "{ \"name\": \""+userName+"\", \"type\": \""+MEDIA+"\"}"
+                });
+                request.AddHeader("Authorization", $"Bearer {publicTkn}");
                 request.RequestFormat = DataFormat.Json;
                 request.AddHeader("Content-Type", "application/json");
                 request.AddHeader("Accept", "application/json");

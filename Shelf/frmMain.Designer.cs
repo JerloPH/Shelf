@@ -32,42 +32,116 @@ namespace Shelf
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.btnRefresh = new System.Windows.Forms.Button();
             this.txtLog = new System.Windows.Forms.TextBox();
+            this.btnFetchMedia = new System.Windows.Forms.Button();
+            this.cbMedia = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.txtUsername = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.btnChangeConfig = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
             // dataGridView1
             // 
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(12, 305);
+            this.dataGridView1.Location = new System.Drawing.Point(495, 240);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 29;
-            this.dataGridView1.Size = new System.Drawing.Size(759, 214);
+            this.dataGridView1.Size = new System.Drawing.Size(364, 279);
             this.dataGridView1.TabIndex = 0;
             // 
             // btnRefresh
             // 
-            this.btnRefresh.Location = new System.Drawing.Point(614, 11);
+            this.btnRefresh.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnRefresh.Location = new System.Drawing.Point(12, 12);
             this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(157, 29);
+            this.btnRefresh.Size = new System.Drawing.Size(254, 52);
             this.btnRefresh.TabIndex = 3;
-            this.btnRefresh.Text = "Refresh";
+            this.btnRefresh.Text = "Refresh Token";
             this.btnRefresh.UseVisualStyleBackColor = true;
             this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
             // txtLog
             // 
-            this.txtLog.Location = new System.Drawing.Point(453, 46);
+            this.txtLog.Location = new System.Drawing.Point(12, 78);
             this.txtLog.Multiline = true;
             this.txtLog.Name = "txtLog";
-            this.txtLog.Size = new System.Drawing.Size(318, 253);
+            this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtLog.Size = new System.Drawing.Size(459, 441);
             this.txtLog.TabIndex = 4;
+            // 
+            // btnFetchMedia
+            // 
+            this.btnFetchMedia.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnFetchMedia.Location = new System.Drawing.Point(287, 12);
+            this.btnFetchMedia.Name = "btnFetchMedia";
+            this.btnFetchMedia.Size = new System.Drawing.Size(254, 52);
+            this.btnFetchMedia.TabIndex = 5;
+            this.btnFetchMedia.Text = "Fetch Media";
+            this.btnFetchMedia.UseVisualStyleBackColor = true;
+            this.btnFetchMedia.Click += new System.EventHandler(this.btnFetchMedia_Click);
+            // 
+            // cbMedia
+            // 
+            this.cbMedia.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbMedia.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.cbMedia.FormattingEnabled = true;
+            this.cbMedia.Location = new System.Drawing.Point(610, 93);
+            this.cbMedia.Name = "cbMedia";
+            this.cbMedia.Size = new System.Drawing.Size(249, 39);
+            this.cbMedia.TabIndex = 6;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.label1.Location = new System.Drawing.Point(477, 96);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(85, 31);
+            this.label1.TabIndex = 7;
+            this.label1.Text = "Media:";
+            // 
+            // txtUsername
+            // 
+            this.txtUsername.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.txtUsername.Location = new System.Drawing.Point(610, 159);
+            this.txtUsername.Name = "txtUsername";
+            this.txtUsername.Size = new System.Drawing.Size(249, 38);
+            this.txtUsername.TabIndex = 8;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.label2.Location = new System.Drawing.Point(477, 159);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(124, 31);
+            this.label2.TabIndex = 9;
+            this.label2.Text = "Username:";
+            // 
+            // btnChangeConfig
+            // 
+            this.btnChangeConfig.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnChangeConfig.Location = new System.Drawing.Point(571, 12);
+            this.btnChangeConfig.Name = "btnChangeConfig";
+            this.btnChangeConfig.Size = new System.Drawing.Size(254, 52);
+            this.btnChangeConfig.TabIndex = 10;
+            this.btnChangeConfig.Text = "Update Config";
+            this.btnChangeConfig.UseVisualStyleBackColor = true;
+            this.btnChangeConfig.Click += new System.EventHandler(this.btnChangeConfig_Click);
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(786, 531);
+            this.ClientSize = new System.Drawing.Size(871, 531);
+            this.Controls.Add(this.btnChangeConfig);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.txtUsername);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.cbMedia);
+            this.Controls.Add(this.btnFetchMedia);
             this.Controls.Add(this.txtLog);
             this.Controls.Add(this.btnRefresh);
             this.Controls.Add(this.dataGridView1);
@@ -85,6 +159,12 @@ namespace Shelf
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Button btnRefresh;
         private System.Windows.Forms.TextBox txtLog;
+        private System.Windows.Forms.Button btnFetchMedia;
+        private System.Windows.Forms.ComboBox cbMedia;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox txtUsername;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button btnChangeConfig;
     }
 }
 

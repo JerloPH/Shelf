@@ -29,6 +29,9 @@ namespace Shelf.Json
 
     public partial class Entry
     {
+        [JsonProperty("mediaId")]
+        public uint MediaId { get; set; }
+
         [JsonProperty("status")]
         public string Status { get; set; }
 

@@ -44,7 +44,7 @@ namespace Shelf
             this.webView.Name = "webView";
             this.webView.Size = new System.Drawing.Size(928, 444);
             this.webView.TabIndex = 0;
-            this.webView.Text = "webView21";
+            //this.webView.Text = "webView21";
             this.webView.ZoomFactor = 1D;
             // 
             // txtAuthCode

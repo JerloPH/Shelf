@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using Shelf.Anilist;
 using Shelf.Json;
 using Shelf.Functions;
+using Shelf.Entity;
 
 namespace Shelf
 {
@@ -30,6 +31,7 @@ namespace Shelf
         {
             InitializeComponent();
             AnilistRequest.Initialize(); // Initialize config
+            GlobalFunc.InitializedApp();
         }
         public void Log(string log)
         {
@@ -138,6 +140,88 @@ namespace Shelf
                 ConfigForm.WindowState = FormWindowState.Normal;
 
             ConfigForm.Focus();
+        }
+
+        private void btnMALExport_Click(object sender, EventArgs e)
+        {
+            btnMALExport.Enabled = false;
+            string username = txtUsername.Text;
+            string media = "";
+            string outputAnime = "";
+            string outputManga = "";
+            bool processAnime = cbMedia.SelectedIndex == 0 || cbMedia.SelectedIndex == 1;
+            bool processManga = cbMedia.SelectedIndex == 0 || cbMedia.SelectedIndex == 2;
+
+            if (processAnime)
+            {
+                try
+                {
+                    outputAnime = Path.Combine(GlobalFunc.DIR_OUTPUT, $"anime_{DateTime.Now.ToString("yyyy-MM-dd")}.xml");
+                    GlobalFunc.WriteFile(outputAnime, "");
+                }
+                catch (Exception ex) { GlobalFunc.Alert("Cannot create Anime output!"); return; }
+            }
+            if (processManga)
+            {
+                try
+                {
+                    outputManga = Path.Combine(GlobalFunc.DIR_OUTPUT, $"manga_{DateTime.Now.ToString("yyyy-MM-dd")}.xml");
+                    GlobalFunc.WriteFile(outputManga, "");
+                }
+                catch (Exception ex) { GlobalFunc.Alert("Cannot create Manga output!"); return; }
+            }
+
+            var form = new frmLoading("Creating MAL export..", "Loading");
+            form.BackgroundWorker.DoWork += (sender1, e1) =>
+            {
+                // ANIME
+                if (processAnime)
+                {
+                    media = "ANIME";
+                    form.Message = $"Processing {media}..";
+                    var anime = GlobalFunc.GetAnimeList().Result;
+                    if (anime != null)
+                    {
+                        GlobalFunc.ProcessMedia(anime, "anime", outputAnime, username).Wait();
+                        anime.Clear();
+                    }
+                    form.Message = $"Done {media} entries!";
+                    // End of Anime entries
+                }
+                // MANGA
+                if (processManga)
+                {
+                    media = "MANGA";
+                    form.Message = $"Processing {media}..";
+                    var manga = GlobalFunc.GetMangaList().Result;
+                    if (manga != null)
+                    {
+                        GlobalFunc.ProcessMedia(manga, "manga", outputManga, username).Wait();
+                        manga.Clear();
+                    }
+                    form.Message = $"Done {media} entries!";
+                    // End of Manga entries
+                }
+            };
+            form.ShowDialog(this);
+            GlobalFunc.Alert("Done!");
+            btnMALExport.Enabled = true;
+        }
+
+        private void btnGenTachi_Click(object sender, EventArgs e)
+        {
+            string file = txtTachi.Text;
+            if (File.Exists(file))
+            {
+                var form = new frmLoading("Generating Tachiyomi backup..", "Loading");
+                form.BackgroundWorker.DoWork += (sender1, e1) =>
+                {
+                    GlobalFunc.GenerateTachiBackup(file).Wait();
+                };
+                form.ShowDialog(this);
+            }
+            else
+                GlobalFunc.Alert("Tachiyomi file does not exists!");
         }
     }
 }

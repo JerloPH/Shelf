@@ -17,7 +17,6 @@ namespace Shelf.Anilist
 {
     public static class AnilistRequest
     {
-        public static string AnilistURL { get; set; } = "https://graphql.anilist.co";
         public static string RedirectUrl { get; set; } = "https://anilist.co/api/v2/oauth/pin";
         public static string ConfigFile { get; set; } = Path.Combine(Application.StartupPath, "Data\\anilistConfig.json");
 
@@ -51,7 +50,6 @@ namespace Shelf.Anilist
                   season
                   seasonYear
                   format
-                  source
                   episodes
                   chapters
                   volumes
@@ -87,7 +85,7 @@ namespace Shelf.Anilist
         }
         public static bool UpdateConfig(string client, string secret)
         {
-            string jsonstring = "";
+            string jsonstring;
             var config = new AnilistConfig();
             config.clientId = client.Trim();
             config.clientSecret = secret.Trim();
@@ -155,7 +153,7 @@ namespace Shelf.Anilist
             AnilistAnimeManga returnObject = null;
             try
             {
-                var client = new RestClient(AnilistURL);
+                var client = new RestClient("https://graphql.anilist.co");
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
 
                 var request = new RestRequest("application/json", Method.POST);
@@ -180,7 +178,7 @@ namespace Shelf.Anilist
             catch (Exception ex)
             {
                 returnObject = null;
-                MessageBox.Show(ex.ToString());
+                GlobalFunc.Alert(ex.ToString());
             }
             return returnObject;
         }

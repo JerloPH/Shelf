@@ -149,6 +149,8 @@ namespace Shelf
             string media = "";
             string outputAnime = "";
             string outputManga = "";
+            string outputAnimeNonMal = "";
+            string outputMangaNonMal = "";
             bool processAnime = cbMedia.SelectedIndex == 0 || cbMedia.SelectedIndex == 1;
             bool processManga = cbMedia.SelectedIndex == 0 || cbMedia.SelectedIndex == 2;
 
@@ -157,6 +159,7 @@ namespace Shelf
                 try
                 {
                     outputAnime = Path.Combine(GlobalFunc.DIR_OUTPUT, $"anime_{DateTime.Now.ToString("yyyy-MM-dd")}.xml");
+                    outputAnimeNonMal = Path.Combine(GlobalFunc.DIR_OUTPUT, $"anime_NonMal_{DateTime.Now.ToString("yyyy-MM-dd")}.json");
                     GlobalFunc.WriteFile(outputAnime, "");
                 }
                 catch (Exception ex) { GlobalFunc.Alert("Cannot create Anime output!"); return; }
@@ -166,6 +169,7 @@ namespace Shelf
                 try
                 {
                     outputManga = Path.Combine(GlobalFunc.DIR_OUTPUT, $"manga_{DateTime.Now.ToString("yyyy-MM-dd")}.xml");
+                    outputMangaNonMal = Path.Combine(GlobalFunc.DIR_OUTPUT, $"manga_NonMal_{DateTime.Now.ToString("yyyy-MM-dd")}.json");
                     GlobalFunc.WriteFile(outputManga, "");
                 }
                 catch (Exception ex) { GlobalFunc.Alert("Cannot create Manga output!"); return; }
@@ -182,7 +186,7 @@ namespace Shelf
                     var anime = GlobalFunc.GetAnimeList().Result;
                     if (anime != null)
                     {
-                        GlobalFunc.ProcessMedia(anime, "anime", outputAnime, username).Wait();
+                        GlobalFunc.ProcessMedia(anime, "anime", outputAnime, username, outputAnimeNonMal).Wait();
                         anime.Clear();
                     }
                     form.Message = $"Done {media} entries!";
@@ -196,7 +200,7 @@ namespace Shelf
                     var manga = GlobalFunc.GetMangaList().Result;
                     if (manga != null)
                     {
-                        GlobalFunc.ProcessMedia(manga, "manga", outputManga, username).Wait();
+                        GlobalFunc.ProcessMedia(manga, "manga", outputManga, username, outputMangaNonMal).Wait();
                         manga.Clear();
                     }
                     form.Message = $"Done {media} entries!";

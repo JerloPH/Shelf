@@ -185,12 +185,14 @@ namespace Shelf.Functions
         {
             return await GetMediaList(FILE_MANGA);
         }
-        public static async Task ProcessMedia(List<Entry> medialist, string media, string outputfile, string username)
+        public static async Task ProcessMedia(List<Entry> medialist, string media, string outputfile, string username, string outputNonMal)
         {
             string xmltoWrite = "";
             string AnilistStatus = "";
             string prepend = "";
             var count = new StatusCount();
+            var nonMal = new List<Entry>();
+
             await Task.Run((Action)delegate
             {
                 foreach (var item in medialist)
@@ -225,6 +227,10 @@ namespace Shelf.Functions
                                 break;
                         }
                     }
+                    else
+                    {
+                        nonMal.Add(item);
+                    }
                 }
                 // Append finalizer
                 xmltoWrite = $"</my{media}list>";
@@ -232,6 +238,12 @@ namespace Shelf.Functions
                 // Prepend 'myinfo' tree
                 prepend = MAL.PrependInfo(media, username, count);
                 PrependFile(outputfile, prepend);
+                try
+                {
+                    string json = JsonConvert.SerializeObject(nonMal);
+                    WriteFile(outputNonMal, json);
+                }
+                catch (Exception ex) { };
             });
         }
         public static async Task GenerateTachiBackup(string file)

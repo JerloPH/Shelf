@@ -24,6 +24,8 @@ namespace Shelf
         private string AuthCode = "";
         private string PublicTkn = "";
 
+        private DataTable DTAnime = new DataTable();
+
         // Public Properties
         public Form ConfigForm { get; set; } = null; // Config form
 
@@ -32,6 +34,29 @@ namespace Shelf
             InitializeComponent();
             AnilistRequest.Initialize(); // Initialize config
             GlobalFunc.InitializedApp();
+
+            // Initialize objects
+            InitializeObjects();
+        }
+        private void InitializeObjects()
+        {
+            var colId = new DataColumn()
+            {
+                ColumnName = "colId",
+                Caption = "Id",
+                DataType = typeof(long)
+            };
+
+            var colTitle = new DataColumn()
+            {
+                ColumnName = "colTitle",
+                Caption = "Romaji Title",
+                DataType = typeof(String)
+            };
+
+            DTAnime.Columns.AddRange(new DataColumn[] { colId, colTitle });
+
+            gridAnime.DataSource = DTAnime;
         }
         public void Log(string log)
         {
@@ -45,7 +70,8 @@ namespace Shelf
             else
                 txtLog.AppendText($"[{DateTime.Now.ToString("HH:mm:ss")}]: {log}\r\n");
         }
-
+        #region Custom Events
+        #endregion
         private void frmMain_Load(object sender, EventArgs e)
         {
             cbMedia.Items.AddRange(new string[] { "ALL", "ANIME", "MANGA" });
@@ -53,7 +79,13 @@ namespace Shelf
             Log("Click on 'Refresh Token' to start!");
             //btnRefresh.PerformClick(); // Fetch access code and token
         }
-
+        private void frmMain_Resize(object sender, EventArgs e)
+        {
+            gridAnime.Width = this.ClientRectangle.Width - gridAnime.Left - 16;
+            gridAnime.Height = this.ClientRectangle.Height - gridAnime.Top - 16;
+            gridAnime.Columns[0].Width = (int)(gridAnime.Width * 0.2); // Id
+            gridAnime.Columns[1].Width = (int)(gridAnime.Width * 0.65); // Romaji Title
+        }
         private async void btnRefresh_Click(object sender, EventArgs e)
         {
             if (!IsRefreshing)
@@ -183,10 +215,10 @@ namespace Shelf
                 {
                     media = "ANIME";
                     form.Message = $"Processing {media}..";
-                    var anime = GlobalFunc.GetAnimeList().Result;
+                    var anime = MediaTasks.GetAnimeList().Result;
                     if (anime != null)
                     {
-                        GlobalFunc.ProcessMedia(anime, "anime", outputAnime, username, outputAnimeNonMal).Wait();
+                        MediaTasks.ProcessMedia(anime, "anime", outputAnime, username, outputAnimeNonMal).Wait();
                         anime.Clear();
                     }
                     form.Message = $"Done {media} entries!";
@@ -197,10 +229,10 @@ namespace Shelf
                 {
                     media = "MANGA";
                     form.Message = $"Processing {media}..";
-                    var manga = GlobalFunc.GetMangaList().Result;
+                    var manga = MediaTasks.GetMangaList().Result;
                     if (manga != null)
                     {
-                        GlobalFunc.ProcessMedia(manga, "manga", outputManga, username, outputMangaNonMal).Wait();
+                        MediaTasks.ProcessMedia(manga, "manga", outputManga, username, outputMangaNonMal).Wait();
                         manga.Clear();
                     }
                     form.Message = $"Done {media} entries!";
@@ -220,12 +252,32 @@ namespace Shelf
                 var form = new frmLoading("Generating Tachiyomi backup..", "Loading");
                 form.BackgroundWorker.DoWork += (sender1, e1) =>
                 {
-                    GlobalFunc.GenerateTachiBackup(file).Wait();
+                    MediaTasks.GenerateTachiBackup(file).Wait();
                 };
                 form.ShowDialog(this);
             }
             else
                 GlobalFunc.Alert("Tachiyomi file does not exists!");
+        }
+
+        private void btnRefreshItems_Click(object sender, EventArgs e)
+        {
+            DTAnime.Clear();
+            var form = new frmLoading("Refreshing Anime list..", "Loading");
+            form.BackgroundWorker.DoWork += async (sender1, e1) =>
+            {
+                var anime = await MediaTasks.GetAnimeList();
+                foreach (var item in anime)
+                {
+                    this.BeginInvoke((Action)delegate
+                    {
+                        DTAnime.Rows.Add(item.Media.Id, item.Media.Title.Romaji);
+                    });
+                }
+            };
+            form.ShowDialog(this);
+            gridAnime.Sort(gridAnime.Columns[1], ListSortDirection.Ascending);
+            gridAnime.Refresh();
         }
     }
 }

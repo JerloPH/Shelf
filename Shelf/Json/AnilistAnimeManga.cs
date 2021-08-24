@@ -24,8 +24,11 @@ namespace Shelf.Json
 
     public class MediaList
     {
+        [JsonProperty("name")]
+        public string Name { get; set; } // Name of List entry belongs to.
+
         [JsonProperty("entries")]
-        public List<Entry> Entries { get; set; }
+        public List<Entry> Entries { get; set; } // List of Entries.
     }
 
     public partial class Entry

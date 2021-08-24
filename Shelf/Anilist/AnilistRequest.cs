@@ -26,7 +26,7 @@ namespace Shelf.Anilist
         private static readonly string QueryMediaList = @"query ($name: String, $type: MediaType) {
           MediaListCollection(userName: $name, type: $type) {
             lists {
-              status
+              name
               entries {
                 status
                 completedAt {

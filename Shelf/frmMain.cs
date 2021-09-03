@@ -247,7 +247,6 @@ namespace Shelf
         private void btnGenTachi_Click(object sender, EventArgs e)
         {
             string file = txtTachi.Text.Trim();
-            file = @"D:\Admin\GitHub_Jerlo\Shelf\Shelf\bin\Debug\net5.0-windows\sample\tachiyomi_2021-09-03_10-39.proto";
             if (File.Exists(file))
             {
                 var form = new frmLoading("Generating Tachiyomi backup..", "Loading");
@@ -258,7 +257,7 @@ namespace Shelf
                 form.ShowDialog(this);
             }
             else
-                GlobalFunc.Alert("Tachiyomi file does not exists!");
+                GlobalFunc.Alert("Tachiyomi backup file does not exists!");
         }
 
         private void btnRefreshItems_Click(object sender, EventArgs e)

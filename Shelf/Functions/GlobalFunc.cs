@@ -23,6 +23,8 @@ namespace Shelf.Functions
         public static string FILE_LOG = "";
         public static string FILE_LOG_ERR = "";
 
+        public static List<string> SKIP_STATUS { get; set; } = new List<string>();
+
         public static void InitializedApp()
         {
             try
@@ -36,6 +38,8 @@ namespace Shelf.Functions
                 Directory.CreateDirectory(DIR_OUTPUT);
             }
             catch (Exception ex) { Logs.Err(ex); }
+            // Add to Lists
+            SKIP_STATUS.AddRange(new string[] { "COMPLETED", "DROPPED" });
         }
         public static string GetAppVersion()
         {

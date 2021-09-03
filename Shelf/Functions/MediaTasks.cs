@@ -224,7 +224,7 @@ namespace Shelf.Functions
                             File.WriteAllBytes(outputProto, streamdata);
                         }
                     }
-                    catch (Exception ex) {  Logs.Err(ex); }
+                    catch (Exception ex) {  Logs.Err(ex); GlobalFunc.Alert("Cannot serialize proto backup file!"); }
                     // Serialize to json file
                     try
                     {
@@ -235,7 +235,7 @@ namespace Shelf.Functions
                         string json = JsonConvert.SerializeObject(backupTachiJson, Formatting.Indented);
                         GlobalFunc.WriteFile(outputJson, json);
                     }
-                    catch (Exception ex) { Logs.Err(ex); };
+                    catch (Exception ex) { Logs.Err(ex); GlobalFunc.Alert("Cannot serialize json backup file!"); };
                 }
             });
         }

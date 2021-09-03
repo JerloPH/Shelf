@@ -109,7 +109,7 @@ namespace Shelf.Json
         public CoverImage CoverImage { get; set; }
 
         [JsonProperty("synonyms")]
-        public List<string> Synonyms { get; set; }
+        public List<string> Synonyms { get; set; } = new List<string>();
     }
 
     public partial class CoverImage

@@ -119,7 +119,7 @@ namespace Shelf.Functions
                 try
                 {
                     string file = Media.Equals("ANIME") ? FILE_ANIME : FILE_MANGA;
-                    return WriteFile(file, JsonConvert.SerializeObject(mediajson));
+                    return WriteFile(file, JsonConvert.SerializeObject(mediajson, Formatting.Indented));
                 }
                 catch (Exception ex) { Logs.Err(ex); }
             }

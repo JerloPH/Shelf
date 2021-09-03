@@ -53,14 +53,9 @@ namespace Shelf.Anilist
                   episodes
                   chapters
                   volumes
-                  title {
-                    english
-                    romaji
-                  }
+                  title { english romaji }
                   description
-                  coverImage {
-                    medium
-                  }
+                  coverImage { medium large }
                   synonyms
                 }
               }

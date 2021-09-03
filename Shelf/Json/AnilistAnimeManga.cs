@@ -115,7 +115,10 @@ namespace Shelf.Json
     public partial class CoverImage
     {
         [JsonProperty("medium")]
-        public string Medium { get; set; }
+        public string Medium { get; set; } = "";
+
+        [JsonProperty("large")]
+        public string Large { get; set; } = "";
     }
 
     public partial class Title

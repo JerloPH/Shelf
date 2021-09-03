@@ -12,7 +12,6 @@ using ProtoBuf;
 using ProtoBuf.Meta;
 using ProtoBuf.Serializers;
 using ProtoBuf.WellKnownTypes;
-using Google.Protobuf;
 
 namespace Shelf.Functions
 {

@@ -5,11 +5,11 @@ namespace Shelf.Functions
 {
     public static class Logs
     {
-        public static void App(string content)
+        public static void LogString(string file, string content)
         {
             try
             {
-                using (FileStream fs = new FileStream(GlobalFunc.FILE_LOG, FileMode.Append, FileAccess.Write))
+                using (FileStream fs = new FileStream(file, FileMode.Append, FileAccess.Write))
                 {
                     using (StreamWriter s = new StreamWriter(fs))
                     {
@@ -19,7 +19,17 @@ namespace Shelf.Functions
                     fs.Close();
                 }
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { Console.WriteLine(ex.ToString()); }
+        }
+        public static void App(string content)
+        {
+            if (!String.IsNullOrWhiteSpace(content))
+                LogString(GlobalFunc.FILE_LOG, content);
+        }
+        public static void Err(Exception ex)
+        {
+            if (ex != null)
+                LogString(GlobalFunc.FILE_LOG_ERR, ex.ToString());
         }
     }
 }

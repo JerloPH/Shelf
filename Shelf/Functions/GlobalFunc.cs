@@ -22,19 +22,21 @@ namespace Shelf.Functions
         public static string FILE_ANIME = "";
         public static string FILE_MANGA = "";
         public static string FILE_LOG = "";
+        public static string FILE_LOG_ERR = "";
 
         public static void InitializedApp()
         {
             try
             {
                 FILE_LOG = Path.Combine(AppContext.BaseDirectory, "ShelfApp.log");
+                FILE_LOG_ERR = Path.Combine(AppContext.BaseDirectory, "ShelfApp_Error.log");
                 FILE_ANIME = Path.Combine(AppContext.BaseDirectory, "AnilistMediaANIME.json");
                 FILE_MANGA = Path.Combine(AppContext.BaseDirectory, "AnilistMediaMANGA.json");
                 
                 DIR_OUTPUT = Path.Combine(AppContext.BaseDirectory, "output");
                 Directory.CreateDirectory(DIR_OUTPUT);
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { Logs.Err(ex); }
         }
         public static string GetAppVersion()
         {
@@ -46,6 +48,7 @@ namespace Shelf.Functions
             }
             catch (Exception ex)
             {
+                Logs.Err(ex);
                 return "1.0.0.0-alpha";
             }
         }
@@ -84,7 +87,7 @@ namespace Shelf.Functions
             catch { }
             return false;
         }
-        public static void AppendFile(string file, string content)
+        public static void AppendFile(string file, string content, bool Addline=false)
         {
             try
             {
@@ -92,13 +95,13 @@ namespace Shelf.Functions
                 {
                     using (StreamWriter s = new StreamWriter(fs))
                     {
-                        s.Write(content);
+                        s.Write(content + (Addline ? "\n" : ""));
                         s.Close();
                     }
                     fs.Close();
                 }
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { Logs.Err(ex); }
         }
         public static void PrependFile(string file, string content)
         {
@@ -115,7 +118,7 @@ namespace Shelf.Functions
                     string file = Media.Equals("ANIME") ? FILE_ANIME : FILE_MANGA;
                     return WriteFile(file, JsonConvert.SerializeObject(mediajson));
                 }
-                catch (Exception ex) { }
+                catch (Exception ex) { Logs.Err(ex); }
             }
             return false;
         }
@@ -128,8 +131,21 @@ namespace Shelf.Functions
                 if (!String.IsNullOrWhiteSpace(content))
                     media = JsonConvert.DeserializeObject<AnilistAnimeManga>(content);
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { Logs.Err(ex); }
             return media;
+        }
+        public static byte[] ProtoSerialize<T>(T record) where T : class
+        {
+            if (null == record) return null;
+            try
+            {
+                using (var stream = new MemoryStream())
+                {
+                    Serializer.Serialize(stream, record);
+                    return stream.ToArray();
+                }
+            }
+            catch { throw; }
         }
         #endregion
         #region Messages
@@ -149,5 +165,6 @@ namespace Shelf.Functions
             return Alert(message, "", null);
         }
         #endregion
+        // ############################################################ End of Class
     }
 }

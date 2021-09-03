@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Shelf.Json;
 using Shelf.Entity;
+using Shelf.Functions;
 
 namespace Shelf
 {
@@ -119,7 +120,7 @@ namespace Shelf
                 {
                     return Val($"{year}-{month}-{day}", name);
                 }
-                catch (Exception ex) { }
+                catch (Exception ex) { Logs.Err(ex); }
             }
             return Val("0000-00-00", name);
         }

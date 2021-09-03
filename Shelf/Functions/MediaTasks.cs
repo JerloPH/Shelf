@@ -104,71 +104,141 @@ namespace Shelf.Functions
                     string json = JsonConvert.SerializeObject(nonMal);
                     GlobalFunc.WriteFile(outputNonMal, json);
                 }
-                catch (Exception ex) { };
+                catch (Exception ex) { Logs.Err(ex); };
             });
         }
-        public static async Task GenerateTachiBackup(string file)
+        public static async Task GenerateMissingTachiEntries(string file)
         {
-            var tachilist = new List<long>();
+            int categoryId = 0;
+            string categoryName = "Anilist";
+            string outputProto = file.Substring(0, file.Length - 6) + "_NotInTachi.proto";
+            string outputJson = file.Substring(0, file.Length - 6) + "_NotInTachi.json";
+            bool canAdd = true;
+            var tachilist = new List<long>(); // list of entries in Tachi lib
+            var mangalist = new List<long>(); // trimmed list of entries from Anilist, tachi entries removed
+            var backupmangalist = new List<BackupManga>(); // List of BackupManga objects, entries from 'mangalist'
+            var backupMangaJson = new List<BackupMangaJson>(); // Json backup list
+            BackupTachiProto tachi = null;
+            long maxLibId = 0;
             await Task.Run((Action)async delegate
             {
                 try
                 {
-                    string output = file + "_output.json";
                     string value = GlobalFunc.ReadFromFile(file);
                     using (var ms = File.OpenRead(file))
                     {
                         ms.Position = 0;
-                        var tachi = Serializer.Deserialize<BackupTachi>(ms);
-                        foreach (var item in tachi.Main)
+                        tachi = Serializer.Deserialize<BackupTachiProto>(ms);
+                        ms.Close();
+                    }
+                    if (tachi != null)
+                    {
+                        foreach (var item in tachi.Mangas)
                         {
-                            GlobalFunc.AppendFile(file, item.Title);
+                            foreach (var track in item.Tracking)
+                            {
+                                if (track.TrackingUrl.Contains("anilist.co"))
+                                {
+                                    if (!tachilist.Contains(track.MediaId)) // prevent duplicate entries
+                                    {
+                                        tachilist.Add(track.MediaId);
+                                    }
+                                }
+                                // Fetch highest library Id
+                                if (track.libraryId >= maxLibId)
+                                    maxLibId = track.libraryId + 1;
+                            }
+                        }
+                        // Get highest category Order
+                        foreach (var cat in tachi.backupCategories)
+                        {
+                            if (cat.Name.Equals(categoryName))
+                            {
+                                categoryId = cat.Order;
+                                break;
+                            }
+                            if (cat.Order >= categoryId)
+                            {
+                                categoryId = cat.Order + 1; // set "category" 'Order' for Tachi backup output
+                            }
                         }
                     }
-
-                    //using (var input = File.OpenRead(file))
-                    //{
-                    //    string value = ReadFromFile(file);
-                    //    string jsonString = null;
-                    //    message.MergeFrom(input); //read message from protodat file
-                    //    JsonFormatter formater = new JsonFormatter(
-                    //        new JsonFormatter.Settings(false));
-                    //    jsonString = formater.Format(message);
-                    //    WriteFile(output, jsonString);
-                    //}
-
-                    //using (var ms = new MemoryStream(File.ReadAllBytes(file)))
-                    //{
-                    //    //Serializer.Serialize(ms, new BackupTachi());
-                    //    ms.Position = 0;
-                    //    var tachi = Serializer.Deserialize<BackupTachi>(ms);
-                    //    if (tachi != null)
-                    //    {
-                    //        foreach (var item in tachi.Main)
-                    //        {
-                    //            AppendFile(file, item.Title);
-                    //        }
-                    //    }
-                    //}
-
-                    //using (var ms = new MemoryStream(File.ReadAllBytes(file)))
-                    //{
-                    //    Serializer.Serialize(ms, new BackupManga());
-                    //    ms.Position = 0;
-                    //    var tachi = Serializer.Deserialize<BackupManga>(ms);
-
-                    //    //string json = JsonConvert.SerializeObject(tachi);
-                    //    var buffer = ms.GetBuffer();
-                    //    var jsonString = Convert.ToBase64String(buffer, 0, (int)ms.Length);
-                    //    WriteFile(file + "_output.json", jsonString);
-                    //}
                 }
-                catch (Exception ex) { Logs.App(ex.ToString()); GlobalFunc.Alert("Error loading proto file!"); }
-                //var manga = await GetMangaList();
-                //foreach (var item in manga)
-                //{
-                //}
+                catch (Exception ex) { Logs.Err(ex); GlobalFunc.Alert("Error loading Tachiyomi backup file!"); }
+                // Fetch manga Ids from Anilist
+                var manga = await GetMangaList();
+                foreach (var item in manga)
+                {
+                    if (item.Media.Format.Equals("MANGA") || item.Media.Format.Equals("ONE_SHOT"))
+                    {
+                        canAdd = !item.Status.Equals("COMPLETED") && !item.Status.Equals("DROPPED");
+                        if (!mangalist.Contains(item.Media.Id) && canAdd)
+                        {
+                            if (!tachilist.Contains(item.Media.Id)) // Entry is missing from Tachi lib
+                            {
+                                mangalist.Add(item.Media.Id);
+                                // Add entry for proto
+                                var entry = new BackupManga();
+                                //var tracker = new BackupTracking();
+                                //tracker.MediaId = (int)item.Media.Id;
+                                //tracker.TrackingUrl = @"https://anilist.co/manga/" + item.Media.Id.ToString();
+                                //tracker.syncId = 0;
+                                //tracker.libraryId = maxLibId;
+                                //maxLibId += 1; // Add 1
+                                //entry.Tracking.Add(tracker);
+                                entry.Tracking = null;
+                                entry.Title = item.Media.Title.Romaji;
+                                entry.source = 0;
+                                entry.url = "";
+                                entry.Categories = new List<int>();
+                                entry.Categories.Add(categoryId);
+                                backupmangalist.Add(entry);
+                                // Add entry for json
+                                var jsonEntry = new BackupMangaJson();
+                                jsonEntry.manga = new object[] { item.Media.Title.Romaji, item.Media.Title.Romaji, 0, 0, 0 };
+                                jsonEntry.categories = new string[] { categoryName };
+                                backupMangaJson.Add(jsonEntry);
+                            }
+                        }
+                    }
+                }
+                tachilist.Clear(); // Micro optimization
+                mangalist.Clear();
+                // Save output files
+                if (backupmangalist?.Count > 0)
+                {
+                    // Serialize new backup Tachi file, with Anilist entries not on Tachi
+                    // Serialize to proto file
+                    try
+                    {
+                        var backuptachi = new BackupTachiProto();
+                        var backupcat = new BackupCategories();
+                        backuptachi.Mangas = backupmangalist;
+                        backuptachi.backupCategories.Clear();
+                        backupcat.Name = categoryName;
+                        backupcat.Order = categoryId;
+                        backuptachi.backupCategories.Add(backupcat);
+                        var streamdata = GlobalFunc.ProtoSerialize(backuptachi);
+                        if (streamdata != null)
+                        {
+                            File.WriteAllBytes(outputProto, streamdata);
+                        }
+                    }
+                    catch (Exception ex) {  Logs.Err(ex); }
+                    // Serialize to json file
+                    try
+                    {
+                        var backupTachiJson = new BackupTachiJson();
+                        backupTachiJson.version = 2;
+                        backupTachiJson.Mangas = backupMangaJson;
+                        backupTachiJson.Categories.Add(new object[] { categoryName, categoryId });
+                        string json = JsonConvert.SerializeObject(backupTachiJson, Formatting.Indented);
+                        GlobalFunc.WriteFile(outputJson, json);
+                    }
+                    catch (Exception ex) { Logs.Err(ex); };
+                }
             });
         }
+        // ############################################################ End of Class
     }
 }

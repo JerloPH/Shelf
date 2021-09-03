@@ -194,7 +194,7 @@ namespace Shelf
                     outputAnimeNonMal = Path.Combine(GlobalFunc.DIR_OUTPUT, $"anime_NonMal_{DateTime.Now.ToString("yyyy-MM-dd")}.json");
                     GlobalFunc.WriteFile(outputAnime, "");
                 }
-                catch (Exception ex) { GlobalFunc.Alert("Cannot create Anime output!"); return; }
+                catch (Exception ex) { Logs.Err(ex); GlobalFunc.Alert("Cannot create Anime output!"); return; }
             }
             if (processManga)
             {
@@ -204,7 +204,7 @@ namespace Shelf
                     outputMangaNonMal = Path.Combine(GlobalFunc.DIR_OUTPUT, $"manga_NonMal_{DateTime.Now.ToString("yyyy-MM-dd")}.json");
                     GlobalFunc.WriteFile(outputManga, "");
                 }
-                catch (Exception ex) { GlobalFunc.Alert("Cannot create Manga output!"); return; }
+                catch (Exception ex) { Logs.Err(ex); GlobalFunc.Alert("Cannot create Manga output!"); return; }
             }
 
             var form = new frmLoading("Creating MAL export..", "Loading");
@@ -246,13 +246,14 @@ namespace Shelf
 
         private void btnGenTachi_Click(object sender, EventArgs e)
         {
-            string file = txtTachi.Text;
+            string file = txtTachi.Text.Trim();
+            file = @"D:\Admin\GitHub_Jerlo\Shelf\Shelf\bin\Debug\net5.0-windows\sample\tachiyomi_2021-09-03_10-39.proto";
             if (File.Exists(file))
             {
                 var form = new frmLoading("Generating Tachiyomi backup..", "Loading");
                 form.BackgroundWorker.DoWork += (sender1, e1) =>
                 {
-                    MediaTasks.GenerateTachiBackup(file).Wait();
+                    MediaTasks.GenerateMissingTachiEntries(file).Wait();
                 };
                 form.ShowDialog(this);
             }

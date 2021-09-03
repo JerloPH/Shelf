@@ -44,7 +44,7 @@ namespace Shelf
                 await webView.EnsureCoreWebView2Async(null);
                 webView.Source = new Uri(AnilistUrl);
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { Logs.Err(ex); }
         }
         #endregion
         private void frmGetAuthCode_FormClosing(object sender, CancelEventArgs e)

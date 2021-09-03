@@ -185,7 +185,13 @@ namespace Shelf
             string outputMangaNonMal = "";
             bool processAnime = cbMedia.SelectedIndex == 0 || cbMedia.SelectedIndex == 1;
             bool processManga = cbMedia.SelectedIndex == 0 || cbMedia.SelectedIndex == 2;
-
+            if (String.IsNullOrWhiteSpace(username))
+            {
+                GlobalFunc.Alert("Username is empty!");
+                txtUsername.Focus();
+                return;
+            }
+            // Process Anime
             if (processAnime)
             {
                 try

@@ -268,7 +268,7 @@ namespace Shelf
                 catch (Exception ex)
                 {
                     Logs.Err(ex);
-                    GlobalFunc.Alert("Invalid Filepath!");
+                    GlobalFunc.Alert("Invalid Tachiyomi Filepath!");
                 }
             }
             else

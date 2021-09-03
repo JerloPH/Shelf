@@ -246,15 +246,30 @@ namespace Shelf
 
         private void btnGenTachi_Click(object sender, EventArgs e)
         {
+            List<string> ext = new List<string>();
+            ext.AddRange(new string[]{ "proto", "gz" });
             string file = txtTachi.Text.Trim();
             if (File.Exists(file))
             {
-                var form = new frmLoading("Generating Tachiyomi backup..", "Loading");
-                form.BackgroundWorker.DoWork += (sender1, e1) =>
+                try
                 {
-                    MediaTasks.GenerateMissingTachiEntries(file).Wait();
-                };
-                form.ShowDialog(this);
+                    if (ext.Contains(Path.GetExtension(file).Trim('.')))
+                    {
+                        var form = new frmLoading("Generating Tachiyomi backup..", "Loading");
+                        form.BackgroundWorker.DoWork += (sender1, e1) =>
+                        {
+                            MediaTasks.GenerateMissingTachiEntries(file).Wait();
+                        };
+                        form.ShowDialog(this);
+                    }
+                    else
+                        GlobalFunc.Alert($"Tachiyomi file isn't supported!\nOnly '{String.Join('/', ext)}' files are accepted.");
+                }
+                catch (Exception ex)
+                {
+                    Logs.Err(ex);
+                    GlobalFunc.Alert("Invalid Filepath!");
+                }
             }
             else
                 GlobalFunc.Alert("Tachiyomi backup file does not exists!");

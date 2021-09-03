@@ -29,16 +29,8 @@ namespace Shelf.Anilist
               name
               entries {
                 status
-                completedAt {
-                  year
-                  month
-                  day
-                }
-                startedAt {
-                  year
-                  month
-                  day
-                }
+                completedAt { year month day }
+                startedAt {  year month day }
                 progress
                 progressVolumes
                 score

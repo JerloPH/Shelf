@@ -53,7 +53,7 @@ namespace Shelf.Functions
             string prepend = "";
             var count = new StatusCount();
             var nonMal = new List<Entry>();
-
+            // Run task
             await Task.Run((Action)delegate
             {
                 foreach (var item in medialist)
@@ -99,35 +99,37 @@ namespace Shelf.Functions
                 // Prepend 'myinfo' tree
                 prepend = MAL.PrependInfo(media, username, count);
                 GlobalFunc.PrependFile(outputfile, prepend);
-                try
-                {
-                    string json = JsonConvert.SerializeObject(nonMal);
-                    GlobalFunc.WriteFile(outputNonMal, json);
-                }
-                catch (Exception ex) { Logs.Err(ex); };
+                GlobalFunc.WriteObjectToJson(outputNonMal, nonMal); // Serialize to json
             });
         }
         public static async Task GenerateMissingTachiEntries(string file)
         {
-            int categoryId = 0;
             string categoryName = "Anilist";
             string outputPrefix = $"tachiyomi_{GlobalFunc.DATE_TODAY}";
             string outputTachiLib = Path.Combine(GlobalFunc.DIR_OUTPUT, $"{outputPrefix}_Library.json");
             string outputProto = Path.Combine(GlobalFunc.DIR_OUTPUT, $"{outputPrefix}_NotInTachi.proto");
             string outputJson = Path.Combine(GlobalFunc.DIR_OUTPUT, $"{outputPrefix}_NotInTachi.json");
             string outputTachiNoTracker = Path.Combine(GlobalFunc.DIR_OUTPUT, $"{outputPrefix}_NoTrackers.json");
+            string filetoRead = file;
             bool canAdd = true;
+            bool tachiloaded = true; // Loaded tachiyomi backup file flag
+            int categoryId = 0;
             var tachilist = new List<long>(); // list of entries in Tachi lib
             var tachilistNames = new List<string>();
             var mangalist = new List<long>(); // trimmed list of entries from Anilist, tachi entries removed
             var backupmangalist = new List<BackupManga>(); // List of BackupManga objects, entries from 'mangalist'
             var backupMangaJson = new List<BackupMangaJson>(); // Json backup list
             BackupTachiProto tachi = null;
+            // Start Task
             await Task.Run((Action)async delegate
             {
                 try
                 {
-                    string value = GlobalFunc.ReadFromFile(file);
+                    if (file.Substring(file.Length-2).Equals("gz"))
+                    {
+                        filetoRead = GlobalFunc.Decompress(file, $"{Path.Combine(GlobalFunc.DIR_TEMP, $"tachiyomiBackup_{GlobalFunc.DATE_TODAY}.proto")}");
+                    }
+                    string value = GlobalFunc.ReadFromFile(filetoRead);
                     using (var ms = File.OpenRead(file))
                     {
                         ms.Position = 0;
@@ -178,82 +180,97 @@ namespace Shelf.Functions
                         }
                     }
                 }
-                catch (Exception ex) { Logs.Err(ex); GlobalFunc.Alert("Error loading Tachiyomi backup file!"); }
-                GlobalFunc.WriteObjectToJson(outputTachiNoTracker, tachilistNames); // serialize list of tachi entries titles without trackers
-                // Fetch manga Ids from Anilist
-                var manga = await GetMangaList();
-                foreach (var item in manga)
+                catch (Exception ex)
                 {
-                    if (item.Media.Format.Equals("MANGA") || item.Media.Format.Equals("ONE_SHOT"))
+                    Logs.Err(ex);
+                    GlobalFunc.Alert("Error loading Tachiyomi backup file!");
+                    tachiloaded = false;
+                    tachilist.Clear(); // Micro optimization
+                    mangalist.Clear();
+                    tachilistNames.Clear();
+                    backupmangalist.Clear();
+                    backupMangaJson.Clear();
+                }
+                if (tachiloaded)
+                {
+                    GlobalFunc.WriteObjectToJson(outputTachiNoTracker, tachilistNames); // serialize list of tachi entries titles without trackers
+                    // Fetch manga Ids from Anilist
+                    var manga = await GetMangaList();
+                    foreach (var item in manga)
                     {
-                        canAdd = !GlobalFunc.SKIP_STATUS.Contains(item.Status);
-                        if (!mangalist.Contains(item.Media.Id) && canAdd)
+                        if (item.Media.Format.Equals("MANGA") || item.Media.Format.Equals("ONE_SHOT"))
                         {
-                            // Entry is missing from Tachi lib
-                            if (!tachilist.Contains(item.Media.Id) && !tachilistNames.Contains(item.Media.Title.Romaji))
+                            canAdd = !GlobalFunc.SKIP_STATUS.Contains(item.Status);
+                            if (!mangalist.Contains(item.Media.Id) && canAdd)
                             {
-                                mangalist.Add(item.Media.Id);
-                                // Add entry for proto
-                                var entry = new BackupManga();
-                                //var tracker = new BackupTracking();
-                                //tracker.MediaId = (int)item.Media.Id;
-                                //tracker.TrackingUrl = @"https://anilist.co/manga/" + item.Media.Id.ToString();
-                                //tracker.syncId = 0;
-                                //tracker.libraryId = 0;
-                                //maxLibId += 1; // Add 1
-                                //entry.Tracking.Add(tracker);
-                                entry.Tracking = null;
-                                entry.Title = item.Media.Title.Romaji;
-                                entry.source = 0;
-                                entry.url = item.Media.Title.Romaji;
-                                entry.Categories = new List<int>();
-                                entry.Categories.Add(categoryId);
-                                backupmangalist.Add(entry);
-                                // Add entry for json
-                                var jsonEntry = new BackupMangaJson();
-                                jsonEntry.manga = new object[] { item.Media.Title.Romaji, item.Media.Title.Romaji, 0, 0, 0 };
-                                jsonEntry.categories = new string[] { categoryName };
-                                backupMangaJson.Add(jsonEntry);
+                                // Entry is missing from Tachi lib
+                                if (!tachilist.Contains(item.Media.Id) && !tachilistNames.Contains(item.Media.Title.Romaji))
+                                {
+                                    mangalist.Add(item.Media.Id);
+                                    // Add entry for proto
+                                    var entry = new BackupManga();
+                                    //var tracker = new BackupTracking();
+                                    //tracker.MediaId = (int)item.Media.Id;
+                                    //tracker.TrackingUrl = @"https://anilist.co/manga/" + item.Media.Id.ToString();
+                                    //tracker.syncId = 0;
+                                    //tracker.libraryId = 0;
+                                    //maxLibId += 1; // Add 1
+                                    //entry.Tracking.Add(tracker);
+                                    entry.Tracking = null;
+                                    entry.Title = item.Media.Title.Romaji;
+                                    entry.source = 0;
+                                    entry.url = item.Media.Title.Romaji;
+                                    entry.Categories = new List<int>();
+                                    entry.Categories.Add(categoryId);
+                                    backupmangalist.Add(entry);
+                                    // Add entry for json
+                                    var jsonEntry = new BackupMangaJson();
+                                    jsonEntry.manga = new object[] { item.Media.Title.Romaji, item.Media.Title.Romaji, 0, 0, 0 };
+                                    jsonEntry.categories = new string[] { categoryName };
+                                    backupMangaJson.Add(jsonEntry);
+                                }
                             }
                         }
                     }
-                }
-                tachilist.Clear(); // Micro optimization
-                mangalist.Clear();
-                tachilistNames.Clear();
-                // Save output files
-                if (backupmangalist?.Count > 0)
-                {
-                    // Serialize new backup Tachi file, with Anilist entries not on Tachi
-                    // Serialize to proto file
-                    try
+                    tachilist.Clear(); // Micro optimization
+                    mangalist.Clear();
+                    tachilistNames.Clear();
+                    // Save output files
+                    if (backupmangalist?.Count > 0)
                     {
-                        var backuptachi = new BackupTachiProto();
-                        var backupcat = new BackupCategories();
-                        backuptachi.Mangas = backupmangalist;
-                        backuptachi.backupCategories.Clear();
-                        backupcat.Name = categoryName;
-                        backupcat.Order = categoryId;
-                        backuptachi.backupCategories.Add(backupcat);
-                        var streamdata = GlobalFunc.ProtoSerialize(backuptachi);
-                        if (streamdata != null)
+                        // Serialize new backup Tachi file, with Anilist entries not on Tachi
+                        // Serialize to proto file
+                        try
                         {
-                            File.WriteAllBytes(outputProto, streamdata);
-                            GlobalFunc.Compress(outputProto);
+                            var backuptachi = new BackupTachiProto();
+                            var backupcat = new BackupCategories();
+                            backuptachi.Mangas = backupmangalist;
+                            backuptachi.backupCategories.Clear();
+                            backupcat.Name = categoryName;
+                            backupcat.Order = categoryId;
+                            backuptachi.backupCategories.Add(backupcat);
+                            var streamdata = GlobalFunc.ProtoSerialize(backuptachi);
+                            if (streamdata != null)
+                            {
+                                File.WriteAllBytes(outputProto, streamdata);
+                                GlobalFunc.Compress(outputProto);
+                            }
                         }
+                        catch (Exception ex) { Logs.Err(ex); GlobalFunc.Alert("Cannot serialize proto backup file!"); }
+                        // Serialize to json file
+                        try
+                        {
+                            var backupTachiJson = new BackupTachiJson();
+                            backupTachiJson.version = 2;
+                            backupTachiJson.Mangas = backupMangaJson;
+                            backupTachiJson.Categories.Add(new object[] { categoryName, categoryId });
+                            if (!GlobalFunc.WriteObjectToJson(outputJson, backupTachiJson))
+                                GlobalFunc.Alert("Cannot serialize json backup file!");
+                        }
+                        catch (Exception ex) { Logs.Err(ex); GlobalFunc.Alert("Cannot serialize json backup file!\nError occured."); };
                     }
-                    catch (Exception ex) {  Logs.Err(ex); GlobalFunc.Alert("Cannot serialize proto backup file!"); }
-                    // Serialize to json file
-                    try
-                    {
-                        var backupTachiJson = new BackupTachiJson();
-                        backupTachiJson.version = 2;
-                        backupTachiJson.Mangas = backupMangaJson;
-                        backupTachiJson.Categories.Add(new object[] { categoryName, categoryId });
-                        if (!GlobalFunc.WriteObjectToJson(outputJson, backupTachiJson))
-                            GlobalFunc.Alert("Cannot serialize json backup file!");
-                    }
-                    catch (Exception ex) { Logs.Err(ex); GlobalFunc.Alert("Cannot serialize json backup file!\nError occured."); };
+                    backupmangalist.Clear();
+                    backupMangaJson.Clear();
                 }
             });
         }

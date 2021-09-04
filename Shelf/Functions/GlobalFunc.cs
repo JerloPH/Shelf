@@ -203,6 +203,38 @@ namespace Shelf.Functions
                 Logs.Err(ex);
             }
         }
+        public static string Decompress(string filepath, string newFileName)
+        {
+            try
+            {
+                if (File.Exists(newFileName))
+                {
+                    File.Delete(newFileName);
+                }
+                FileInfo fileToDecompress = new FileInfo(filepath);
+                using (FileStream originalFileStream = fileToDecompress.OpenRead())
+                {
+                    string currentFileName = fileToDecompress.FullName;
+                    using (FileStream decompressedFileStream = File.Create(newFileName))
+                    {
+                        using (GZipStream decompressionStream = new GZipStream(originalFileStream, CompressionMode.Decompress, false))
+                        {
+                            decompressionStream.CopyTo(decompressedFileStream);
+                            //Console.WriteLine($"Decompressed: {fileToDecompress.Name}");
+                        }
+                        decompressedFileStream.Position = 0;
+                    }
+                    originalFileStream.Close();
+                    if (File.Exists (newFileName))
+                        return newFileName;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logs.Err(ex);
+            }
+            return "";
+        }
         public static string BrowseForFile(string Title, string filter, string InitialDir)
         {
             string ret = "";

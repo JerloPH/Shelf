@@ -176,11 +176,9 @@ namespace Shelf
             ConfigForm.Focus();
         }
 
-        private void btnMALExport_Click(object sender, EventArgs e)
+        private async void btnMALExport_Click(object sender, EventArgs e)
         {
-            btnMALExport.Enabled = false;
             string username = txtUsername.Text;
-            string media = "";
             string outputAnime = "";
             string outputManga = "";
             string outputAnimeNonMal = "";
@@ -193,6 +191,7 @@ namespace Shelf
                 txtUsername.Focus();
                 return;
             }
+            btnMALExport.Enabled = false;
             // Process Anime
             if (processAnime)
             {
@@ -215,39 +214,31 @@ namespace Shelf
                 catch (Exception ex) { Logs.Err(ex); GlobalFunc.Alert("Cannot create Manga output!"); return; }
             }
 
-            var form = new frmLoading("Creating MAL export..", "Loading");
-            form.BackgroundWorker.DoWork += (sender1, e1) =>
+            await Task.Run((Action)async delegate
             {
                 // ANIME
                 if (processAnime)
                 {
-                    media = "ANIME";
-                    form.Message = $"Processing {media}..";
-                    var anime = MediaTasks.GetAnimeList().Result;
+                    var anime = await MediaTasks.GetAnimeList();
                     if (anime != null)
                     {
-                        MediaTasks.ProcessMedia(anime, "anime", outputAnime, username, outputAnimeNonMal).Wait();
+                        await MediaTasks.ProcessMedia(anime, "anime", outputAnime, username, outputAnimeNonMal);
                         anime.Clear();
                     }
-                    form.Message = $"Done {media} entries!";
                     // End of Anime entries
                 }
                 // MANGA
                 if (processManga)
                 {
-                    media = "MANGA";
-                    form.Message = $"Processing {media}..";
                     var manga = MediaTasks.GetMangaList().Result;
                     if (manga != null)
                     {
                         MediaTasks.ProcessMedia(manga, "manga", outputManga, username, outputMangaNonMal).Wait();
                         manga.Clear();
                     }
-                    form.Message = $"Done {media} entries!";
                     // End of Manga entries
                 }
-            };
-            form.ShowDialog(this);
+            });
             GlobalFunc.Alert("Done!");
             btnMALExport.Enabled = true;
         }

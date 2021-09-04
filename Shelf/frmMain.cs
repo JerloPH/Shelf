@@ -90,6 +90,7 @@ namespace Shelf
         {
             if (!IsRefreshing)
             {
+                btnFetchMedia.Enabled = false; // Disable fetching media files
                 // Get Public Token
                 var form = new frmGetAuthCode();
                 form.ShowDialog(this);
@@ -108,6 +109,7 @@ namespace Shelf
                 // Re-enable button
                 btnRefresh.Enabled = true;
                 IsRefreshing = false;
+                btnFetchMedia.Enabled = true; // Enable fetching media files
             }
         }
 

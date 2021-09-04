@@ -43,6 +43,8 @@ namespace Shelf
             this.btnGenTachi = new System.Windows.Forms.Button();
             this.gridAnime = new System.Windows.Forms.DataGridView();
             this.btnRefreshItems = new System.Windows.Forms.Button();
+            this.btnChangeTachi = new System.Windows.Forms.Button();
+            this.btnTachiGoto = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.gridAnime)).BeginInit();
             this.SuspendLayout();
             // 
@@ -59,11 +61,11 @@ namespace Shelf
             // 
             // txtLog
             // 
-            this.txtLog.Location = new System.Drawing.Point(12, 244);
+            this.txtLog.Location = new System.Drawing.Point(12, 288);
             this.txtLog.Multiline = true;
             this.txtLog.Name = "txtLog";
             this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtLog.Size = new System.Drawing.Size(641, 275);
+            this.txtLog.Size = new System.Drawing.Size(641, 231);
             this.txtLog.TabIndex = 4;
             // 
             // btnFetchMedia
@@ -118,7 +120,7 @@ namespace Shelf
             // btnChangeConfig
             // 
             this.btnChangeConfig.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnChangeConfig.Location = new System.Drawing.Point(9, 171);
+            this.btnChangeConfig.Location = new System.Drawing.Point(9, 225);
             this.btnChangeConfig.Name = "btnChangeConfig";
             this.btnChangeConfig.Size = new System.Drawing.Size(220, 52);
             this.btnChangeConfig.TabIndex = 10;
@@ -180,7 +182,7 @@ namespace Shelf
             // btnRefreshItems
             // 
             this.btnRefreshItems.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnRefreshItems.Location = new System.Drawing.Point(235, 171);
+            this.btnRefreshItems.Location = new System.Drawing.Point(235, 225);
             this.btnRefreshItems.Name = "btnRefreshItems";
             this.btnRefreshItems.Size = new System.Drawing.Size(170, 52);
             this.btnRefreshItems.TabIndex = 16;
@@ -188,11 +190,35 @@ namespace Shelf
             this.btnRefreshItems.UseVisualStyleBackColor = true;
             this.btnRefreshItems.Click += new System.EventHandler(this.btnRefreshItems_Click);
             // 
+            // btnChangeTachi
+            // 
+            this.btnChangeTachi.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnChangeTachi.Location = new System.Drawing.Point(142, 157);
+            this.btnChangeTachi.Name = "btnChangeTachi";
+            this.btnChangeTachi.Size = new System.Drawing.Size(249, 52);
+            this.btnChangeTachi.TabIndex = 17;
+            this.btnChangeTachi.Text = "Change Tachi File";
+            this.btnChangeTachi.UseVisualStyleBackColor = true;
+            this.btnChangeTachi.Click += new System.EventHandler(this.btnChangeTachi_Click);
+            // 
+            // btnTachiGoto
+            // 
+            this.btnTachiGoto.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnTachiGoto.Location = new System.Drawing.Point(9, 157);
+            this.btnTachiGoto.Name = "btnTachiGoto";
+            this.btnTachiGoto.Size = new System.Drawing.Size(127, 52);
+            this.btnTachiGoto.TabIndex = 18;
+            this.btnTachiGoto.Text = "Goto";
+            this.btnTachiGoto.UseVisualStyleBackColor = true;
+            this.btnTachiGoto.Click += new System.EventHandler(this.btnTachiGoto_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1110, 531);
+            this.Controls.Add(this.btnTachiGoto);
+            this.Controls.Add(this.btnChangeTachi);
             this.Controls.Add(this.btnRefreshItems);
             this.Controls.Add(this.gridAnime);
             this.Controls.Add(this.btnGenTachi);
@@ -232,6 +258,8 @@ namespace Shelf
         private System.Windows.Forms.Button btnGenTachi;
         private System.Windows.Forms.DataGridView gridAnime;
         private System.Windows.Forms.Button btnRefreshItems;
+        private System.Windows.Forms.Button btnChangeTachi;
+        private System.Windows.Forms.Button btnTachiGoto;
     }
 }
 

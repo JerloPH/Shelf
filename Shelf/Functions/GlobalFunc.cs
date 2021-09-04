@@ -13,11 +13,13 @@ using ProtoBuf.Meta;
 using ProtoBuf.Serializers;
 using ProtoBuf.WellKnownTypes;
 using System.IO.Compression;
+using System.Diagnostics;
 
 namespace Shelf.Functions
 {
     public static class GlobalFunc
     {
+        public static string DIR_START = "";
         public static string DIR_OUTPUT = "";
         public static string FILE_ANIME = "";
         public static string FILE_MANGA = "";
@@ -30,12 +32,13 @@ namespace Shelf.Functions
         {
             try
             {
-                FILE_LOG = Path.Combine(AppContext.BaseDirectory, "ShelfApp.log");
-                FILE_LOG_ERR = Path.Combine(AppContext.BaseDirectory, "ShelfApp_Error.log");
-                FILE_ANIME = Path.Combine(AppContext.BaseDirectory, "AnilistMediaANIME.json");
-                FILE_MANGA = Path.Combine(AppContext.BaseDirectory, "AnilistMediaMANGA.json");
+                DIR_START = AppContext.BaseDirectory;
+                FILE_LOG = Path.Combine(DIR_START, "ShelfApp.log");
+                FILE_LOG_ERR = Path.Combine(DIR_START, "ShelfApp_Error.log");
+                FILE_ANIME = Path.Combine(DIR_START, "AnilistMediaANIME.json");
+                FILE_MANGA = Path.Combine(DIR_START, "AnilistMediaMANGA.json");
                 
-                DIR_OUTPUT = Path.Combine(AppContext.BaseDirectory, "output");
+                DIR_OUTPUT = Path.Combine(DIR_START, "output");
                 Directory.CreateDirectory(DIR_OUTPUT);
             }
             catch (Exception ex) { Logs.Err(ex); }
@@ -189,6 +192,41 @@ namespace Shelf.Functions
             {
                 Logs.Err(ex);
             }
+        }
+        public static string BrowseForFile(string Title, string filter, string InitialDir)
+        {
+            string ret = "";
+            OpenFileDialog selectFile = new OpenFileDialog
+            {
+                InitialDirectory = InitialDir,
+                Filter = filter,
+                Title = Title,
+                CheckFileExists = true,
+                CheckPathExists = true,
+                RestoreDirectory = true,
+                Multiselect = false
+            };
+            selectFile.ShowDialog();
+            if (String.IsNullOrWhiteSpace(selectFile.FileName) == false)
+            {
+                ret = selectFile.FileName;
+            }
+            selectFile.Dispose();
+            return ret;
+        }
+        public static bool FileOpeninExplorer(string filePath)
+        {
+            try
+            {
+                Process.Start("explorer.exe", @"/select," + $"{ filePath }" + '"');
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logs.Err(ex);
+                Alert("Cannot Browse to file!");
+            }
+            return false;
         }
         #endregion
         #region Messages

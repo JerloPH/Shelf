@@ -250,8 +250,9 @@ namespace Shelf
             btnMALExport.Enabled = true;
         }
 
-        private void btnGenTachi_Click(object sender, EventArgs e)
+        private async void btnGenTachi_Click(object sender, EventArgs e)
         {
+            btnGenTachi.Enabled = false;
             List<string> ext = new List<string>();
             ext.AddRange(new string[]{ "proto", "gz" });
             string file = txtTachi.Text.Trim();
@@ -261,12 +262,8 @@ namespace Shelf
                 {
                     if (ext.Contains(Path.GetExtension(file).Trim('.')))
                     {
-                        var form = new frmLoading("Generating Tachiyomi backup..", "Loading");
-                        form.BackgroundWorker.DoWork += (sender1, e1) =>
-                        {
-                            MediaTasks.GenerateMissingTachiEntries(file).Wait();
-                        };
-                        form.ShowDialog(this);
+                        await MediaTasks.GenerateMissingTachiEntries(file);
+                        GlobalFunc.Alert("Done generating Tachiyomi backup file!");
                     }
                     else
                         GlobalFunc.Alert($"Tachiyomi file isn't supported!\nOnly '{String.Join('/', ext)}' files are accepted.");
@@ -279,6 +276,8 @@ namespace Shelf
             }
             else
                 GlobalFunc.Alert("Tachiyomi backup file does not exists!");
+
+            btnGenTachi.Enabled = true;
         }
 
         private void btnRefreshItems_Click(object sender, EventArgs e)
@@ -299,6 +298,19 @@ namespace Shelf
             form.ShowDialog(this);
             gridAnime.Sort(gridAnime.Columns[1], ListSortDirection.Ascending);
             gridAnime.Refresh();
+        }
+
+        private void btnChangeTachi_Click(object sender, EventArgs e)
+        {
+            string file = GlobalFunc.BrowseForFile("Browse for Tachiyomi backup file", "Tachiyomi backups|*.proto;*.gz", GlobalFunc.DIR_START);
+            if (File.Exists(file))
+                txtTachi.Text = file;
+        }
+
+        private void btnTachiGoto_Click(object sender, EventArgs e)
+        {
+            if (File.Exists(txtTachi.Text))
+                GlobalFunc.FileOpeninExplorer(txtTachi.Text);
         }
     }
 }

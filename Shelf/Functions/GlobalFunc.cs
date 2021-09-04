@@ -21,10 +21,12 @@ namespace Shelf.Functions
     {
         public static string DIR_START = "";
         public static string DIR_OUTPUT = "";
+        public static string DIR_OUTPUT_ROOT = "";
         public static string FILE_ANIME = "";
         public static string FILE_MANGA = "";
         public static string FILE_LOG = "";
         public static string FILE_LOG_ERR = "";
+        public static string DATE_TODAY = "";
 
         public static List<string> SKIP_STATUS { get; set; } = new List<string>();
 
@@ -32,13 +34,16 @@ namespace Shelf.Functions
         {
             try
             {
+                DATE_TODAY = DateTime.Now.ToString("yyyy-MM-dd");
                 DIR_START = AppContext.BaseDirectory;
                 FILE_LOG = Path.Combine(DIR_START, "ShelfApp.log");
                 FILE_LOG_ERR = Path.Combine(DIR_START, "ShelfApp_Error.log");
                 FILE_ANIME = Path.Combine(DIR_START, "AnilistMediaANIME.json");
                 FILE_MANGA = Path.Combine(DIR_START, "AnilistMediaMANGA.json");
                 
-                DIR_OUTPUT = Path.Combine(DIR_START, "output");
+                DIR_OUTPUT_ROOT = Path.Combine(DIR_START, "output");
+                DIR_OUTPUT = Path.Combine(DIR_OUTPUT_ROOT, DATE_TODAY);
+                Directory.CreateDirectory(DIR_OUTPUT_ROOT);
                 Directory.CreateDirectory(DIR_OUTPUT);
             }
             catch (Exception ex) { Logs.Err(ex); }

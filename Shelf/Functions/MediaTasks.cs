@@ -111,7 +111,7 @@ namespace Shelf.Functions
         {
             int categoryId = 0;
             string categoryName = "Anilist";
-            string outputPrefix = $"tachiyomi_{DateTime.Now.ToString("yyyy-MM-dd")}";
+            string outputPrefix = $"tachiyomi_{GlobalFunc.DATE_TODAY}";
             string outputTachiLib = Path.Combine(GlobalFunc.DIR_OUTPUT, $"{outputPrefix}_Library.json");
             string outputProto = Path.Combine(GlobalFunc.DIR_OUTPUT, $"{outputPrefix}_NotInTachi.proto");
             string outputJson = Path.Combine(GlobalFunc.DIR_OUTPUT, $"{outputPrefix}_NotInTachi.json");

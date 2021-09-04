@@ -198,8 +198,8 @@ namespace Shelf
             {
                 try
                 {
-                    outputAnime = Path.Combine(GlobalFunc.DIR_OUTPUT, $"anime_{DateTime.Now.ToString("yyyy-MM-dd")}.xml");
-                    outputAnimeNonMal = Path.Combine(GlobalFunc.DIR_OUTPUT, $"anime_NonMal_{DateTime.Now.ToString("yyyy-MM-dd")}.json");
+                    outputAnime = Path.Combine(GlobalFunc.DIR_OUTPUT, $"anime_{GlobalFunc.DATE_TODAY}.xml");
+                    outputAnimeNonMal = Path.Combine(GlobalFunc.DIR_OUTPUT, $"anime_NonMal_{GlobalFunc.DATE_TODAY}.json");
                     GlobalFunc.WriteFile(outputAnime, "");
                 }
                 catch (Exception ex) { Logs.Err(ex); GlobalFunc.Alert("Cannot create Anime output!"); return; }
@@ -208,8 +208,8 @@ namespace Shelf
             {
                 try
                 {
-                    outputManga = Path.Combine(GlobalFunc.DIR_OUTPUT, $"manga_{DateTime.Now.ToString("yyyy-MM-dd")}.xml");
-                    outputMangaNonMal = Path.Combine(GlobalFunc.DIR_OUTPUT, $"manga_NonMal_{DateTime.Now.ToString("yyyy-MM-dd")}.json");
+                    outputManga = Path.Combine(GlobalFunc.DIR_OUTPUT, $"manga_{GlobalFunc.DATE_TODAY}.xml");
+                    outputMangaNonMal = Path.Combine(GlobalFunc.DIR_OUTPUT, $"manga_NonMal_{GlobalFunc.DATE_TODAY}.json");
                     GlobalFunc.WriteFile(outputManga, "");
                 }
                 catch (Exception ex) { Logs.Err(ex); GlobalFunc.Alert("Cannot create Manga output!"); return; }

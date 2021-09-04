@@ -215,14 +215,15 @@ namespace Shelf.Functions
                 using (FileStream originalFileStream = fileToDecompress.OpenRead())
                 {
                     string currentFileName = fileToDecompress.FullName;
-                    using (FileStream decompressedFileStream = File.Create(newFileName))
+                    using (FileStream file = File.Create(newFileName))
                     {
-                        using (GZipStream decompressionStream = new GZipStream(originalFileStream, CompressionMode.Decompress, false))
+                        using (GZipStream decStream = new GZipStream(originalFileStream, CompressionMode.Decompress, false))
                         {
-                            decompressionStream.CopyTo(decompressedFileStream);
-                            //Console.WriteLine($"Decompressed: {fileToDecompress.Name}");
+                            decStream.CopyTo(file);
+                            //Console.WriteLine($"Decompressed: {file.Name}");
                         }
-                        decompressedFileStream.Position = 0;
+                        file.SetLength(file.Position);
+                        file.Close();
                     }
                     originalFileStream.Close();
                     if (File.Exists (newFileName))

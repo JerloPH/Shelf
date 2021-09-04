@@ -226,9 +226,9 @@ namespace Shelf.Functions
                         file.Close();
                     }
                     originalFileStream.Close();
-                    if (File.Exists (newFileName))
-                        return newFileName;
                 }
+                if (File.Exists(newFileName))
+                    return newFileName;
             }
             catch (Exception ex)
             {

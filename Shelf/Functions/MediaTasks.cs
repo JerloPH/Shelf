@@ -111,10 +111,11 @@ namespace Shelf.Functions
         {
             int categoryId = 0;
             string categoryName = "Anilist";
-            string outputTachiLib = file.Substring(0, file.Length - 6) + "_TachiLib.json";
-            string outputProto = file.Substring(0, file.Length - 6) + "_NotInTachi.proto";
-            string outputJson = file.Substring(0, file.Length - 6) + "_NotInTachi.json";
-            string outputTachiNoTracker = file.Substring(0, file.Length - 6) + "_TachiLibNoTrackers.json";
+            string outputPrefix = $"tachiyomi_{DateTime.Now.ToString("yyyy-MM-dd")}";
+            string outputTachiLib = Path.Combine(GlobalFunc.DIR_OUTPUT, $"{outputPrefix}_Library.json");
+            string outputProto = Path.Combine(GlobalFunc.DIR_OUTPUT, $"{outputPrefix}_NotInTachi.proto");
+            string outputJson = Path.Combine(GlobalFunc.DIR_OUTPUT, $"{outputPrefix}_NotInTachi.json");
+            string outputTachiNoTracker = Path.Combine(GlobalFunc.DIR_OUTPUT, $"{outputPrefix}_NoTrackers.json");
             bool canAdd = true;
             var tachilist = new List<long>(); // list of entries in Tachi lib
             var tachilistNames = new List<string>();

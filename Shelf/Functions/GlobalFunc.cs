@@ -12,6 +12,7 @@ using ProtoBuf;
 using ProtoBuf.Meta;
 using ProtoBuf.Serializers;
 using ProtoBuf.WellKnownTypes;
+using System.IO.Compression;
 
 namespace Shelf.Functions
 {
@@ -112,6 +113,17 @@ namespace Shelf.Functions
             WriteFile(file, content);
             AppendFile(file, prev);
         }
+        public static bool WriteObjectToJson(string file, object data)
+        {
+            try
+            {
+                string content = JsonConvert.SerializeObject(data, Formatting.Indented);
+                WriteFile(file, content);
+                return true;
+            }
+            catch (Exception ex) { Logs.Err(ex); }
+            return false;
+        }
         public static bool WriteMediaJsonToFile(string Media, AnilistAnimeManga mediajson)
         {
             if (mediajson != null)
@@ -149,6 +161,34 @@ namespace Shelf.Functions
                 }
             }
             catch { throw; }
+        }
+        public static void Compress(string filepath)
+        {
+            try
+            {
+                FileInfo fileToCompress = new FileInfo(filepath);
+                using (FileStream originalFileStream = fileToCompress.OpenRead())
+                {
+                    if ((File.GetAttributes(fileToCompress.FullName) &
+                       FileAttributes.Hidden) != FileAttributes.Hidden & fileToCompress.Extension != ".gz")
+                    {
+                        using (FileStream compressedFileStream = File.Create(fileToCompress.FullName + ".gz"))
+                        {
+                            using (GZipStream compressionStream = new GZipStream(compressedFileStream,
+                               CompressionMode.Compress))
+                            {
+                                originalFileStream.CopyTo(compressionStream);
+                            }
+                        }
+                        //FileInfo info = new FileInfo(filepath + ".gz");
+                        //Logs.App($"Compressed {fileToCompress.Name} from {fileToCompress.Length} to {info.Length} bytes.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logs.Err(ex);
+            }
         }
         #endregion
         #region Messages

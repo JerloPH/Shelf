@@ -23,6 +23,7 @@ namespace Shelf
         private bool IsFetchingMedia = false;
         private string AuthCode = "";
         private string PublicTkn = "";
+        private DateTime? TokenDate = null;
 
         private DataTable DTAnime = new DataTable();
 
@@ -70,6 +71,28 @@ namespace Shelf
             else
                 txtLog.AppendText($"[{DateTime.Now.ToString("HH:mm:ss")}]: {log}\r\n");
         }
+        public async Task<bool> RequestMedia(string media, string username, string token)
+        {
+            // Get media, and write to json file
+            Log($"Requesting {media}...");
+            var anilistMedia = await AnilistRequest.RequestMediaList(token, username, media);
+            if (anilistMedia != null)
+            {
+                Log($"{media} data fetched!");
+                bool result = await Task.Run(delegate { return GlobalFunc.WriteMediaJsonToFile(media, anilistMedia); });
+                if (result)
+                {
+                    Log($"{media} files written!");
+                    return true;
+                }
+                else
+                    Log($"{media} is not saved!");
+            }
+            else
+                Log($"No {media} found!");
+
+            return false;
+        }
         #region Custom Events
         #endregion
         private void frmMain_Load(object sender, EventArgs e)
@@ -77,6 +100,8 @@ namespace Shelf
             cbMedia.Items.AddRange(new string[] { "ALL", "ANIME", "MANGA" });
             cbMedia.SelectedIndex = 0;
             Log("Click on 'Refresh Token' to start!");
+            TokenDate = DateTime.Now.AddMinutes(-61);
+            Log($"Date of Token: {TokenDate}");
             //btnRefresh.PerformClick(); // Fetch access code and token
         }
         private void frmMain_Resize(object sender, EventArgs e)
@@ -91,20 +116,42 @@ namespace Shelf
             if (!IsRefreshing)
             {
                 btnFetchMedia.Enabled = false; // Disable fetching media files
-                // Get Public Token
-                var form = new frmGetAuthCode();
-                form.ShowDialog(this);
-                AuthCode = form.AuthCode;
-                form.Dispose();
-
+                // Get Authorization Code
+                if (File.Exists(GlobalFunc.FILE_AUTH_CODE))
+                {
+                    AuthCode = GlobalFunc.ReadFromFile(GlobalFunc.FILE_AUTH_CODE);
+                }
+                if (String.IsNullOrWhiteSpace(AuthCode))
+                {
+                    var form = new frmGetAuthCode();
+                    form.ShowDialog(this);
+                    AuthCode = form.AuthCode;
+                    form.Dispose();
+                    GlobalFunc.WriteFile(GlobalFunc.FILE_AUTH_CODE, AuthCode);
+                }
+                // Start fetching
                 IsRefreshing = true;
                 btnRefresh.Enabled = false;
 
-                Log("Requesting token..");
-                // Request Access Token, using Auth code
-                PublicTkn = await AnilistRequest.RequestPublicToken(AuthCode);
-                //Log($"Validating Access Code: [{AuthCode}]");
-                Log((!String.IsNullOrWhiteSpace(PublicTkn) ? "Token refreshed!" : "No Public Token!"));
+                if (TokenDate.Value.AddMinutes(59) <= DateTime.Now)
+                {
+                    Log("Requesting token..");
+                    // Request Access Token, using Auth code
+                    PublicTkn = await AnilistRequest.RequestPublicToken(AuthCode);
+                    if (String.IsNullOrWhiteSpace(PublicTkn))
+                    {
+                        AuthCode = ""; // reset authorization code if token is invalidated.
+                        GlobalFunc.WriteFile(GlobalFunc.FILE_AUTH_CODE, "");
+                        Log("No Public Token acquired! Try again.");
+                    }
+                    else
+                    {
+                        TokenDate = DateTime.Now;
+                        Log($"Token refreshed! Date acquired: {TokenDate}");
+                    }
+                }
+                else
+                    Log("Token is still valid.");
 
                 // Re-enable button
                 btnRefresh.Enabled = true;
@@ -125,34 +172,18 @@ namespace Shelf
             {
                 IsFetchingMedia = true;
                 btnFetchMedia.Enabled = false;
-                AnilistAnimeManga anilistMedia = null;
-                string media = "";
                 if (!String.IsNullOrWhiteSpace(PublicTkn))
                 {
                     // What type of media?
                     if (cbMedia.SelectedIndex > 0)
                     {
-                        media = cbMedia.Text;
-                        // Get media, and write to json file
-                        anilistMedia = await AnilistRequest.RequestMediaList(PublicTkn, txtUsername.Text, media);
-                        GlobalFunc.WriteMediaJsonToFile(media, anilistMedia);
-                        Log(anilistMedia == null ? $"No {media} found!" : $"{media} files written!");
+                        await RequestMedia(cbMedia.Text, txtUsername.Text, PublicTkn);
                     }
                     else
                     {
                         // Get media, and write to json file
-                        media = "ANIME";
-                        Log($"Requesting {media}...");
-                        anilistMedia = await AnilistRequest.RequestMediaList(PublicTkn, txtUsername.Text, media);
-                        Log($"{media} data fetched!");
-                        GlobalFunc.WriteMediaJsonToFile(media, anilistMedia);
-                        Log(anilistMedia == null ? $"No {media} found!" : $"{media} files written!");
-                        media = "MANGA";
-                        Log($"Requesting {media}...");
-                        anilistMedia = await AnilistRequest.RequestMediaList(PublicTkn, txtUsername.Text, media);
-                        Log($"{media} data fetched!");
-                        GlobalFunc.WriteMediaJsonToFile(media, anilistMedia);
-                        Log(anilistMedia == null ? $"No {media} found!" : $"{media} files written!");
+                        await RequestMedia("ANIME", txtUsername.Text, PublicTkn);
+                        await RequestMedia("MANGA", txtUsername.Text, PublicTkn);
                     }
                 }
                 else

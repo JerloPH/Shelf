@@ -94,9 +94,9 @@ namespace Shelf.Anilist
         {
             return (index == 0) ? AniClient : AniSecret;
         }
-        public static async Task<string> RequestPublicToken(string publicTkn)
+        public static async Task<string> RequestPublicToken(string authCode)
         {
-            if (String.IsNullOrWhiteSpace(publicTkn))
+            if (String.IsNullOrWhiteSpace(authCode))
                 return "";
 
             string returnString = "";
@@ -116,7 +116,7 @@ namespace Shelf.Anilist
                     client_id = AniClient,
                     client_secret = AniSecret,
                     redirect_uri = RedirectUrl,
-                    code = publicTkn.Replace("/", "\\/")
+                    code = authCode.Replace("/", "\\/")
                 });
                 var response = await client.ExecuteAsync(request);
 
@@ -125,8 +125,13 @@ namespace Shelf.Anilist
                     var content = response.Content; // Raw content as string
                     var returnJsonObject = JObject.Parse(content);
                     returnString = (string)returnJsonObject["access_token"];
+                    GlobalFunc.WriteFile(GlobalFunc.FILE_PUB_TKN, content);
                 }
-                else { GlobalFunc.Alert("Unsuccessful on Fetching Public Token!"); }
+                else
+                {
+                    GlobalFunc.WriteFile(GlobalFunc.FILE_PUB_TKN, "");
+                    GlobalFunc.Alert("Unsuccessful on Fetching Public Token!");
+                }
             }
             catch (Exception ex)
             {

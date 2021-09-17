@@ -20,6 +20,7 @@ namespace Shelf.Functions
     public static class GlobalFunc
     {
         public static string DIR_START = "";
+        public static string DIR_DATA = "";
         public static string DIR_OUTPUT = "";
         public static string DIR_OUTPUT_ROOT = "";
         public static string DIR_TEMP = "";
@@ -27,6 +28,8 @@ namespace Shelf.Functions
         public static string FILE_MANGA = "";
         public static string FILE_LOG = "";
         public static string FILE_LOG_ERR = "";
+        public static string FILE_AUTH_CODE = "";
+        public static string FILE_PUB_TKN = "";
         public static string DATE_TODAY = "";
 
         public static List<string> SKIP_STATUS { get; set; } = new List<string>();
@@ -38,10 +41,12 @@ namespace Shelf.Functions
                 DATE_TODAY = DateTime.Now.ToString("yyyy-MM-dd");
                 DIR_START = AppContext.BaseDirectory;
                 // Directories
+                DIR_DATA = Path.Combine(DIR_START, "data");
                 DIR_OUTPUT_ROOT = Path.Combine(DIR_START, "output");
                 DIR_OUTPUT = Path.Combine(DIR_OUTPUT_ROOT, DATE_TODAY);
                 DIR_TEMP = Path.Combine(DIR_START, "temp");
                 // Create Directories
+                Directory.CreateDirectory(DIR_DATA);
                 Directory.CreateDirectory(DIR_OUTPUT_ROOT);
                 Directory.CreateDirectory(DIR_OUTPUT);
                 Directory.CreateDirectory(DIR_TEMP);
@@ -50,8 +55,11 @@ namespace Shelf.Functions
                 FILE_LOG_ERR = Path.Combine(DIR_START, "ShelfApp_Error.log");
                 FILE_ANIME = Path.Combine(DIR_START, "AnilistMediaANIME.json");
                 FILE_MANGA = Path.Combine(DIR_START, "AnilistMediaMANGA.json");
+                // Data files
+                FILE_AUTH_CODE = Path.Combine(DIR_DATA, "AuthCode.tkn");
+                FILE_PUB_TKN = Path.Combine(DIR_DATA, "PublicToken.tkn");
             }
-            catch (Exception ex) { Logs.Err(ex); }
+            catch (Exception ex) { Logs.Err(ex); GlobalFunc.Alert("Some files are not initialized!"); }
             // Add to Lists
             SKIP_STATUS.AddRange(new string[] { "COMPLETED", "DROPPED" });
         }
@@ -80,7 +88,7 @@ namespace Shelf.Functions
                     content = sr.ReadToEnd();
                 }
             }
-            catch { }
+            catch (Exception ex) { Logs.Err(ex); }
             return content;
         }
         public static bool WriteFile(string filename, string content)

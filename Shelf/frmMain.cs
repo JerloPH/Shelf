@@ -36,8 +36,8 @@ namespace Shelf
         public frmMain()
         {
             InitializeComponent();
+            GlobalFunc.InitializedApp(); // Initialize directory and files
             AnilistRequest.Initialize(); // Initialize config
-            GlobalFunc.InitializedApp();
             InitializeItems(); // Initialize controls
         }
         public void InitializeItems()

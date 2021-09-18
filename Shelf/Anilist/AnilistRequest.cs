@@ -65,7 +65,7 @@ namespace Shelf.Anilist
                 AniSecret = jsonConfig?.clientSecret;
                 return (!String.IsNullOrWhiteSpace(AniClient) && !String.IsNullOrWhiteSpace(AniSecret));
             }
-            catch { }
+            catch (Exception ex) { Logs.Err(ex); }
             return false;
         }
         public static bool UpdateConfig(string client, string secret)

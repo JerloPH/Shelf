@@ -28,7 +28,7 @@ namespace Shelf
         private string AuthCode = "";
         private string PublicTkn = "";
         private DateTime? TokenDate = null;
-        private ImageList imgList = new ImageList();
+        private ImageList animeCoverList = new ImageList();
 
         // Public Properties
         public Form ConfigForm { get; set; } = null; // Config form
@@ -42,9 +42,9 @@ namespace Shelf
         }
         public void InitializeItems()
         {
-            imgList.ImageSize = new Size(120, 180);
-            imgList.ColorDepth = ColorDepth.Depth32Bit;
-            lvAnime.LargeImageList = imgList;
+            animeCoverList.ImageSize = new Size(120, 180);
+            animeCoverList.ColorDepth = ColorDepth.Depth32Bit;
+            lvAnime.LargeImageList = animeCoverList;
             lvAnime.View = View.LargeIcon;
         }
         #region Form-specific functions
@@ -125,7 +125,7 @@ namespace Shelf
                 {
                     this.Invoke((Action) delegate
                     {
-                        imgList.Images.Add(item.Media.Id.ToString(), img);
+                        animeCoverList.Images.Add(item.Media.Id.ToString(), img);
                         lvitem.ImageKey = item.Media.Id.ToString();
                     });
                 }
@@ -396,6 +396,7 @@ namespace Shelf
             btnRefreshItems.Enabled = false;
             SetStatus("Refreshing..");
             lvAnime.Items.Clear();
+            animeCoverList.Images.Clear();
             Log("Populating Anime items..");
             int count = 0;
             int max = 0;

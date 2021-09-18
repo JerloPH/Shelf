@@ -52,8 +52,11 @@ namespace Shelf
             this.tabMedia = new System.Windows.Forms.TabControl();
             this.tpMediaAnime = new System.Windows.Forms.TabPage();
             this.tpMediaManga = new System.Windows.Forms.TabPage();
-            this.cbMediaRefresh = new System.Windows.Forms.ComboBox();
             this.lvManga = new System.Windows.Forms.ListView();
+            this.cbMediaRefresh = new System.Windows.Forms.ComboBox();
+            this.tpMediaTachi = new System.Windows.Forms.TabPage();
+            this.tpMediaLocalAnime = new System.Windows.Forms.TabPage();
+            this.tpMediaLocalManga = new System.Windows.Forms.TabPage();
             this.tabControl.SuspendLayout();
             this.tpgBasic.SuspendLayout();
             this.tpgConfig.SuspendLayout();
@@ -281,6 +284,9 @@ namespace Shelf
             // 
             this.tabMedia.Controls.Add(this.tpMediaAnime);
             this.tabMedia.Controls.Add(this.tpMediaManga);
+            this.tabMedia.Controls.Add(this.tpMediaTachi);
+            this.tabMedia.Controls.Add(this.tpMediaLocalAnime);
+            this.tabMedia.Controls.Add(this.tpMediaLocalManga);
             this.tabMedia.Location = new System.Drawing.Point(454, 101);
             this.tabMedia.Name = "tabMedia";
             this.tabMedia.SelectedIndex = 0;
@@ -309,6 +315,16 @@ namespace Shelf
             this.tpMediaManga.Text = "Manga";
             this.tpMediaManga.UseVisualStyleBackColor = true;
             // 
+            // lvManga
+            // 
+            this.lvManga.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lvManga.HideSelection = false;
+            this.lvManga.Location = new System.Drawing.Point(3, 3);
+            this.lvManga.Name = "lvManga";
+            this.lvManga.Size = new System.Drawing.Size(482, 381);
+            this.lvManga.TabIndex = 19;
+            this.lvManga.UseCompatibleStateImageBehavior = false;
+            // 
             // cbMediaRefresh
             // 
             this.cbMediaRefresh.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -319,15 +335,33 @@ namespace Shelf
             this.cbMediaRefresh.Size = new System.Drawing.Size(251, 39);
             this.cbMediaRefresh.TabIndex = 12;
             // 
-            // lvManga
+            // tpMediaTachi
             // 
-            this.lvManga.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lvManga.HideSelection = false;
-            this.lvManga.Location = new System.Drawing.Point(3, 3);
-            this.lvManga.Name = "lvManga";
-            this.lvManga.Size = new System.Drawing.Size(482, 381);
-            this.lvManga.TabIndex = 19;
-            this.lvManga.UseCompatibleStateImageBehavior = false;
+            this.tpMediaTachi.Location = new System.Drawing.Point(4, 29);
+            this.tpMediaTachi.Name = "tpMediaTachi";
+            this.tpMediaTachi.Padding = new System.Windows.Forms.Padding(3);
+            this.tpMediaTachi.Size = new System.Drawing.Size(488, 387);
+            this.tpMediaTachi.TabIndex = 2;
+            this.tpMediaTachi.Text = "Tachiyomi";
+            this.tpMediaTachi.UseVisualStyleBackColor = true;
+            // 
+            // tpMediaLocalAnime
+            // 
+            this.tpMediaLocalAnime.Location = new System.Drawing.Point(4, 29);
+            this.tpMediaLocalAnime.Name = "tpMediaLocalAnime";
+            this.tpMediaLocalAnime.Size = new System.Drawing.Size(488, 387);
+            this.tpMediaLocalAnime.TabIndex = 3;
+            this.tpMediaLocalAnime.Text = "Local Anime";
+            this.tpMediaLocalAnime.UseVisualStyleBackColor = true;
+            // 
+            // tpMediaLocalManga
+            // 
+            this.tpMediaLocalManga.Location = new System.Drawing.Point(4, 29);
+            this.tpMediaLocalManga.Name = "tpMediaLocalManga";
+            this.tpMediaLocalManga.Size = new System.Drawing.Size(488, 387);
+            this.tpMediaLocalManga.TabIndex = 4;
+            this.tpMediaLocalManga.Text = "Local Manga";
+            this.tpMediaLocalManga.UseVisualStyleBackColor = true;
             // 
             // frmMain
             // 
@@ -385,6 +419,9 @@ namespace Shelf
         private System.Windows.Forms.TabPage tpMediaManga;
         private System.Windows.Forms.ComboBox cbMediaRefresh;
         private System.Windows.Forms.ListView lvManga;
+        private System.Windows.Forms.TabPage tpMediaTachi;
+        private System.Windows.Forms.TabPage tpMediaLocalAnime;
+        private System.Windows.Forms.TabPage tpMediaLocalManga;
     }
 }
 

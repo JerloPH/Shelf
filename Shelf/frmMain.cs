@@ -46,6 +46,8 @@ namespace Shelf
             animeCoverList.ColorDepth = ColorDepth.Depth32Bit;
             lvAnime.LargeImageList = animeCoverList;
             lvAnime.View = View.LargeIcon;
+            cbMediaRefresh.Items.AddRange(new string[] { "All", "Anime", "Manga", "Tachiyomi", "Local" });
+            cbMediaRefresh.SelectedIndex = 0;
         }
         #region Form-specific functions
         public void Log(string log)

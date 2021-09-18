@@ -52,6 +52,7 @@ namespace Shelf
             this.tabMedia = new System.Windows.Forms.TabControl();
             this.tpMediaAnime = new System.Windows.Forms.TabPage();
             this.tpMediaManga = new System.Windows.Forms.TabPage();
+            this.cbMediaRefresh = new System.Windows.Forms.ComboBox();
             this.tabControl.SuspendLayout();
             this.tpgBasic.SuspendLayout();
             this.tpgConfig.SuspendLayout();
@@ -183,9 +184,9 @@ namespace Shelf
             // btnRefreshItems
             // 
             this.btnRefreshItems.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnRefreshItems.Location = new System.Drawing.Point(454, 18);
+            this.btnRefreshItems.Location = new System.Drawing.Point(728, 12);
             this.btnRefreshItems.Name = "btnRefreshItems";
-            this.btnRefreshItems.Size = new System.Drawing.Size(170, 52);
+            this.btnRefreshItems.Size = new System.Drawing.Size(170, 51);
             this.btnRefreshItems.TabIndex = 16;
             this.btnRefreshItems.Text = "Refresh";
             this.btnRefreshItems.UseVisualStyleBackColor = true;
@@ -208,7 +209,7 @@ namespace Shelf
             this.lvAnime.HideSelection = false;
             this.lvAnime.Location = new System.Drawing.Point(3, 3);
             this.lvAnime.Name = "lvAnime";
-            this.lvAnime.Size = new System.Drawing.Size(482, 397);
+            this.lvAnime.Size = new System.Drawing.Size(482, 381);
             this.lvAnime.TabIndex = 18;
             this.lvAnime.UseCompatibleStateImageBehavior = false;
             // 
@@ -216,7 +217,7 @@ namespace Shelf
             // 
             this.lblStatus.AutoSize = true;
             this.lblStatus.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.lblStatus.Location = new System.Drawing.Point(655, 39);
+            this.lblStatus.Location = new System.Drawing.Point(461, 60);
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(77, 31);
             this.lblStatus.TabIndex = 19;
@@ -278,10 +279,10 @@ namespace Shelf
             // 
             this.tabMedia.Controls.Add(this.tpMediaAnime);
             this.tabMedia.Controls.Add(this.tpMediaManga);
-            this.tabMedia.Location = new System.Drawing.Point(454, 85);
+            this.tabMedia.Location = new System.Drawing.Point(454, 101);
             this.tabMedia.Name = "tabMedia";
             this.tabMedia.SelectedIndex = 0;
-            this.tabMedia.Size = new System.Drawing.Size(496, 436);
+            this.tabMedia.Size = new System.Drawing.Size(496, 420);
             this.tabMedia.TabIndex = 21;
             // 
             // tpMediaAnime
@@ -290,7 +291,7 @@ namespace Shelf
             this.tpMediaAnime.Location = new System.Drawing.Point(4, 29);
             this.tpMediaAnime.Name = "tpMediaAnime";
             this.tpMediaAnime.Padding = new System.Windows.Forms.Padding(3);
-            this.tpMediaAnime.Size = new System.Drawing.Size(488, 403);
+            this.tpMediaAnime.Size = new System.Drawing.Size(488, 387);
             this.tpMediaAnime.TabIndex = 0;
             this.tpMediaAnime.Text = "Anime";
             this.tpMediaAnime.UseVisualStyleBackColor = true;
@@ -305,11 +306,22 @@ namespace Shelf
             this.tpMediaManga.Text = "Manga";
             this.tpMediaManga.UseVisualStyleBackColor = true;
             // 
+            // cbMediaRefresh
+            // 
+            this.cbMediaRefresh.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbMediaRefresh.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.cbMediaRefresh.FormattingEnabled = true;
+            this.cbMediaRefresh.Location = new System.Drawing.Point(458, 12);
+            this.cbMediaRefresh.Name = "cbMediaRefresh";
+            this.cbMediaRefresh.Size = new System.Drawing.Size(251, 39);
+            this.cbMediaRefresh.TabIndex = 12;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(962, 533);
+            this.Controls.Add(this.cbMediaRefresh);
             this.Controls.Add(this.tabMedia);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.lblStatus);
@@ -357,6 +369,7 @@ namespace Shelf
         private System.Windows.Forms.TabControl tabMedia;
         private System.Windows.Forms.TabPage tpMediaAnime;
         private System.Windows.Forms.TabPage tpMediaManga;
+        private System.Windows.Forms.ComboBox cbMediaRefresh;
     }
 }
 

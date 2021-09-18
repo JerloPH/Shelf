@@ -44,6 +44,7 @@ namespace Shelf
             this.btnRefreshItems = new System.Windows.Forms.Button();
             this.btnChangeTachi = new System.Windows.Forms.Button();
             this.lvAnime = new System.Windows.Forms.ListView();
+            this.lblStatus = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnRefresh
@@ -197,11 +198,22 @@ namespace Shelf
             this.lvAnime.TabIndex = 18;
             this.lvAnime.UseCompatibleStateImageBehavior = false;
             // 
+            // lblStatus
+            // 
+            this.lblStatus.AutoSize = true;
+            this.lblStatus.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lblStatus.Location = new System.Drawing.Point(411, 252);
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(77, 31);
+            this.lblStatus.TabIndex = 19;
+            this.lblStatus.Text = "Status";
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1110, 531);
+            this.Controls.Add(this.lblStatus);
             this.Controls.Add(this.lvAnime);
             this.Controls.Add(this.btnChangeTachi);
             this.Controls.Add(this.btnRefreshItems);
@@ -243,6 +255,7 @@ namespace Shelf
         private System.Windows.Forms.Button btnRefreshItems;
         private System.Windows.Forms.Button btnChangeTachi;
         private System.Windows.Forms.ListView lvAnime;
+        private System.Windows.Forms.Label lblStatus;
     }
 }
 

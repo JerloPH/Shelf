@@ -57,6 +57,19 @@ namespace Shelf
             else
                 txtLog.AppendText($"[{DateTime.Now.ToString("HH:mm:ss")}]: {log}\r\n");
         }
+        public void SetText(Control ctrl, string text)
+        {
+            if (ctrl.InvokeRequired)
+            {
+                ctrl.BeginInvoke((Action)delegate { ctrl.Text = text; });
+            }
+            else
+                ctrl.Text = text;
+        }
+        public void SetStatus(string text)
+        {
+            SetText(lblStatus, text);
+        }
         #endregion
         #region Tasks
         public async Task<bool> RequestMedia(string media, string username, string token)
@@ -351,15 +364,19 @@ namespace Shelf
         private async void btnRefreshItems_Click(object sender, EventArgs e)
         {
             btnRefreshItems.Enabled = false;
+            SetStatus("Refreshing..");
             lvAnime.Items.Clear();
             Log("Populating Anime items..");
             int count = 0;
+            int max = 0;
             await Task.Run(async delegate
             {
                 var anime = await MediaTasks.GetAnimeList();
+                max = anime.Count;
                 foreach (var item in anime)
                 {
                     count += 1;
+                    SetStatus($"Adding item..{count}/{max}");
                     await AddItemToListView(item);
                     Thread.Sleep(10);
                     if (count >= 10 && GlobalFunc.DEBUG)
@@ -369,6 +386,7 @@ namespace Shelf
             Log("Anime items loaded!");
             lvAnime.Sorting = SortOrder.Ascending;
             lvAnime.Sort();
+            SetStatus("Idle");
             btnRefreshItems.Enabled = true;
         }
 

@@ -121,7 +121,7 @@ namespace Shelf
                 {
                     count += 1;
                     SetStatus($"Adding item..{count}/{max}");
-                    await AddMediaItem(item, type);
+                    await AddItemToListView(lv, imglist, item, type);
                     Thread.Sleep(10);
                     if (count >= 10 && GlobalFunc.DEBUG)
                         break;
@@ -169,19 +169,6 @@ namespace Shelf
                 });
                 return true;
             });
-        }
-        public async Task<bool> AddMediaItem(Entry item, MediaType type)
-        {
-            bool result = false;
-            switch (type)
-            {
-                case MediaType.ANIME:
-                {
-                    result = await AddItemToListView(lvAnime, animeCoverList, item, MediaType.ANIME);
-                    break;
-                }
-            }
-            return result;
         }
         public async Task<Image> LoadImageFromTemp(long Id, MediaType type)
         {

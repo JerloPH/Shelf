@@ -41,11 +41,9 @@ namespace Shelf
             this.label3 = new System.Windows.Forms.Label();
             this.txtTachi = new System.Windows.Forms.TextBox();
             this.btnGenTachi = new System.Windows.Forms.Button();
-            this.gridAnime = new System.Windows.Forms.DataGridView();
             this.btnRefreshItems = new System.Windows.Forms.Button();
             this.btnChangeTachi = new System.Windows.Forms.Button();
-            this.btnTachiGoto = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.gridAnime)).BeginInit();
+            this.lvAnime = new System.Windows.Forms.ListView();
             this.SuspendLayout();
             // 
             // btnRefresh
@@ -131,7 +129,7 @@ namespace Shelf
             // btnMALExport
             // 
             this.btnMALExport.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnMALExport.Location = new System.Drawing.Point(409, 128);
+            this.btnMALExport.Location = new System.Drawing.Point(411, 128);
             this.btnMALExport.Name = "btnMALExport";
             this.btnMALExport.Size = new System.Drawing.Size(244, 52);
             this.btnMALExport.TabIndex = 11;
@@ -162,22 +160,11 @@ namespace Shelf
             this.btnGenTachi.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.btnGenTachi.Location = new System.Drawing.Point(411, 186);
             this.btnGenTachi.Name = "btnGenTachi";
-            this.btnGenTachi.Size = new System.Drawing.Size(242, 52);
+            this.btnGenTachi.Size = new System.Drawing.Size(244, 52);
             this.btnGenTachi.TabIndex = 14;
             this.btnGenTachi.Text = "To Tachi Backup";
             this.btnGenTachi.UseVisualStyleBackColor = true;
             this.btnGenTachi.Click += new System.EventHandler(this.btnGenTachi_Click);
-            // 
-            // gridAnime
-            // 
-            this.gridAnime.AllowUserToAddRows = false;
-            this.gridAnime.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.gridAnime.Location = new System.Drawing.Point(669, 12);
-            this.gridAnime.Name = "gridAnime";
-            this.gridAnime.RowHeadersWidth = 51;
-            this.gridAnime.RowTemplate.Height = 29;
-            this.gridAnime.Size = new System.Drawing.Size(429, 507);
-            this.gridAnime.TabIndex = 15;
             // 
             // btnRefreshItems
             // 
@@ -201,26 +188,23 @@ namespace Shelf
             this.btnChangeTachi.UseVisualStyleBackColor = true;
             this.btnChangeTachi.Click += new System.EventHandler(this.btnChangeTachi_Click);
             // 
-            // btnTachiGoto
+            // lvAnime
             // 
-            this.btnTachiGoto.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnTachiGoto.Location = new System.Drawing.Point(9, 157);
-            this.btnTachiGoto.Name = "btnTachiGoto";
-            this.btnTachiGoto.Size = new System.Drawing.Size(127, 52);
-            this.btnTachiGoto.TabIndex = 18;
-            this.btnTachiGoto.Text = "Goto";
-            this.btnTachiGoto.UseVisualStyleBackColor = true;
-            this.btnTachiGoto.Click += new System.EventHandler(this.btnTachiGoto_Click);
+            this.lvAnime.HideSelection = false;
+            this.lvAnime.Location = new System.Drawing.Point(671, 12);
+            this.lvAnime.Name = "lvAnime";
+            this.lvAnime.Size = new System.Drawing.Size(427, 507);
+            this.lvAnime.TabIndex = 18;
+            this.lvAnime.UseCompatibleStateImageBehavior = false;
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1110, 531);
-            this.Controls.Add(this.btnTachiGoto);
+            this.Controls.Add(this.lvAnime);
             this.Controls.Add(this.btnChangeTachi);
             this.Controls.Add(this.btnRefreshItems);
-            this.Controls.Add(this.gridAnime);
             this.Controls.Add(this.btnGenTachi);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.txtTachi);
@@ -233,11 +217,11 @@ namespace Shelf
             this.Controls.Add(this.btnFetchMedia);
             this.Controls.Add(this.txtLog);
             this.Controls.Add(this.btnRefresh);
+            this.MinimumSize = new System.Drawing.Size(1128, 578);
             this.Name = "frmMain";
             this.Text = "frmMain";
             this.Load += new System.EventHandler(this.frmMain_Load);
             this.Resize += new System.EventHandler(this.frmMain_Resize);
-            ((System.ComponentModel.ISupportInitialize)(this.gridAnime)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -256,10 +240,9 @@ namespace Shelf
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtTachi;
         private System.Windows.Forms.Button btnGenTachi;
-        private System.Windows.Forms.DataGridView gridAnime;
         private System.Windows.Forms.Button btnRefreshItems;
         private System.Windows.Forms.Button btnChangeTachi;
-        private System.Windows.Forms.Button btnTachiGoto;
+        private System.Windows.Forms.ListView lvAnime;
     }
 }
 

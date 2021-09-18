@@ -14,6 +14,8 @@ using Shelf.Anilist;
 using Shelf.Json;
 using Shelf.Functions;
 using Shelf.Entity;
+using System.Net;
+using System.Threading;
 
 namespace Shelf
 {
@@ -24,8 +26,7 @@ namespace Shelf
         private string AuthCode = "";
         private string PublicTkn = "";
         private DateTime? TokenDate = null;
-
-        private DataTable DTAnime = new DataTable();
+        private ImageList imgList = new ImageList();
 
         // Public Properties
         public Form ConfigForm { get; set; } = null; // Config form
@@ -35,30 +36,15 @@ namespace Shelf
             InitializeComponent();
             AnilistRequest.Initialize(); // Initialize config
             GlobalFunc.InitializedApp();
-
-            // Initialize objects
-            InitializeObjects();
+            InitializeItems(); // Initialize controls
         }
-        private void InitializeObjects()
+        public void InitializeItems()
         {
-            var colId = new DataColumn()
-            {
-                ColumnName = "colId",
-                Caption = "Id",
-                DataType = typeof(long)
-            };
-
-            var colTitle = new DataColumn()
-            {
-                ColumnName = "colTitle",
-                Caption = "Romaji Title",
-                DataType = typeof(String)
-            };
-
-            DTAnime.Columns.AddRange(new DataColumn[] { colId, colTitle });
-
-            gridAnime.DataSource = DTAnime;
+            imgList.ImageSize = new Size(120, 180);
+            lvAnime.LargeImageList = imgList;
+            lvAnime.View = View.LargeIcon;
         }
+        #region Form-specific functions
         public void Log(string log)
         {
             if (txtLog.InvokeRequired)
@@ -71,6 +57,8 @@ namespace Shelf
             else
                 txtLog.AppendText($"[{DateTime.Now.ToString("HH:mm:ss")}]: {log}\r\n");
         }
+        #endregion
+        #region Tasks
         public async Task<bool> RequestMedia(string media, string username, string token)
         {
             // Get media, and write to json file
@@ -93,8 +81,66 @@ namespace Shelf
 
             return false;
         }
-        #region Custom Events
+        public async Task<bool> AddItemToListView(Entry item)
+        {
+            // Declare variables
+            var lvitem = new ListViewItem();
+            Image img = null;
+            // Download Image
+            img = await DownloadImage(item.Media.CoverImage.Medium);
+            // Run Task
+            return await Task.Run(delegate
+            {
+                if (img != null)
+                {
+                    this.Invoke((Action) delegate
+                    {
+                        imgList.Images.Add(item.Media.Id.ToString(), img);
+                        lvitem.ImageKey = item.Media.Id.ToString();
+                    });
+                }
+                else
+                    Logs.App($"No Image! Item: {item.Media.Id}");
+
+                // Add properties values to ListView item
+                lvitem.Tag = item.Media.Id;
+                lvitem.Text = (!String.IsNullOrWhiteSpace(item.Media.Title.English) ? item.Media.Title.English : item.Media.Title.Romaji);
+                lvAnime.BeginInvoke((Action)delegate
+                {
+                    lvAnime.Items.Add(lvitem);
+                });
+                return true;
+            });
+        }
+        public async Task<Image> DownloadImage(string link)
+        {
+            try
+            {
+                return await Task.Run(delegate
+                {
+                    using (WebClient wc = new WebClient())
+                    {
+                        Image img = null;
+                        Logs.App($"Downloading {link}");
+                        byte[] bytes = wc.DownloadData(link);
+                        Logs.App($"Downloaded!");
+                        using (MemoryStream ms = new MemoryStream(bytes))
+                        {
+                            img = Image.FromStream(ms);
+                            Logs.App($"Saved as image!");
+                        }
+                        return img;
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Logs.Err(ex);
+            }
+            return null;
+        }
         #endregion
+        // ####################################################################### Events
         private void frmMain_Load(object sender, EventArgs e)
         {
             cbMedia.Items.AddRange(new string[] { "ALL", "ANIME", "MANGA" });
@@ -106,10 +152,8 @@ namespace Shelf
         }
         private void frmMain_Resize(object sender, EventArgs e)
         {
-            gridAnime.Width = this.ClientRectangle.Width - gridAnime.Left - 16;
-            gridAnime.Height = this.ClientRectangle.Height - gridAnime.Top - 16;
-            gridAnime.Columns[0].Width = (int)(gridAnime.Width * 0.2); // Id
-            gridAnime.Columns[1].Width = (int)(gridAnime.Width * 0.65); // Romaji Title
+            lvAnime.Width = this.ClientRectangle.Width - lvAnime.Left - 16;
+            lvAnime.Height = this.ClientRectangle.Height - lvAnime.Top - 16;
         }
         private async void btnRefresh_Click(object sender, EventArgs e)
         {
@@ -304,24 +348,26 @@ namespace Shelf
             btnGenTachi.Enabled = true;
         }
 
-        private void btnRefreshItems_Click(object sender, EventArgs e)
+        private async void btnRefreshItems_Click(object sender, EventArgs e)
         {
-            DTAnime.Clear();
-            var form = new frmLoading("Refreshing Anime list..", "Loading");
-            form.BackgroundWorker.DoWork += async (sender1, e1) =>
+            btnRefreshItems.Enabled = false;
+            lvAnime.Items.Clear();
+            Log("Populating Anime items..");
+            int count = 0;
+            await Task.Run(async delegate
             {
                 var anime = await MediaTasks.GetAnimeList();
                 foreach (var item in anime)
                 {
-                    this.BeginInvoke((Action)delegate
-                    {
-                        DTAnime.Rows.Add(item.Media.Id, item.Media.Title.Romaji);
-                    });
+                    count += 1;
+                    await AddItemToListView(item);
+                    Thread.Sleep(10);
+                    if (count >= 10)
+                        break;
                 }
-            };
-            form.ShowDialog(this);
-            gridAnime.Sort(gridAnime.Columns[1], ListSortDirection.Ascending);
-            gridAnime.Refresh();
+            });
+            Log("Anime items loaded!");
+            btnRefreshItems.Enabled = true;
         }
 
         private void btnChangeTachi_Click(object sender, EventArgs e)

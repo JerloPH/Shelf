@@ -367,6 +367,8 @@ namespace Shelf
                 }
             });
             Log("Anime items loaded!");
+            lvAnime.Sorting = SortOrder.Ascending;
+            lvAnime.Sort();
             btnRefreshItems.Enabled = true;
         }
 

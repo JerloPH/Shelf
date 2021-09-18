@@ -29,6 +29,7 @@ namespace Shelf
         private string PublicTkn = "";
         private DateTime? TokenDate = null;
         private ImageList animeCoverList = new ImageList();
+        private ImageList mangaCoverList = new ImageList();
 
         // Public Properties
         public Form ConfigForm { get; set; } = null; // Config form
@@ -42,12 +43,20 @@ namespace Shelf
         }
         public void InitializeItems()
         {
+            // Anime media listview
             animeCoverList.ImageSize = new Size(120, 180);
             animeCoverList.ColorDepth = ColorDepth.Depth32Bit;
             lvAnime.LargeImageList = animeCoverList;
             lvAnime.View = View.LargeIcon;
             lvAnime.Sorting = SortOrder.Ascending;
-            cbMediaRefresh.Items.AddRange(new string[] { "All", "Anime", "Manga", "Tachiyomi", "Local" });
+            // Manga media listview, copying some Anime properties
+            mangaCoverList.ImageSize = animeCoverList.ImageSize;
+            mangaCoverList.ColorDepth = animeCoverList.ColorDepth;
+            lvManga.LargeImageList = mangaCoverList;
+            lvManga.View = lvAnime.View;
+            lvManga.Sorting = lvAnime.Sorting;
+            // Other Controls
+            cbMediaRefresh.Items.AddRange(new string[] { "All", "Anime", "Manga", "Tachiyomi", "Local Anime", "Local Manga" });
             cbMediaRefresh.SelectedIndex = 0;
         }
         #region Form-specific functions
@@ -424,11 +433,18 @@ namespace Shelf
             btnRefreshItems.Enabled = false;
             // Declare which media to refresh
             bool loadAnime = cbMediaRefresh.SelectedIndex == 0 || cbMediaRefresh.Text.Equals("anime", StringComparison.OrdinalIgnoreCase);
+            bool loadManga = cbMediaRefresh.SelectedIndex == 0 || cbMediaRefresh.Text.Equals("manga", StringComparison.OrdinalIgnoreCase);
             // Refresh Anime?
             if (loadAnime)
             {
                 var anime = await MediaTasks.GetAnimeList();
                 await RefreshMedia(MediaType.ANIME, anime, lvAnime, animeCoverList);
+            }
+            // Refresh Manga?
+            if (loadManga)
+            {
+                var manga = await MediaTasks.GetMangaList();
+                await RefreshMedia(MediaType.MANGA, manga, lvManga, mangaCoverList);
             }
             SetStatus("Idle");
             btnRefreshItems.Enabled = true;

@@ -53,12 +53,14 @@ namespace Shelf
             this.tpMediaAnime = new System.Windows.Forms.TabPage();
             this.tpMediaManga = new System.Windows.Forms.TabPage();
             this.cbMediaRefresh = new System.Windows.Forms.ComboBox();
+            this.lvManga = new System.Windows.Forms.ListView();
             this.tabControl.SuspendLayout();
             this.tpgBasic.SuspendLayout();
             this.tpgConfig.SuspendLayout();
             this.tpgTachi.SuspendLayout();
             this.tabMedia.SuspendLayout();
             this.tpMediaAnime.SuspendLayout();
+            this.tpMediaManga.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnRefresh
@@ -298,10 +300,11 @@ namespace Shelf
             // 
             // tpMediaManga
             // 
+            this.tpMediaManga.Controls.Add(this.lvManga);
             this.tpMediaManga.Location = new System.Drawing.Point(4, 29);
             this.tpMediaManga.Name = "tpMediaManga";
             this.tpMediaManga.Padding = new System.Windows.Forms.Padding(3);
-            this.tpMediaManga.Size = new System.Drawing.Size(488, 403);
+            this.tpMediaManga.Size = new System.Drawing.Size(488, 387);
             this.tpMediaManga.TabIndex = 1;
             this.tpMediaManga.Text = "Manga";
             this.tpMediaManga.UseVisualStyleBackColor = true;
@@ -315,6 +318,16 @@ namespace Shelf
             this.cbMediaRefresh.Name = "cbMediaRefresh";
             this.cbMediaRefresh.Size = new System.Drawing.Size(251, 39);
             this.cbMediaRefresh.TabIndex = 12;
+            // 
+            // lvManga
+            // 
+            this.lvManga.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lvManga.HideSelection = false;
+            this.lvManga.Location = new System.Drawing.Point(3, 3);
+            this.lvManga.Name = "lvManga";
+            this.lvManga.Size = new System.Drawing.Size(482, 381);
+            this.lvManga.TabIndex = 19;
+            this.lvManga.UseCompatibleStateImageBehavior = false;
             // 
             // frmMain
             // 
@@ -340,6 +353,7 @@ namespace Shelf
             this.tpgTachi.PerformLayout();
             this.tabMedia.ResumeLayout(false);
             this.tpMediaAnime.ResumeLayout(false);
+            this.tpMediaManga.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -370,6 +384,7 @@ namespace Shelf
         private System.Windows.Forms.TabPage tpMediaAnime;
         private System.Windows.Forms.TabPage tpMediaManga;
         private System.Windows.Forms.ComboBox cbMediaRefresh;
+        private System.Windows.Forms.ListView lvManga;
     }
 }
 

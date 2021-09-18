@@ -53,9 +53,9 @@ namespace Shelf.Functions
                 // File locations
                 FILE_LOG = Path.Combine(DIR_START, "ShelfApp.log");
                 FILE_LOG_ERR = Path.Combine(DIR_START, "ShelfApp_Error.log");
-                FILE_ANIME = Path.Combine(DIR_START, "AnilistMediaANIME.json");
-                FILE_MANGA = Path.Combine(DIR_START, "AnilistMediaMANGA.json");
                 // Data files
+                FILE_ANIME = Path.Combine(DIR_DATA, "AnilistMediaANIME.json");
+                FILE_MANGA = Path.Combine(DIR_DATA, "AnilistMediaMANGA.json");
                 FILE_AUTH_CODE = Path.Combine(DIR_DATA, "AuthCode.tkn");
                 FILE_PUB_TKN = Path.Combine(DIR_DATA, "PublicToken.tkn");
             }

@@ -31,5 +31,9 @@ namespace Shelf.Functions
             if (ex != null)
                 LogString(GlobalFunc.FILE_LOG_ERR, ex.ToString());
         }
+        public static void Err(string log)
+        {
+            LogString(GlobalFunc.FILE_LOG_ERR, log);
+        }
     }
 }

@@ -102,6 +102,35 @@ namespace Shelf.Functions
                 GlobalFunc.WriteObjectToJson(outputNonMal, nonMal); // Serialize to json
             });
         }
+        public static async Task<BackupTachiProto> LoadTachiyomiBackup(string file)
+        {
+            if (!File.Exists(file)) { Logs.Err($"File is missing: {file}"); return null; }
+            try
+            {
+                string filetoRead = file;
+                BackupTachiProto tachi = null;
+                return await Task.Run(delegate
+                {
+                    if (file.Substring(file.Length - 2).Equals("gz"))
+                    {
+                        filetoRead = GlobalFunc.Decompress(file, $"{Path.Combine(GlobalFunc.DIR_TEMP, $"tachiyomiBackup_{GlobalFunc.DATE_TODAY}.proto")}");
+                    }
+                    string value = GlobalFunc.ReadFromFile(filetoRead);
+                    using (var ms = File.OpenRead(file))
+                    {
+                        ms.Position = 0;
+                        tachi = Serializer.Deserialize<BackupTachiProto>(ms);
+                        ms.Close();
+                    }
+                    return tachi;
+                });
+            }
+            catch (Exception ex)
+            {
+                Logs.Err(ex);
+            }
+            return null;
+        }
         public static async Task GenerateMissingTachiEntries(string file)
         {
             string categoryName = "Anilist";
@@ -110,7 +139,6 @@ namespace Shelf.Functions
             string outputProto = Path.Combine(GlobalFunc.DIR_OUTPUT, $"{outputPrefix}_NotInTachi.proto");
             string outputJson = Path.Combine(GlobalFunc.DIR_OUTPUT, $"{outputPrefix}_NotInTachi.json");
             string outputTachiNoTracker = Path.Combine(GlobalFunc.DIR_OUTPUT, $"{outputPrefix}_NoTrackers.json");
-            string filetoRead = file;
             bool canAdd = true;
             bool tachiloaded = true; // Loaded tachiyomi backup file flag
             int categoryId = 0;
@@ -125,17 +153,7 @@ namespace Shelf.Functions
             {
                 try
                 {
-                    if (file.Substring(file.Length-2).Equals("gz"))
-                    {
-                        filetoRead = GlobalFunc.Decompress(file, $"{Path.Combine(GlobalFunc.DIR_TEMP, $"tachiyomiBackup_{GlobalFunc.DATE_TODAY}.proto")}");
-                    }
-                    string value = GlobalFunc.ReadFromFile(filetoRead);
-                    using (var ms = File.OpenRead(file))
-                    {
-                        ms.Position = 0;
-                        tachi = Serializer.Deserialize<BackupTachiProto>(ms);
-                        ms.Close();
-                    }
+                    tachi = await LoadTachiyomiBackup(file);
                     if (tachi != null)
                     {
                         GlobalFunc.WriteObjectToJson(outputTachiLib, tachi); // Serialize to json file

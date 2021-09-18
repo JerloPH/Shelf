@@ -45,12 +45,20 @@ namespace Shelf
             this.btnChangeTachi = new System.Windows.Forms.Button();
             this.lvAnime = new System.Windows.Forms.ListView();
             this.lblStatus = new System.Windows.Forms.Label();
+            this.tabControl = new System.Windows.Forms.TabControl();
+            this.tpgBasic = new System.Windows.Forms.TabPage();
+            this.tpgConfig = new System.Windows.Forms.TabPage();
+            this.tpgTachi = new System.Windows.Forms.TabPage();
+            this.tabControl.SuspendLayout();
+            this.tpgBasic.SuspendLayout();
+            this.tpgConfig.SuspendLayout();
+            this.tpgTachi.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnRefresh
             // 
             this.btnRefresh.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnRefresh.Location = new System.Drawing.Point(411, 12);
+            this.btnRefresh.Location = new System.Drawing.Point(21, 95);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(242, 52);
             this.btnRefresh.TabIndex = 3;
@@ -60,19 +68,19 @@ namespace Shelf
             // 
             // txtLog
             // 
-            this.txtLog.Location = new System.Drawing.Point(12, 288);
+            this.txtLog.Location = new System.Drawing.Point(12, 293);
             this.txtLog.Multiline = true;
             this.txtLog.Name = "txtLog";
             this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtLog.Size = new System.Drawing.Size(641, 231);
+            this.txtLog.Size = new System.Drawing.Size(425, 228);
             this.txtLog.TabIndex = 4;
             // 
             // btnFetchMedia
             // 
             this.btnFetchMedia.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnFetchMedia.Location = new System.Drawing.Point(411, 70);
+            this.btnFetchMedia.Location = new System.Drawing.Point(143, 100);
             this.btnFetchMedia.Name = "btnFetchMedia";
-            this.btnFetchMedia.Size = new System.Drawing.Size(242, 52);
+            this.btnFetchMedia.Size = new System.Drawing.Size(249, 52);
             this.btnFetchMedia.TabIndex = 5;
             this.btnFetchMedia.Text = "Fetch Media";
             this.btnFetchMedia.UseVisualStyleBackColor = true;
@@ -83,7 +91,7 @@ namespace Shelf
             this.cbMedia.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbMedia.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.cbMedia.FormattingEnabled = true;
-            this.cbMedia.Location = new System.Drawing.Point(142, 16);
+            this.cbMedia.Location = new System.Drawing.Point(143, 9);
             this.cbMedia.Name = "cbMedia";
             this.cbMedia.Size = new System.Drawing.Size(249, 39);
             this.cbMedia.TabIndex = 6;
@@ -92,7 +100,7 @@ namespace Shelf
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label1.Location = new System.Drawing.Point(9, 19);
+            this.label1.Location = new System.Drawing.Point(10, 12);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(85, 31);
             this.label1.TabIndex = 7;
@@ -101,7 +109,7 @@ namespace Shelf
             // txtUsername
             // 
             this.txtUsername.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.txtUsername.Location = new System.Drawing.Point(142, 63);
+            this.txtUsername.Location = new System.Drawing.Point(143, 56);
             this.txtUsername.Name = "txtUsername";
             this.txtUsername.Size = new System.Drawing.Size(249, 38);
             this.txtUsername.TabIndex = 8;
@@ -110,7 +118,7 @@ namespace Shelf
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label2.Location = new System.Drawing.Point(9, 63);
+            this.label2.Location = new System.Drawing.Point(10, 56);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(124, 31);
             this.label2.TabIndex = 9;
@@ -119,9 +127,9 @@ namespace Shelf
             // btnChangeConfig
             // 
             this.btnChangeConfig.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnChangeConfig.Location = new System.Drawing.Point(9, 225);
+            this.btnChangeConfig.Location = new System.Drawing.Point(21, 17);
             this.btnChangeConfig.Name = "btnChangeConfig";
-            this.btnChangeConfig.Size = new System.Drawing.Size(220, 52);
+            this.btnChangeConfig.Size = new System.Drawing.Size(242, 52);
             this.btnChangeConfig.TabIndex = 10;
             this.btnChangeConfig.Text = "Update Config";
             this.btnChangeConfig.UseVisualStyleBackColor = true;
@@ -130,9 +138,9 @@ namespace Shelf
             // btnMALExport
             // 
             this.btnMALExport.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnMALExport.Location = new System.Drawing.Point(411, 128);
+            this.btnMALExport.Location = new System.Drawing.Point(143, 167);
             this.btnMALExport.Name = "btnMALExport";
-            this.btnMALExport.Size = new System.Drawing.Size(244, 52);
+            this.btnMALExport.Size = new System.Drawing.Size(249, 52);
             this.btnMALExport.TabIndex = 11;
             this.btnMALExport.Text = "To MAL Export";
             this.btnMALExport.UseVisualStyleBackColor = true;
@@ -142,7 +150,7 @@ namespace Shelf
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label3.Location = new System.Drawing.Point(9, 113);
+            this.label3.Location = new System.Drawing.Point(3, 13);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(115, 31);
             this.label3.TabIndex = 13;
@@ -151,7 +159,7 @@ namespace Shelf
             // txtTachi
             // 
             this.txtTachi.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.txtTachi.Location = new System.Drawing.Point(142, 113);
+            this.txtTachi.Location = new System.Drawing.Point(136, 13);
             this.txtTachi.Name = "txtTachi";
             this.txtTachi.Size = new System.Drawing.Size(249, 38);
             this.txtTachi.TabIndex = 12;
@@ -159,9 +167,9 @@ namespace Shelf
             // btnGenTachi
             // 
             this.btnGenTachi.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnGenTachi.Location = new System.Drawing.Point(411, 186);
+            this.btnGenTachi.Location = new System.Drawing.Point(136, 127);
             this.btnGenTachi.Name = "btnGenTachi";
-            this.btnGenTachi.Size = new System.Drawing.Size(244, 52);
+            this.btnGenTachi.Size = new System.Drawing.Size(249, 52);
             this.btnGenTachi.TabIndex = 14;
             this.btnGenTachi.Text = "To Tachi Backup";
             this.btnGenTachi.UseVisualStyleBackColor = true;
@@ -170,7 +178,7 @@ namespace Shelf
             // btnRefreshItems
             // 
             this.btnRefreshItems.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnRefreshItems.Location = new System.Drawing.Point(235, 225);
+            this.btnRefreshItems.Location = new System.Drawing.Point(479, 18);
             this.btnRefreshItems.Name = "btnRefreshItems";
             this.btnRefreshItems.Size = new System.Drawing.Size(170, 52);
             this.btnRefreshItems.TabIndex = 16;
@@ -181,7 +189,7 @@ namespace Shelf
             // btnChangeTachi
             // 
             this.btnChangeTachi.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnChangeTachi.Location = new System.Drawing.Point(142, 157);
+            this.btnChangeTachi.Location = new System.Drawing.Point(136, 57);
             this.btnChangeTachi.Name = "btnChangeTachi";
             this.btnChangeTachi.Size = new System.Drawing.Size(249, 52);
             this.btnChangeTachi.TabIndex = 17;
@@ -192,9 +200,9 @@ namespace Shelf
             // lvAnime
             // 
             this.lvAnime.HideSelection = false;
-            this.lvAnime.Location = new System.Drawing.Point(671, 12);
+            this.lvAnime.Location = new System.Drawing.Point(454, 78);
             this.lvAnime.Name = "lvAnime";
-            this.lvAnime.Size = new System.Drawing.Size(427, 507);
+            this.lvAnime.Size = new System.Drawing.Size(496, 443);
             this.lvAnime.TabIndex = 18;
             this.lvAnime.UseCompatibleStateImageBehavior = false;
             // 
@@ -202,38 +210,85 @@ namespace Shelf
             // 
             this.lblStatus.AutoSize = true;
             this.lblStatus.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.lblStatus.Location = new System.Drawing.Point(411, 252);
+            this.lblStatus.Location = new System.Drawing.Point(655, 39);
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(77, 31);
             this.lblStatus.TabIndex = 19;
             this.lblStatus.Text = "Status";
             // 
+            // tabControl
+            // 
+            this.tabControl.Controls.Add(this.tpgBasic);
+            this.tabControl.Controls.Add(this.tpgConfig);
+            this.tabControl.Controls.Add(this.tpgTachi);
+            this.tabControl.Location = new System.Drawing.Point(12, 12);
+            this.tabControl.Name = "tabControl";
+            this.tabControl.SelectedIndex = 0;
+            this.tabControl.Size = new System.Drawing.Size(425, 273);
+            this.tabControl.TabIndex = 20;
+            // 
+            // tpgBasic
+            // 
+            this.tpgBasic.Controls.Add(this.txtUsername);
+            this.tpgBasic.Controls.Add(this.cbMedia);
+            this.tpgBasic.Controls.Add(this.label1);
+            this.tpgBasic.Controls.Add(this.label2);
+            this.tpgBasic.Controls.Add(this.btnFetchMedia);
+            this.tpgBasic.Controls.Add(this.btnMALExport);
+            this.tpgBasic.Location = new System.Drawing.Point(4, 29);
+            this.tpgBasic.Name = "tpgBasic";
+            this.tpgBasic.Padding = new System.Windows.Forms.Padding(3);
+            this.tpgBasic.Size = new System.Drawing.Size(417, 240);
+            this.tpgBasic.TabIndex = 0;
+            this.tpgBasic.Text = "Basic";
+            this.tpgBasic.UseVisualStyleBackColor = true;
+            // 
+            // tpgConfig
+            // 
+            this.tpgConfig.Controls.Add(this.btnChangeConfig);
+            this.tpgConfig.Controls.Add(this.btnRefresh);
+            this.tpgConfig.Location = new System.Drawing.Point(4, 29);
+            this.tpgConfig.Name = "tpgConfig";
+            this.tpgConfig.Padding = new System.Windows.Forms.Padding(3);
+            this.tpgConfig.Size = new System.Drawing.Size(417, 240);
+            this.tpgConfig.TabIndex = 1;
+            this.tpgConfig.Text = "Config";
+            this.tpgConfig.UseVisualStyleBackColor = true;
+            // 
+            // tpgTachi
+            // 
+            this.tpgTachi.Controls.Add(this.label3);
+            this.tpgTachi.Controls.Add(this.txtTachi);
+            this.tpgTachi.Controls.Add(this.btnChangeTachi);
+            this.tpgTachi.Controls.Add(this.btnGenTachi);
+            this.tpgTachi.Location = new System.Drawing.Point(4, 29);
+            this.tpgTachi.Name = "tpgTachi";
+            this.tpgTachi.Size = new System.Drawing.Size(417, 240);
+            this.tpgTachi.TabIndex = 2;
+            this.tpgTachi.Text = "Tachiyomi";
+            this.tpgTachi.UseVisualStyleBackColor = true;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1110, 531);
+            this.ClientSize = new System.Drawing.Size(962, 533);
+            this.Controls.Add(this.tabControl);
             this.Controls.Add(this.lblStatus);
             this.Controls.Add(this.lvAnime);
-            this.Controls.Add(this.btnChangeTachi);
             this.Controls.Add(this.btnRefreshItems);
-            this.Controls.Add(this.btnGenTachi);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.txtTachi);
-            this.Controls.Add(this.btnMALExport);
-            this.Controls.Add(this.btnChangeConfig);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.txtUsername);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.cbMedia);
-            this.Controls.Add(this.btnFetchMedia);
             this.Controls.Add(this.txtLog);
-            this.Controls.Add(this.btnRefresh);
-            this.MinimumSize = new System.Drawing.Size(1128, 578);
+            this.MinimumSize = new System.Drawing.Size(980, 580);
             this.Name = "frmMain";
             this.Text = "frmMain";
             this.Load += new System.EventHandler(this.frmMain_Load);
             this.Resize += new System.EventHandler(this.frmMain_Resize);
+            this.tabControl.ResumeLayout(false);
+            this.tpgBasic.ResumeLayout(false);
+            this.tpgBasic.PerformLayout();
+            this.tpgConfig.ResumeLayout(false);
+            this.tpgTachi.ResumeLayout(false);
+            this.tpgTachi.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -256,6 +311,10 @@ namespace Shelf
         private System.Windows.Forms.Button btnChangeTachi;
         private System.Windows.Forms.ListView lvAnime;
         private System.Windows.Forms.Label lblStatus;
+        private System.Windows.Forms.TabControl tabControl;
+        private System.Windows.Forms.TabPage tpgBasic;
+        private System.Windows.Forms.TabPage tpgConfig;
+        private System.Windows.Forms.TabPage tpgTachi;
     }
 }
 

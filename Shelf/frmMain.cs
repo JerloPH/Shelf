@@ -195,8 +195,8 @@ namespace Shelf
         }
         private void frmMain_Resize(object sender, EventArgs e)
         {
-            lvAnime.Width = this.ClientRectangle.Width - lvAnime.Left - 16;
-            lvAnime.Height = this.ClientRectangle.Height - lvAnime.Top - 16;
+            tabMedia.Width = this.ClientRectangle.Width - tabMedia.Left - 16;
+            tabMedia.Height = this.ClientRectangle.Height - tabMedia.Top - 16;
         }
         private async void btnRefresh_Click(object sender, EventArgs e)
         {

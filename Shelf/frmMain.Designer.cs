@@ -49,10 +49,15 @@ namespace Shelf
             this.tpgBasic = new System.Windows.Forms.TabPage();
             this.tpgConfig = new System.Windows.Forms.TabPage();
             this.tpgTachi = new System.Windows.Forms.TabPage();
+            this.tabMedia = new System.Windows.Forms.TabControl();
+            this.tpMediaAnime = new System.Windows.Forms.TabPage();
+            this.tpMediaManga = new System.Windows.Forms.TabPage();
             this.tabControl.SuspendLayout();
             this.tpgBasic.SuspendLayout();
             this.tpgConfig.SuspendLayout();
             this.tpgTachi.SuspendLayout();
+            this.tabMedia.SuspendLayout();
+            this.tpMediaAnime.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnRefresh
@@ -78,7 +83,7 @@ namespace Shelf
             // btnFetchMedia
             // 
             this.btnFetchMedia.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnFetchMedia.Location = new System.Drawing.Point(143, 100);
+            this.btnFetchMedia.Location = new System.Drawing.Point(143, 102);
             this.btnFetchMedia.Name = "btnFetchMedia";
             this.btnFetchMedia.Size = new System.Drawing.Size(249, 52);
             this.btnFetchMedia.TabIndex = 5;
@@ -178,7 +183,7 @@ namespace Shelf
             // btnRefreshItems
             // 
             this.btnRefreshItems.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnRefreshItems.Location = new System.Drawing.Point(479, 18);
+            this.btnRefreshItems.Location = new System.Drawing.Point(454, 18);
             this.btnRefreshItems.Name = "btnRefreshItems";
             this.btnRefreshItems.Size = new System.Drawing.Size(170, 52);
             this.btnRefreshItems.TabIndex = 16;
@@ -199,10 +204,11 @@ namespace Shelf
             // 
             // lvAnime
             // 
+            this.lvAnime.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lvAnime.HideSelection = false;
-            this.lvAnime.Location = new System.Drawing.Point(454, 78);
+            this.lvAnime.Location = new System.Drawing.Point(3, 3);
             this.lvAnime.Name = "lvAnime";
-            this.lvAnime.Size = new System.Drawing.Size(496, 443);
+            this.lvAnime.Size = new System.Drawing.Size(482, 397);
             this.lvAnime.TabIndex = 18;
             this.lvAnime.UseCompatibleStateImageBehavior = false;
             // 
@@ -268,14 +274,45 @@ namespace Shelf
             this.tpgTachi.Text = "Tachiyomi";
             this.tpgTachi.UseVisualStyleBackColor = true;
             // 
+            // tabMedia
+            // 
+            this.tabMedia.Controls.Add(this.tpMediaAnime);
+            this.tabMedia.Controls.Add(this.tpMediaManga);
+            this.tabMedia.Location = new System.Drawing.Point(454, 85);
+            this.tabMedia.Name = "tabMedia";
+            this.tabMedia.SelectedIndex = 0;
+            this.tabMedia.Size = new System.Drawing.Size(496, 436);
+            this.tabMedia.TabIndex = 21;
+            // 
+            // tpMediaAnime
+            // 
+            this.tpMediaAnime.Controls.Add(this.lvAnime);
+            this.tpMediaAnime.Location = new System.Drawing.Point(4, 29);
+            this.tpMediaAnime.Name = "tpMediaAnime";
+            this.tpMediaAnime.Padding = new System.Windows.Forms.Padding(3);
+            this.tpMediaAnime.Size = new System.Drawing.Size(488, 403);
+            this.tpMediaAnime.TabIndex = 0;
+            this.tpMediaAnime.Text = "Anime";
+            this.tpMediaAnime.UseVisualStyleBackColor = true;
+            // 
+            // tpMediaManga
+            // 
+            this.tpMediaManga.Location = new System.Drawing.Point(4, 29);
+            this.tpMediaManga.Name = "tpMediaManga";
+            this.tpMediaManga.Padding = new System.Windows.Forms.Padding(3);
+            this.tpMediaManga.Size = new System.Drawing.Size(488, 403);
+            this.tpMediaManga.TabIndex = 1;
+            this.tpMediaManga.Text = "Manga";
+            this.tpMediaManga.UseVisualStyleBackColor = true;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(962, 533);
+            this.Controls.Add(this.tabMedia);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.lblStatus);
-            this.Controls.Add(this.lvAnime);
             this.Controls.Add(this.btnRefreshItems);
             this.Controls.Add(this.txtLog);
             this.MinimumSize = new System.Drawing.Size(980, 580);
@@ -289,6 +326,8 @@ namespace Shelf
             this.tpgConfig.ResumeLayout(false);
             this.tpgTachi.ResumeLayout(false);
             this.tpgTachi.PerformLayout();
+            this.tabMedia.ResumeLayout(false);
+            this.tpMediaAnime.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -315,6 +354,9 @@ namespace Shelf
         private System.Windows.Forms.TabPage tpgBasic;
         private System.Windows.Forms.TabPage tpgConfig;
         private System.Windows.Forms.TabPage tpgTachi;
+        private System.Windows.Forms.TabControl tabMedia;
+        private System.Windows.Forms.TabPage tpMediaAnime;
+        private System.Windows.Forms.TabPage tpMediaManga;
     }
 }
 

@@ -176,7 +176,7 @@ namespace Shelf
                 // Start fetching
                 IsRefreshing = true;
                 btnRefresh.Enabled = false;
-
+                // Check if token is valid
                 if (TokenDate.Value.AddMinutes(59) <= DateTime.Now)
                 {
                     Log("Requesting token..");
@@ -362,7 +362,7 @@ namespace Shelf
                     count += 1;
                     await AddItemToListView(item);
                     Thread.Sleep(10);
-                    if (count >= 10)
+                    if (count >= 10 && Debugger.IsAttached)
                         break;
                 }
             });

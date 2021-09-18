@@ -152,22 +152,22 @@ namespace Shelf
             this.label3.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.label3.Location = new System.Drawing.Point(3, 13);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(115, 31);
+            this.label3.Size = new System.Drawing.Size(249, 31);
             this.label3.TabIndex = 13;
-            this.label3.Text = "Tachi File:";
+            this.label3.Text = "Tachiyomi Backup File:";
             // 
             // txtTachi
             // 
             this.txtTachi.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.txtTachi.Location = new System.Drawing.Point(136, 13);
+            this.txtTachi.Location = new System.Drawing.Point(10, 54);
             this.txtTachi.Name = "txtTachi";
-            this.txtTachi.Size = new System.Drawing.Size(249, 38);
+            this.txtTachi.Size = new System.Drawing.Size(390, 38);
             this.txtTachi.TabIndex = 12;
             // 
             // btnGenTachi
             // 
             this.btnGenTachi.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnGenTachi.Location = new System.Drawing.Point(136, 127);
+            this.btnGenTachi.Location = new System.Drawing.Point(10, 175);
             this.btnGenTachi.Name = "btnGenTachi";
             this.btnGenTachi.Size = new System.Drawing.Size(249, 52);
             this.btnGenTachi.TabIndex = 14;
@@ -189,7 +189,7 @@ namespace Shelf
             // btnChangeTachi
             // 
             this.btnChangeTachi.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnChangeTachi.Location = new System.Drawing.Point(136, 57);
+            this.btnChangeTachi.Location = new System.Drawing.Point(10, 107);
             this.btnChangeTachi.Name = "btnChangeTachi";
             this.btnChangeTachi.Size = new System.Drawing.Size(249, 52);
             this.btnChangeTachi.TabIndex = 17;

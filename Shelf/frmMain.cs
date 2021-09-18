@@ -362,7 +362,7 @@ namespace Shelf
                     count += 1;
                     await AddItemToListView(item);
                     Thread.Sleep(10);
-                    if (count >= 10 && Debugger.IsAttached)
+                    if (count >= 10 && GlobalFunc.DEBUG)
                         break;
                 }
             });

@@ -34,11 +34,15 @@ namespace Shelf.Functions
         public static string DATE_TODAY = "";
 
         public static List<string> SKIP_STATUS { get; set; } = new List<string>();
+        public static bool DEBUG { get; set; } = false;
 
         public static void InitializedApp()
         {
             try
             {
+                if (Debugger.IsAttached)
+                    DEBUG = true;
+
                 DATE_TODAY = DateTime.Now.ToString("yyyy-MM-dd");
                 DIR_START = AppContext.BaseDirectory;
                 // Directories

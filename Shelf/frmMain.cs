@@ -116,7 +116,7 @@ namespace Shelf
                 img = await DownloadImage(item.Media.CoverImage.Medium, file);
             }
             else
-                Logs.App($"Loaded local image for: {item.Media.Id}, media {type}");
+                Logs.App($"{type}: Loaded local image for: {item.Media.Id}.");
 
             // Run Task
             return await Task.Run(delegate

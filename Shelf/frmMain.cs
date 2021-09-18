@@ -46,6 +46,7 @@ namespace Shelf
             animeCoverList.ColorDepth = ColorDepth.Depth32Bit;
             lvAnime.LargeImageList = animeCoverList;
             lvAnime.View = View.LargeIcon;
+            lvAnime.Sorting = SortOrder.Ascending;
             cbMediaRefresh.Items.AddRange(new string[] { "All", "Anime", "Manga", "Tachiyomi", "Local" });
             cbMediaRefresh.SelectedIndex = 0;
         }
@@ -105,7 +106,32 @@ namespace Shelf
 
             return false;
         }
-        public async Task<bool> AddItemToListView(Entry item, MediaType type)
+        public async Task<bool> RefreshMedia(MediaType type, List<Entry> medias, ListView lv, ImageList imglist)
+        {
+            return await Task.Run(async delegate
+            {
+                int count = 0;
+                int max = 0;
+                Log($"Refreshing {type} list..");
+                SetStatus($"Refreshing {type} list..");
+                lv.Invoke((Action)delegate { lv.Items.Clear(); });
+                this.Invoke((Action)delegate { imglist.Images.Clear(); });
+                max = medias.Count;
+                foreach (var item in medias)
+                {
+                    count += 1;
+                    SetStatus($"Adding item..{count}/{max}");
+                    await AddMediaItem(item, type);
+                    Thread.Sleep(10);
+                    if (count >= 10 && GlobalFunc.DEBUG)
+                        break;
+                }
+                Log($"{type} items loaded!");
+                lv.Invoke((Action)delegate { lv.Sort(); });
+                return true;
+            });
+        }
+        public async Task<bool> AddItemToListView(ListView lv, ImageList imglist, Entry item, MediaType type)
         {
             // Declare variables
             var lvitem = new ListViewItem();
@@ -127,7 +153,7 @@ namespace Shelf
                 {
                     this.Invoke((Action) delegate
                     {
-                        animeCoverList.Images.Add(item.Media.Id.ToString(), img);
+                        imglist.Images.Add(item.Media.Id.ToString(), img);
                         lvitem.ImageKey = item.Media.Id.ToString();
                     });
                 }
@@ -137,12 +163,25 @@ namespace Shelf
                 // Add properties values to ListView item
                 lvitem.Tag = item.Media.Id;
                 lvitem.Text = (!String.IsNullOrWhiteSpace(item.Media.Title.English) ? item.Media.Title.English : item.Media.Title.Romaji);
-                lvAnime.BeginInvoke((Action)delegate
+                lv.BeginInvoke((Action)delegate
                 {
-                    lvAnime.Items.Add(lvitem);
+                    lv.Items.Add(lvitem);
                 });
                 return true;
             });
+        }
+        public async Task<bool> AddMediaItem(Entry item, MediaType type)
+        {
+            bool result = false;
+            switch (type)
+            {
+                case MediaType.ANIME:
+                {
+                    result = await AddItemToListView(lvAnime, animeCoverList, item, MediaType.ANIME);
+                    break;
+                }
+            }
+            return result;
         }
         public async Task<Image> LoadImageFromTemp(long Id, MediaType type)
         {
@@ -396,29 +435,14 @@ namespace Shelf
         private async void btnRefreshItems_Click(object sender, EventArgs e)
         {
             btnRefreshItems.Enabled = false;
-            SetStatus("Refreshing..");
-            lvAnime.Items.Clear();
-            animeCoverList.Images.Clear();
-            Log("Populating Anime items..");
-            int count = 0;
-            int max = 0;
-            await Task.Run(async delegate
+            // Declare which media to refresh
+            bool loadAnime = cbMediaRefresh.SelectedIndex == 0 || cbMediaRefresh.Text.Equals("anime", StringComparison.OrdinalIgnoreCase);
+            // Refresh Anime?
+            if (loadAnime)
             {
                 var anime = await MediaTasks.GetAnimeList();
-                max = anime.Count;
-                foreach (var item in anime)
-                {
-                    count += 1;
-                    SetStatus($"Adding item..{count}/{max}");
-                    await AddItemToListView(item, MediaType.ANIME);
-                    Thread.Sleep(10);
-                    if (count >= 10 && GlobalFunc.DEBUG)
-                        break;
-                }
-            });
-            Log("Anime items loaded!");
-            lvAnime.Sorting = SortOrder.Ascending;
-            lvAnime.Sort();
+                await RefreshMedia(MediaType.ANIME, anime, lvAnime, animeCoverList);
+            }
             SetStatus("Idle");
             btnRefreshItems.Enabled = true;
         }

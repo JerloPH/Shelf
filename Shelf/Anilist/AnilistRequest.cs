@@ -18,11 +18,9 @@ namespace Shelf.Anilist
     public static class AnilistRequest
     {
         public static string RedirectUrl { get; set; } = "https://anilist.co/api/v2/oauth/pin";
-        public static string ConfigFile { get; set; } = Path.Combine(Application.StartupPath, "Data\\anilistConfig.json");
-
+        // Private properties
         private static string AniClient { get; set; } = "";
         private static string AniSecret { get; set; } = "";
-
         private static readonly string QueryMediaList = @"query ($name: String, $type: MediaType) {
           MediaListCollection(userName: $name, type: $type) {
             lists {
@@ -59,7 +57,7 @@ namespace Shelf.Anilist
         {
             try
             {
-                string content = GlobalFunc.ReadFromFile(ConfigFile);
+                string content = GlobalFunc.ReadFromFile(GlobalFunc.FILE_ANILIST_CONFIG);
                 if (jsonConfig == null)
                     jsonConfig = JsonConvert.DeserializeObject<AnilistConfig>(content);
 
@@ -81,7 +79,7 @@ namespace Shelf.Anilist
                 jsonstring = JsonConvert.SerializeObject(config);
                 if (!String.IsNullOrWhiteSpace(jsonstring))
                 {
-                    if (GlobalFunc.WriteFile(ConfigFile, jsonstring))
+                    if (GlobalFunc.WriteFile(GlobalFunc.FILE_ANILIST_CONFIG, jsonstring))
                     {
                         return Initialize(config);
                     }

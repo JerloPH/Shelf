@@ -24,6 +24,7 @@ namespace Shelf.Functions
         public static string DIR_OUTPUT = "";
         public static string DIR_OUTPUT_ROOT = "";
         public static string DIR_TEMP = "";
+        public static string FILE_ANILIST_CONFIG = "";
         public static string FILE_ANIME = "";
         public static string FILE_MANGA = "";
         public static string FILE_LOG = "";
@@ -54,6 +55,7 @@ namespace Shelf.Functions
                 FILE_LOG = Path.Combine(DIR_START, "ShelfApp.log");
                 FILE_LOG_ERR = Path.Combine(DIR_START, "ShelfApp_Error.log");
                 // Data files
+                FILE_ANILIST_CONFIG = Path.Combine(DIR_DATA, "anilistConfig.json");
                 FILE_ANIME = Path.Combine(DIR_DATA, "AnilistMediaANIME.json");
                 FILE_MANGA = Path.Combine(DIR_DATA, "AnilistMediaMANGA.json");
                 FILE_AUTH_CODE = Path.Combine(DIR_DATA, "AuthCode.tkn");

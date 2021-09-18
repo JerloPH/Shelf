@@ -16,6 +16,8 @@ using Shelf.Functions;
 using Shelf.Entity;
 using System.Net;
 using System.Threading;
+using static Shelf.Functions.GlobalFunc;
+using System.Drawing.Imaging;
 
 namespace Shelf
 {
@@ -41,6 +43,7 @@ namespace Shelf
         public void InitializeItems()
         {
             imgList.ImageSize = new Size(120, 180);
+            imgList.ColorDepth = ColorDepth.Depth32Bit;
             lvAnime.LargeImageList = imgList;
             lvAnime.View = View.LargeIcon;
         }
@@ -70,6 +73,12 @@ namespace Shelf
         {
             SetText(lblStatus, text);
         }
+        public string GetCoverFilePath(long Id, MediaType type)
+        {
+            string root = (type == MediaType.MANGA) ? GlobalFunc.DIR_TEMP_MANGACOVER : GlobalFunc.DIR_TEMP_ANIMECOVER;
+            string file = Path.Combine(root, $"{Id}.jpg");
+            return file;
+        }
         #endregion
         #region Tasks
         public async Task<bool> RequestMedia(string media, string username, string token)
@@ -94,13 +103,21 @@ namespace Shelf
 
             return false;
         }
-        public async Task<bool> AddItemToListView(Entry item)
+        public async Task<bool> AddItemToListView(Entry item, MediaType type)
         {
             // Declare variables
             var lvitem = new ListViewItem();
             Image img = null;
-            // Download Image
-            img = await DownloadImage(item.Media.CoverImage.Medium);
+            // Download Image, if not existing
+            img = await LoadImageFromTemp(item.Media.Id, type);
+            if (img == null)
+            {
+                string file = GetCoverFilePath(item.Media.Id, type);
+                img = await DownloadImage(item.Media.CoverImage.Medium, file);
+            }
+            else
+                Logs.App($"Loaded local image for: {item.Media.Id}, media {type}");
+
             // Run Task
             return await Task.Run(delegate
             {
@@ -125,24 +142,37 @@ namespace Shelf
                 return true;
             });
         }
-        public async Task<Image> DownloadImage(string link)
+        public async Task<Image> LoadImageFromTemp(long Id, MediaType type)
+        {
+            try
+            {
+                string file = GetCoverFilePath(Id, type);
+                if (File.Exists(file))
+                {
+                    return await Task.Run(delegate
+                    {
+                        return Image.FromFile(file);
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Logs.Err(ex);
+            }
+            return null;
+        }
+        public async Task<Image> DownloadImage(string link, string saveTo)
         {
             try
             {
                 return await Task.Run(delegate
                 {
-                    using (WebClient wc = new WebClient())
+                    using (var client = new WebClient())
                     {
-                        Image img = null;
-                        Logs.App($"Downloading {link}");
-                        byte[] bytes = wc.DownloadData(link);
-                        Logs.App($"Downloaded!");
-                        using (MemoryStream ms = new MemoryStream(bytes))
-                        {
-                            img = Image.FromStream(ms);
-                            Logs.App($"Saved as image!");
-                        }
-                        return img;
+                        Logs.App($"Downloading image.. => {link}");
+                        client.DownloadFile(link, saveTo);
+                        Logs.App($"Saved to => {saveTo.Replace(GlobalFunc.DIR_TEMP, "<temp>")}");
+                        return Image.FromFile(saveTo);
                     }
                 });
             }
@@ -377,7 +407,7 @@ namespace Shelf
                 {
                     count += 1;
                     SetStatus($"Adding item..{count}/{max}");
-                    await AddItemToListView(item);
+                    await AddItemToListView(item, MediaType.ANIME);
                     Thread.Sleep(10);
                     if (count >= 10 && GlobalFunc.DEBUG)
                         break;

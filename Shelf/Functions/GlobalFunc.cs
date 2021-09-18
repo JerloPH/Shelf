@@ -24,6 +24,8 @@ namespace Shelf.Functions
         public static string DIR_OUTPUT = "";
         public static string DIR_OUTPUT_ROOT = "";
         public static string DIR_TEMP = "";
+        public static string DIR_TEMP_ANIMECOVER = "";
+        public static string DIR_TEMP_MANGACOVER = "";
         public static string FILE_ANILIST_CONFIG = "";
         public static string FILE_ANIME = "";
         public static string FILE_MANGA = "";
@@ -36,6 +38,12 @@ namespace Shelf.Functions
         public static List<string> SKIP_STATUS { get; set; } = new List<string>();
         public static bool DEBUG { get; set; } = false;
 
+        public enum MediaType
+        {
+            ALL = 0,
+            ANIME = 1,
+            MANGA = 2
+        }
         public static void InitializedApp()
         {
             try
@@ -50,11 +58,15 @@ namespace Shelf.Functions
                 DIR_OUTPUT_ROOT = Path.Combine(DIR_START, "output");
                 DIR_OUTPUT = Path.Combine(DIR_OUTPUT_ROOT, DATE_TODAY);
                 DIR_TEMP = Path.Combine(DIR_START, "temp");
+                DIR_TEMP_ANIMECOVER = Path.Combine(DIR_TEMP, "coverAnime");
+                DIR_TEMP_MANGACOVER = Path.Combine(DIR_TEMP, "coverManga");
                 // Create Directories
                 Directory.CreateDirectory(DIR_DATA);
                 Directory.CreateDirectory(DIR_OUTPUT_ROOT);
                 Directory.CreateDirectory(DIR_OUTPUT);
                 Directory.CreateDirectory(DIR_TEMP);
+                Directory.CreateDirectory(DIR_TEMP_ANIMECOVER);
+                Directory.CreateDirectory(DIR_TEMP_MANGACOVER);
                 // File locations
                 FILE_LOG = Path.Combine(DIR_START, "ShelfApp.log");
                 FILE_LOG_ERR = Path.Combine(DIR_START, "ShelfApp_Error.log");

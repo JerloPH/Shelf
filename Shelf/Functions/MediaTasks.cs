@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using ProtoBuf;
 using Shelf.Entity;
+using Shelf.Enum;
 using Shelf.Json;
 using System;
 using System.Collections.Generic;
@@ -38,13 +39,52 @@ namespace Shelf.Functions
             idList.Clear();
             return result;
         }
-        public static async Task<List<Entry>> GetAnimeList()
+        public static async Task<List<Entry>> GetEntriesStripByMode(List<Entry> data, MediaEntryMode mode)
         {
-            return await GetMediaList(GlobalFunc.FILE_ANIME);
+            return await Task.Run(delegate
+            {
+                var data2 = new List<Entry>();
+                foreach (var item in data)
+                {
+                    if (mode == MediaEntryMode.MAL)
+                    {
+                        // Include only MAL entries
+                        if (item.Media.IdMal != null)
+                        {
+                            if (item.Media.IdMal > 0)
+                                data2.Add(item);
+                        }
+                    }
+                    else
+                    {
+                        // Skip MAL Entries
+                        if (item.Media.IdMal == null)
+                            data2.Add(item);
+                        else
+                        {
+                            if (item.Media.IdMal > 0)
+                                continue;
+                        }
+                    }
+                }
+                return data2;
+            });
         }
-        public static async Task<List<Entry>> GetMangaList()
+        public static async Task<List<Entry>> GetAnimeList(MediaEntryMode mode)
         {
-            return await GetMediaList(GlobalFunc.FILE_MANGA);
+            var data = await GetMediaList(GlobalFunc.FILE_ANIME);
+            if (mode == MediaEntryMode.All)
+                return data;
+
+            return await GetEntriesStripByMode(data, mode);
+        }
+        public static async Task<List<Entry>> GetMangaList(MediaEntryMode mode)
+        {
+            var data = await GetMediaList(GlobalFunc.FILE_MANGA);
+            if (mode == MediaEntryMode.All)
+                return data;
+
+            return await GetEntriesStripByMode(data, mode);
         }
         public static async Task ProcessMedia(List<Entry> medialist, string media, string outputfile, string username, string outputNonMal)
         {
@@ -214,7 +254,7 @@ namespace Shelf.Functions
                 {
                     GlobalFunc.WriteObjectToJson(outputTachiNoTracker, tachilistNames); // serialize list of tachi entries titles without trackers
                     // Fetch manga Ids from Anilist
-                    var manga = await GetMangaList();
+                    var manga = await GetMangaList(MediaEntryMode.All);
                     foreach (var item in manga)
                     {
                         if (item.Media.Format.Equals("MANGA") || item.Media.Format.Equals("ONE_SHOT"))

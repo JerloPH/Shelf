@@ -413,7 +413,7 @@ namespace Shelf
                 // ANIME
                 if (processAnime)
                 {
-                    var anime = await MediaTasks.GetAnimeList();
+                    var anime = await MediaTasks.GetAnimeList(MediaEntryMode.All);
                     if (anime != null)
                     {
                         await MediaTasks.ProcessMedia(anime, "anime", outputAnime, username, outputAnimeNonMal);
@@ -424,7 +424,7 @@ namespace Shelf
                 // MANGA
                 if (processManga)
                 {
-                    var manga = MediaTasks.GetMangaList().Result;
+                    var manga = MediaTasks.GetMangaList(MediaEntryMode.All).Result;
                     if (manga != null)
                     {
                         MediaTasks.ProcessMedia(manga, "manga", outputManga, username, outputMangaNonMal).Wait();
@@ -486,13 +486,13 @@ namespace Shelf
             // Refresh Anime?
             if (loadAnime)
             {
-                var anime = await MediaTasks.GetAnimeList();
+                var anime = await MediaTasks.GetAnimeList(MediaEntryMode.All);
                 await RefreshMedia(MediaType.ANIME, anime, lvAnime, animeCoverList, true);
             }
             // Refresh Manga?
             if (loadManga)
             {
-                manga = await MediaTasks.GetMangaList();
+                manga = await MediaTasks.GetMangaList(MediaEntryMode.All);
                 await RefreshMedia(MediaType.MANGA, manga, lvManga, mangaCoverList, false);
             }
             // Refresh Manga?
@@ -504,7 +504,7 @@ namespace Shelf
                 {
                     var entries = new List<Entry>();
                     if (manga.Count < 1)
-                        manga = await MediaTasks.GetMangaList();
+                        manga = await MediaTasks.GetMangaList(MediaEntryMode.All);
 
                     await Task.Run(delegate
                     {

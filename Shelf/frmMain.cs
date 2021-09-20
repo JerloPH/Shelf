@@ -509,7 +509,7 @@ namespace Shelf
                 var tachilib = await MediaTasks.LoadTachiyomiBackup(tachibackup);
                 if (tachilib != null)
                 {
-                    var entries = await MediaTasks.GetTachiWithAnilist(manga, tachilib.Mangas);
+                    var entries = await MediaTasks.GetTachiWithAnilist(manga, tachilib.Mangas, mode);
                     await RefreshMedia(MediaType.MANGA, entries, lvTachi, mangaCoverList, false);
                 }
                 else

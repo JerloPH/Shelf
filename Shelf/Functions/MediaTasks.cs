@@ -342,7 +342,7 @@ namespace Shelf.Functions
                 return listEntries;
             });
         }
-        public static async Task<List<Entry>> GetTachiWithAnilist(List<Entry> manga, List<BackupManga> listofManga)
+        public static async Task<List<Entry>> GetTachiWithAnilist(List<Entry> manga, List<BackupManga> listofManga, MediaEntryMode mode)
         {
             return await Task.Run(async delegate
             {
@@ -388,7 +388,10 @@ namespace Shelf.Functions
                         }
                     }
                 }
-                return entries;
+                if (mode == MediaEntryMode.All)
+                    return entries;
+                else
+                    return await GetEntriesStripByMode(entries, mode);
             });
         }
         // ############################################################ End of Class

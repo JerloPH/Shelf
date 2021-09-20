@@ -76,16 +76,11 @@ namespace Shelf.Anilist
             config.clientSecret = secret.Trim();
             try
             {
-                jsonstring = JsonConvert.SerializeObject(config);
-                if (!String.IsNullOrWhiteSpace(jsonstring))
-                {
-                    if (GlobalFunc.WriteFile(GlobalFunc.FILE_ANILIST_CONFIG, jsonstring))
-                    {
-                        return Initialize(config);
-                    }
-                }
+                jsonstring = JsonConvert.SerializeObject(config, Formatting.Indented);
+                if (GlobalFunc.WriteFile(GlobalFunc.FILE_ANILIST_CONFIG, jsonstring))
+                    return Initialize(config);
             }
-            catch { }
+            catch (Exception ex) { Logs.Err(ex); }
             return false;
         }
         public static string GetConfig(int index = 0)

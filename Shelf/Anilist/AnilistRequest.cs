@@ -112,7 +112,6 @@ namespace Shelf.Anilist
                     code = authCode.Replace("/", "\\/")
                 });
                 var response = await client.ExecuteAsync(request);
-
                 if (response.StatusCode == HttpStatusCode.OK)
                 {
                     var content = response.Content; // Raw content as string
@@ -124,6 +123,7 @@ namespace Shelf.Anilist
                 {
                     GlobalFunc.WriteFile(GlobalFunc.FILE_PUB_TKN, "");
                     GlobalFunc.Alert("Unsuccessful on Fetching Public Token!");
+                    returnString = "";
                 }
             }
             catch (Exception ex)

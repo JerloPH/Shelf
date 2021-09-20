@@ -510,10 +510,13 @@ namespace Shelf
                                 {
                                     if (track.TrackingUrl.Contains("anilist", StringComparison.OrdinalIgnoreCase))
                                     {
-                                        var mangaQuery = manga.Select(x => x).Where(x => x.Media.Id == track.MediaId);
-                                        if (mangaQuery.Count() == 1)
-                                            entries.Add(mangaQuery.First());
-
+                                        var mangaExisting = entries.Select(x => x).Where(x => x.Media.Id == track.MediaId);
+                                        if (!mangaExisting.Any())
+                                        {
+                                            var mangaQuery = manga.Select(x => x).Where(x => x.Media.Id == track.MediaId);
+                                            if (mangaQuery.Count() == 1)
+                                                entries.Add(mangaQuery.First());
+                                        }
                                         break;
                                     }
                                 }

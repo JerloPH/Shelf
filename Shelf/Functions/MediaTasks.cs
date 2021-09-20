@@ -115,8 +115,7 @@ namespace Shelf.Functions
                     {
                         filetoRead = GlobalFunc.Decompress(file, $"{Path.Combine(GlobalFunc.DIR_TEMP, $"tachiyomiBackup_{GlobalFunc.DATE_TODAY}.proto")}");
                     }
-                    string value = GlobalFunc.ReadFromFile(filetoRead);
-                    using (var ms = File.OpenRead(file))
+                    using (var ms = File.OpenRead(filetoRead))
                     {
                         ms.Position = 0;
                         tachi = Serializer.Deserialize<BackupTachiProto>(ms);

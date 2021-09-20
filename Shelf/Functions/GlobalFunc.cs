@@ -14,6 +14,7 @@ using ProtoBuf.Serializers;
 using ProtoBuf.WellKnownTypes;
 using System.IO.Compression;
 using System.Diagnostics;
+using Shelf.Anilist;
 
 namespace Shelf.Functions
 {
@@ -38,12 +39,6 @@ namespace Shelf.Functions
         public static List<string> SKIP_STATUS { get; set; } = new List<string>();
         public static bool DEBUG { get; set; } = false;
 
-        public enum MediaType
-        {
-            ALL = 0,
-            ANIME = 1,
-            MANGA = 2
-        }
         public static void InitializedApp()
         {
             try
@@ -54,19 +49,12 @@ namespace Shelf.Functions
                 DATE_TODAY = DateTime.Now.ToString("yyyy-MM-dd");
                 DIR_START = AppContext.BaseDirectory;
                 // Directories
-                DIR_DATA = Path.Combine(DIR_START, "data");
-                DIR_OUTPUT_ROOT = Path.Combine(DIR_START, "output");
-                DIR_OUTPUT = Path.Combine(DIR_OUTPUT_ROOT, DATE_TODAY);
-                DIR_TEMP = Path.Combine(DIR_START, "temp");
-                DIR_TEMP_ANIMECOVER = Path.Combine(DIR_TEMP, "coverAnime");
-                DIR_TEMP_MANGACOVER = Path.Combine(DIR_TEMP, "coverManga");
-                // Create Directories
-                Directory.CreateDirectory(DIR_DATA);
-                Directory.CreateDirectory(DIR_OUTPUT_ROOT);
-                Directory.CreateDirectory(DIR_OUTPUT);
-                Directory.CreateDirectory(DIR_TEMP);
-                Directory.CreateDirectory(DIR_TEMP_ANIMECOVER);
-                Directory.CreateDirectory(DIR_TEMP_MANGACOVER);
+                DIR_DATA = CreateNewFolder(DIR_START, "data");
+                DIR_OUTPUT_ROOT = CreateNewFolder(DIR_START, "output");
+                DIR_OUTPUT = CreateNewFolder(DIR_OUTPUT_ROOT, DATE_TODAY);
+                DIR_TEMP = CreateNewFolder(DIR_START, "temp");
+                DIR_TEMP_ANIMECOVER = CreateNewFolder(DIR_TEMP, "coverAnime");
+                DIR_TEMP_MANGACOVER = CreateNewFolder(DIR_TEMP, "coverManga");
                 // File locations
                 FILE_LOG = Path.Combine(DIR_START, "ShelfApp.log");
                 FILE_LOG_ERR = Path.Combine(DIR_START, "ShelfApp_Error.log");
@@ -78,8 +66,24 @@ namespace Shelf.Functions
                 FILE_PUB_TKN = Path.Combine(DIR_DATA, "PublicToken.tkn");
             }
             catch (Exception ex) { Logs.Err(ex); GlobalFunc.Alert("Some files are not initialized!"); }
+            try
+            {
+                if (!File.Exists(FILE_ANILIST_CONFIG))
+                    AnilistRequest.UpdateConfig("", "");
+            }
+            catch (Exception ex) { Logs.Err(ex); };
             // Add to Lists
             SKIP_STATUS.AddRange(new string[] { "COMPLETED", "DROPPED" });
+        }
+        public static string CreateNewFolder(string root, string folderName)
+        {
+            try
+            {
+                string dir = Path.Combine(root, folderName);
+                Directory.CreateDirectory(dir);
+                return dir;
+            }
+            catch { throw; }
         }
         public static string GetAppVersion()
         {
@@ -111,12 +115,11 @@ namespace Shelf.Functions
         }
         public static bool WriteFile(string filename, string content)
         {
+            if (String.IsNullOrWhiteSpace(content)) { return false; }
             try
             {
                 if (File.Exists(filename))
-                {
                     File.Delete(filename);
-                }
             }
             catch { throw new Exception("Cannot overwrite existing file!"); }
             try
@@ -127,7 +130,7 @@ namespace Shelf.Functions
                 }
                 return true;
             }
-            catch { }
+            catch (Exception ex) { Logs.Err(ex); }
             return false;
         }
         public static void AppendFile(string file, string content, bool Addline=false)
@@ -224,10 +227,7 @@ namespace Shelf.Functions
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                Logs.Err(ex);
-            }
+            catch (Exception ex) { Logs.Err(ex); }
         }
         public static string Decompress(string filepath, string newFileName)
         {
@@ -256,10 +256,7 @@ namespace Shelf.Functions
                 if (File.Exists(newFileName))
                     return newFileName;
             }
-            catch (Exception ex)
-            {
-                Logs.Err(ex);
-            }
+            catch (Exception ex) { Logs.Err(ex); }
             return "";
         }
         public static string BrowseForFile(string Title, string filter, string InitialDir)

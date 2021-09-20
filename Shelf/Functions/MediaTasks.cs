@@ -104,7 +104,7 @@ namespace Shelf.Functions
         }
         public static async Task<BackupTachiProto> LoadTachiyomiBackup(string file)
         {
-            if (!File.Exists(file)) { Logs.Err($"File is missing: {file}"); return null; }
+            if (!File.Exists(file)) { Logs.Err($"Tachiyomi backup is missing => {file}"); return null; }
             try
             {
                 string filetoRead = file;

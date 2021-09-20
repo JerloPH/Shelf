@@ -53,10 +53,11 @@ namespace Shelf
             this.tpMediaAnime = new System.Windows.Forms.TabPage();
             this.tpMediaManga = new System.Windows.Forms.TabPage();
             this.lvManga = new System.Windows.Forms.ListView();
-            this.cbMediaRefresh = new System.Windows.Forms.ComboBox();
             this.tpMediaTachi = new System.Windows.Forms.TabPage();
             this.tpMediaLocalAnime = new System.Windows.Forms.TabPage();
             this.tpMediaLocalManga = new System.Windows.Forms.TabPage();
+            this.cbMediaRefresh = new System.Windows.Forms.ComboBox();
+            this.lvTachi = new System.Windows.Forms.ListView();
             this.tabControl.SuspendLayout();
             this.tpgBasic.SuspendLayout();
             this.tpgConfig.SuspendLayout();
@@ -64,6 +65,7 @@ namespace Shelf
             this.tabMedia.SuspendLayout();
             this.tpMediaAnime.SuspendLayout();
             this.tpMediaManga.SuspendLayout();
+            this.tpMediaTachi.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnRefresh
@@ -325,18 +327,9 @@ namespace Shelf
             this.lvManga.TabIndex = 19;
             this.lvManga.UseCompatibleStateImageBehavior = false;
             // 
-            // cbMediaRefresh
-            // 
-            this.cbMediaRefresh.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbMediaRefresh.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.cbMediaRefresh.FormattingEnabled = true;
-            this.cbMediaRefresh.Location = new System.Drawing.Point(458, 12);
-            this.cbMediaRefresh.Name = "cbMediaRefresh";
-            this.cbMediaRefresh.Size = new System.Drawing.Size(251, 39);
-            this.cbMediaRefresh.TabIndex = 12;
-            // 
             // tpMediaTachi
             // 
+            this.tpMediaTachi.Controls.Add(this.lvTachi);
             this.tpMediaTachi.Location = new System.Drawing.Point(4, 29);
             this.tpMediaTachi.Name = "tpMediaTachi";
             this.tpMediaTachi.Padding = new System.Windows.Forms.Padding(3);
@@ -363,6 +356,26 @@ namespace Shelf
             this.tpMediaLocalManga.Text = "Local Manga";
             this.tpMediaLocalManga.UseVisualStyleBackColor = true;
             // 
+            // cbMediaRefresh
+            // 
+            this.cbMediaRefresh.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbMediaRefresh.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.cbMediaRefresh.FormattingEnabled = true;
+            this.cbMediaRefresh.Location = new System.Drawing.Point(458, 12);
+            this.cbMediaRefresh.Name = "cbMediaRefresh";
+            this.cbMediaRefresh.Size = new System.Drawing.Size(251, 39);
+            this.cbMediaRefresh.TabIndex = 12;
+            // 
+            // lvTachi
+            // 
+            this.lvTachi.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lvTachi.HideSelection = false;
+            this.lvTachi.Location = new System.Drawing.Point(3, 3);
+            this.lvTachi.Name = "lvTachi";
+            this.lvTachi.Size = new System.Drawing.Size(482, 381);
+            this.lvTachi.TabIndex = 20;
+            this.lvTachi.UseCompatibleStateImageBehavior = false;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -388,6 +401,7 @@ namespace Shelf
             this.tabMedia.ResumeLayout(false);
             this.tpMediaAnime.ResumeLayout(false);
             this.tpMediaManga.ResumeLayout(false);
+            this.tpMediaTachi.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -422,6 +436,7 @@ namespace Shelf
         private System.Windows.Forms.TabPage tpMediaTachi;
         private System.Windows.Forms.TabPage tpMediaLocalAnime;
         private System.Windows.Forms.TabPage tpMediaLocalManga;
+        private System.Windows.Forms.ListView lvTachi;
     }
 }
 

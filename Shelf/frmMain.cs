@@ -1,23 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Newtonsoft.Json;
+using System.Net;
+using System.Threading;
+using Shelf.Enum;
 using Shelf.Anilist;
 using Shelf.Json;
 using Shelf.Functions;
-using Shelf.Entity;
-using System.Net;
-using System.Threading;
-using static Shelf.Functions.GlobalFunc;
-using System.Drawing.Imaging;
 
 namespace Shelf
 {
@@ -55,6 +49,10 @@ namespace Shelf
             lvManga.LargeImageList = mangaCoverList;
             lvManga.View = lvAnime.View;
             lvManga.Sorting = lvAnime.Sorting;
+            // Tachiyomi library
+            lvTachi.LargeImageList = mangaCoverList;
+            lvTachi.View = lvAnime.View;
+            lvTachi.Sorting = lvAnime.Sorting;
             // Other Controls
             cbMediaRefresh.Items.AddRange(new string[] { "All", "Anime", "Manga", "Tachiyomi", "Local Anime", "Local Manga" });
             cbMediaRefresh.SelectedIndex = 0;
@@ -115,7 +113,7 @@ namespace Shelf
 
             return false;
         }
-        public async Task<bool> RefreshMedia(MediaType type, List<Entry> medias, ListView lv, ImageList imglist)
+        public async Task<bool> RefreshMedia(MediaType type, List<Entry> medias, ListView lv, ImageList imglist, bool IsClearCover)
         {
             return await Task.Run(async delegate
             {
@@ -124,7 +122,13 @@ namespace Shelf
                 Log($"Refreshing {type} list..");
                 SetStatus($"Refreshing {type} list..");
                 lv.Invoke((Action)delegate { lv.Items.Clear(); });
-                this.Invoke((Action)delegate { imglist.Images.Clear(); });
+                if (IsClearCover)
+                {
+                    this.Invoke((Action)delegate
+                    {
+                        imglist.Images.Clear();
+                    });
+                }
                 max = medias.Count;
                 foreach (var item in medias)
                 {
@@ -146,29 +150,47 @@ namespace Shelf
             var lvitem = new ListViewItem();
             Image img = null;
             // Download Image, if not existing
-            img = await LoadImageFromTemp(item.Media.Id, type);
-            if (img == null)
+            if (item.Media.Id > 0)
             {
-                string file = GetCoverFilePath(item.Media.Id, type);
-                img = await DownloadImage(item.Media.CoverImage.Medium, file);
+                img = await LoadImageFromTemp(item.Media.Id, type);
+                if (img == null)
+                {
+                    string file = GetCoverFilePath(item.Media.Id, type);
+                    img = await DownloadImage(item.Media.CoverImage.Medium, file);
+                }
+                else
+                    Logs.App($"{type}: Loaded local image for: {item.Media.Id}.");
             }
             else
-                Logs.App($"{type}: Loaded local image for: {item.Media.Id}.");
+            {
+                img = Properties.Resources.nocover;
+            }
 
             // Run Task
             return await Task.Run(delegate
             {
                 if (img != null)
                 {
+                    string key = item.Media.Id.ToString();
                     this.Invoke((Action) delegate
                     {
-                        imglist.Images.Add(item.Media.Id.ToString(), img);
-                        lvitem.ImageKey = item.Media.Id.ToString();
+                        if (!imglist.Images.ContainsKey(key))
+                        {
+                            imglist.Images.Add(key, img);
+                        }
+                        else
+                        {
+                            if (item.Media.Id > 0)
+                                img.Dispose();
+                        }
+                        lvitem.ImageKey = key;
                     });
                 }
                 else
+                {
+                    lvitem.ImageKey = "0";
                     Logs.App($"No Image! Item: {item.Media.Id}");
-
+                }
                 // Add properties values to ListView item
                 lvitem.Tag = item.Media.Id;
                 lvitem.Text = (!String.IsNullOrWhiteSpace(item.Media.Title.English) ? item.Media.Title.English : item.Media.Title.Romaji);
@@ -431,20 +453,78 @@ namespace Shelf
         private async void btnRefreshItems_Click(object sender, EventArgs e)
         {
             btnRefreshItems.Enabled = false;
+            // vars
+            var manga = new List<Entry>();
+            string tachibackup = txtTachi.Text;
             // Declare which media to refresh
             bool loadAnime = cbMediaRefresh.SelectedIndex == 0 || cbMediaRefresh.Text.Equals("anime", StringComparison.OrdinalIgnoreCase);
             bool loadManga = cbMediaRefresh.SelectedIndex == 0 || cbMediaRefresh.Text.Equals("manga", StringComparison.OrdinalIgnoreCase);
+            bool loadTachi = cbMediaRefresh.SelectedIndex == 0 || cbMediaRefresh.Text.Equals("tachiyomi", StringComparison.OrdinalIgnoreCase);
             // Refresh Anime?
             if (loadAnime)
             {
                 var anime = await MediaTasks.GetAnimeList();
-                await RefreshMedia(MediaType.ANIME, anime, lvAnime, animeCoverList);
+                await RefreshMedia(MediaType.ANIME, anime, lvAnime, animeCoverList, true);
             }
             // Refresh Manga?
             if (loadManga)
             {
-                var manga = await MediaTasks.GetMangaList();
-                await RefreshMedia(MediaType.MANGA, manga, lvManga, mangaCoverList);
+                manga = await MediaTasks.GetMangaList();
+                await RefreshMedia(MediaType.MANGA, manga, lvManga, mangaCoverList, false);
+            }
+            // Refresh Manga?
+            if (loadTachi)
+            {
+                Log("Loading Tachiyomi library..");
+                var tachilib = await MediaTasks.LoadTachiyomiBackup(tachibackup);
+                if (tachilib != null)
+                {
+                    var entries = new List<Entry>();
+                    if (manga.Count < 1)
+                        manga = await MediaTasks.GetMangaList();
+
+                    await Task.Run(delegate
+                    {
+                        foreach (var item in tachilib.Mangas)
+                        {
+                            if (item.Tracking?.Count > 0)
+                            {
+                                foreach (var track in item.Tracking)
+                                {
+                                    if (track.TrackingUrl.Contains("anilist", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        var mangaQuery = manga.Select(x => x).Where(x => x.Media.Id == track.MediaId);
+                                        if (mangaQuery.Count() == 1)
+                                            entries.Add(mangaQuery.First());
+
+                                        break;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (item != null)
+                                {
+                                    try
+                                    {
+                                        var newEntry = new Entry();
+                                        newEntry.Media = new Media();
+                                        newEntry.Media.Title = new Title();
+                                        if (!String.IsNullOrWhiteSpace(item.Title))
+                                            newEntry.Media.Title.Romaji = item.Title;
+
+                                        newEntry.Media.Id = 0;
+                                        entries.Add(newEntry);
+                                    }
+                                    catch (Exception ex) { Logs.Err(ex); }
+                                }
+                            }
+                        }
+                    });
+                    await RefreshMedia(MediaType.MANGA, entries, lvTachi, mangaCoverList, false);
+                }
+                else
+                    Log("Tachiyomi backup file is missing!");
             }
             SetStatus("Idle");
             btnRefreshItems.Enabled = true;

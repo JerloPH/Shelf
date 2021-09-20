@@ -58,6 +58,7 @@ namespace Shelf
             this.tpMediaLocalAnime = new System.Windows.Forms.TabPage();
             this.tpMediaLocalManga = new System.Windows.Forms.TabPage();
             this.cbMediaRefresh = new System.Windows.Forms.ComboBox();
+            this.cbReplaceTachiLib = new System.Windows.Forms.CheckBox();
             this.tabControl.SuspendLayout();
             this.tpgBasic.SuspendLayout();
             this.tpgConfig.SuspendLayout();
@@ -163,7 +164,7 @@ namespace Shelf
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label3.Location = new System.Drawing.Point(3, 13);
+            this.label3.Location = new System.Drawing.Point(0, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(249, 31);
             this.label3.TabIndex = 13;
@@ -173,7 +174,7 @@ namespace Shelf
             // 
             this.txtTachi.AllowDrop = true;
             this.txtTachi.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.txtTachi.Location = new System.Drawing.Point(10, 54);
+            this.txtTachi.Location = new System.Drawing.Point(10, 34);
             this.txtTachi.Name = "txtTachi";
             this.txtTachi.Size = new System.Drawing.Size(390, 38);
             this.txtTachi.TabIndex = 12;
@@ -183,7 +184,7 @@ namespace Shelf
             // btnGenTachi
             // 
             this.btnGenTachi.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnGenTachi.Location = new System.Drawing.Point(10, 175);
+            this.btnGenTachi.Location = new System.Drawing.Point(10, 136);
             this.btnGenTachi.Name = "btnGenTachi";
             this.btnGenTachi.Size = new System.Drawing.Size(249, 52);
             this.btnGenTachi.TabIndex = 14;
@@ -205,7 +206,7 @@ namespace Shelf
             // btnChangeTachi
             // 
             this.btnChangeTachi.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnChangeTachi.Location = new System.Drawing.Point(10, 107);
+            this.btnChangeTachi.Location = new System.Drawing.Point(10, 78);
             this.btnChangeTachi.Name = "btnChangeTachi";
             this.btnChangeTachi.Size = new System.Drawing.Size(249, 52);
             this.btnChangeTachi.TabIndex = 17;
@@ -279,6 +280,7 @@ namespace Shelf
             // tpgTachi
             // 
             this.tpgTachi.AllowDrop = true;
+            this.tpgTachi.Controls.Add(this.cbReplaceTachiLib);
             this.tpgTachi.Controls.Add(this.label3);
             this.tpgTachi.Controls.Add(this.txtTachi);
             this.tpgTachi.Controls.Add(this.btnChangeTachi);
@@ -386,6 +388,17 @@ namespace Shelf
             this.cbMediaRefresh.Size = new System.Drawing.Size(251, 39);
             this.cbMediaRefresh.TabIndex = 12;
             // 
+            // cbReplaceTachiLib
+            // 
+            this.cbReplaceTachiLib.AutoSize = true;
+            this.cbReplaceTachiLib.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.cbReplaceTachiLib.Location = new System.Drawing.Point(10, 194);
+            this.cbReplaceTachiLib.Name = "cbReplaceTachiLib";
+            this.cbReplaceTachiLib.Size = new System.Drawing.Size(372, 32);
+            this.cbReplaceTachiLib.TabIndex = 18;
+            this.cbReplaceTachiLib.Text = "Replace Library with Generated Backup";
+            this.cbReplaceTachiLib.UseVisualStyleBackColor = true;
+            // 
             // frmMain
             // 
             this.AllowDrop = true;
@@ -448,6 +461,7 @@ namespace Shelf
         private System.Windows.Forms.TabPage tpMediaLocalAnime;
         private System.Windows.Forms.TabPage tpMediaLocalManga;
         private System.Windows.Forms.ListView lvTachi;
+        private System.Windows.Forms.CheckBox cbReplaceTachiLib;
     }
 }
 

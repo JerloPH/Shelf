@@ -130,7 +130,7 @@ namespace Shelf.Functions
             }
             return null;
         }
-        public static async Task GenerateMissingTachiEntries(string file)
+        public static async Task<List<Entry>> GenerateMissingTachiEntries(string file)
         {
             string categoryName = "Anilist";
             string outputPrefix = $"tachiyomi_{GlobalFunc.DATE_TODAY}";
@@ -147,8 +147,9 @@ namespace Shelf.Functions
             var backupmangalist = new List<BackupManga>(); // List of BackupManga objects, entries from 'mangalist'
             var backupMangaJson = new List<BackupMangaJson>(); // Json backup list
             BackupTachiProto tachi = null;
+            var listEntries = new List<Entry>();
             // Start Task
-            await Task.Run((Action)async delegate
+            return await Task.Run(async delegate
             {
                 try
                 {
@@ -207,6 +208,7 @@ namespace Shelf.Functions
                     tachilistNames.Clear();
                     backupmangalist.Clear();
                     backupMangaJson.Clear();
+                    return listEntries;
                 }
                 if (tachiloaded)
                 {
@@ -245,6 +247,14 @@ namespace Shelf.Functions
                                     jsonEntry.manga = new object[] { item.Media.Title.Romaji, item.Media.Title.Romaji, 0, 0, 0 };
                                     jsonEntry.categories = new string[] { categoryName };
                                     backupMangaJson.Add(jsonEntry);
+
+                                    // Add entry to result list
+                                    var newEntry = new Entry();
+                                    newEntry.Media = new Media();
+                                    newEntry.Media.Title = new Title();
+                                    newEntry.Media.Id = 0;
+                                    newEntry.Media.Title.Romaji = entry.Title;
+                                    listEntries.Add(newEntry);
                                 }
                             }
                         }
@@ -289,6 +299,7 @@ namespace Shelf.Functions
                     backupmangalist.Clear();
                     backupMangaJson.Clear();
                 }
+                return listEntries;
             });
         }
         // ############################################################ End of Class

@@ -440,6 +440,7 @@ namespace Shelf
         private async void btnGenTachi_Click(object sender, EventArgs e)
         {
             btnGenTachi.Enabled = false;
+            bool IsReplaceTachiLib = cbReplaceTachiLib.Checked;
             List<string> ext = new List<string>();
             ext.AddRange(new string[]{ "proto", "gz" });
             string file = txtTachi.Text.Trim();
@@ -449,7 +450,12 @@ namespace Shelf
                 {
                     if (ext.Contains(Path.GetExtension(file).Trim('.')))
                     {
-                        await MediaTasks.GenerateMissingTachiEntries(file);
+                        var entries = await MediaTasks.GenerateMissingTachiEntries(file);
+                        if (IsReplaceTachiLib)
+                        {
+                            await RefreshMedia(MediaType.MANGA, entries, lvTachi, mangaCoverList, false);
+                            SetStatus("Idle");
+                        }
                         GlobalFunc.Alert("Done generating Tachiyomi backup file!");
                     }
                     else

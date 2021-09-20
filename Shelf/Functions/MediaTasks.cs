@@ -342,6 +342,55 @@ namespace Shelf.Functions
                 return listEntries;
             });
         }
+        public static async Task<List<Entry>> GetTachiWithAnilist(List<Entry> manga, List<BackupManga> listofManga)
+        {
+            return await Task.Run(async delegate
+            {
+                var entries = new List<Entry>();
+                if (manga.Count < 1)
+                    manga = await GetMangaList(MediaEntryMode.All);
+
+                foreach (var item in listofManga)
+                {
+                    if (item.Tracking?.Count > 0)
+                    {
+                        foreach (var track in item.Tracking)
+                        {
+                            if (track.TrackingUrl.Contains("anilist", StringComparison.OrdinalIgnoreCase))
+                            {
+                                var mangaExisting = entries.Select(x => x).Where(x => x.Media.Id == track.MediaId);
+                                if (!mangaExisting.Any())
+                                {
+                                    var mangaQuery = manga.Select(x => x).Where(x => x.Media.Id == track.MediaId);
+                                    if (mangaQuery.Count() == 1)
+                                        entries.Add(mangaQuery.First());
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (item != null)
+                        {
+                            try
+                            {
+                                var newEntry = new Entry();
+                                newEntry.Media = new Media();
+                                newEntry.Media.Title = new Title();
+                                if (!String.IsNullOrWhiteSpace(item.Title))
+                                    newEntry.Media.Title.Romaji = item.Title;
+
+                                newEntry.Media.Id = 0;
+                                entries.Add(newEntry);
+                            }
+                            catch (Exception ex) { Logs.Err(ex); }
+                        }
+                    }
+                }
+                return entries;
+            });
+        }
         // ############################################################ End of Class
     }
 }

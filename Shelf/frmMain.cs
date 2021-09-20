@@ -509,51 +509,7 @@ namespace Shelf
                 var tachilib = await MediaTasks.LoadTachiyomiBackup(tachibackup);
                 if (tachilib != null)
                 {
-                    var entries = new List<Entry>();
-                    if (manga.Count < 1)
-                        manga = await MediaTasks.GetMangaList(MediaEntryMode.All);
-
-                    await Task.Run(delegate
-                    {
-                        foreach (var item in tachilib.Mangas)
-                        {
-                            if (item.Tracking?.Count > 0)
-                            {
-                                foreach (var track in item.Tracking)
-                                {
-                                    if (track.TrackingUrl.Contains("anilist", StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        var mangaExisting = entries.Select(x => x).Where(x => x.Media.Id == track.MediaId);
-                                        if (!mangaExisting.Any())
-                                        {
-                                            var mangaQuery = manga.Select(x => x).Where(x => x.Media.Id == track.MediaId);
-                                            if (mangaQuery.Count() == 1)
-                                                entries.Add(mangaQuery.First());
-                                        }
-                                        break;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (item != null)
-                                {
-                                    try
-                                    {
-                                        var newEntry = new Entry();
-                                        newEntry.Media = new Media();
-                                        newEntry.Media.Title = new Title();
-                                        if (!String.IsNullOrWhiteSpace(item.Title))
-                                            newEntry.Media.Title.Romaji = item.Title;
-
-                                        newEntry.Media.Id = 0;
-                                        entries.Add(newEntry);
-                                    }
-                                    catch (Exception ex) { Logs.Err(ex); }
-                                }
-                            }
-                        }
-                    });
+                    var entries = await MediaTasks.GetTachiWithAnilist(manga, tachilib.Mangas);
                     await RefreshMedia(MediaType.MANGA, entries, lvTachi, mangaCoverList, false);
                 }
                 else

@@ -264,6 +264,8 @@ namespace Shelf
         {
             cbMedia.Items.AddRange(new string[] { "ALL", "ANIME", "MANGA" });
             cbMedia.SelectedIndex = 0;
+            cbEntryMode.DataSource = MediaEntryMode.GetValues(typeof(MediaEntryMode));
+            cbEntryMode.SelectedIndex = 0;
             Log("Click on 'Refresh Token' to start!");
             TokenDate = DateTime.Now.AddMinutes(-61);
             Log($"Date of Token: {TokenDate}");
@@ -477,22 +479,27 @@ namespace Shelf
         {
             btnRefreshItems.Enabled = false;
             // vars
+            MediaEntryMode mode = MediaEntryMode.All;
             var manga = new List<Entry>();
             string tachibackup = txtTachi.Text;
             // Declare which media to refresh
             bool loadAnime = cbMediaRefresh.SelectedIndex == 0 || cbMediaRefresh.Text.Equals("anime", StringComparison.OrdinalIgnoreCase);
             bool loadManga = cbMediaRefresh.SelectedIndex == 0 || cbMediaRefresh.Text.Equals("manga", StringComparison.OrdinalIgnoreCase);
             bool loadTachi = cbMediaRefresh.SelectedIndex == 0 || cbMediaRefresh.Text.Equals("tachiyomi", StringComparison.OrdinalIgnoreCase);
+            // Switch Entry Mode
+            if (cbEntryMode.SelectedIndex > 0)
+                mode = (MediaEntryMode)cbEntryMode.SelectedIndex;
+
             // Refresh Anime?
             if (loadAnime)
             {
-                var anime = await MediaTasks.GetAnimeList(MediaEntryMode.All);
+                var anime = await MediaTasks.GetAnimeList(mode);
                 await RefreshMedia(MediaType.ANIME, anime, lvAnime, animeCoverList, true);
             }
             // Refresh Manga?
             if (loadManga)
             {
-                manga = await MediaTasks.GetMangaList(MediaEntryMode.All);
+                manga = await MediaTasks.GetMangaList(mode);
                 await RefreshMedia(MediaType.MANGA, manga, lvManga, mangaCoverList, false);
             }
             // Refresh Manga?

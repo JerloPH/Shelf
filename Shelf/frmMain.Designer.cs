@@ -49,6 +49,7 @@ namespace Shelf
             this.tpgBasic = new System.Windows.Forms.TabPage();
             this.tpgConfig = new System.Windows.Forms.TabPage();
             this.tpgTachi = new System.Windows.Forms.TabPage();
+            this.cbReplaceTachiLib = new System.Windows.Forms.CheckBox();
             this.tabMedia = new System.Windows.Forms.TabControl();
             this.tpMediaAnime = new System.Windows.Forms.TabPage();
             this.tpMediaManga = new System.Windows.Forms.TabPage();
@@ -58,7 +59,7 @@ namespace Shelf
             this.tpMediaLocalAnime = new System.Windows.Forms.TabPage();
             this.tpMediaLocalManga = new System.Windows.Forms.TabPage();
             this.cbMediaRefresh = new System.Windows.Forms.ComboBox();
-            this.cbReplaceTachiLib = new System.Windows.Forms.CheckBox();
+            this.cbEntryMode = new System.Windows.Forms.ComboBox();
             this.tabControl.SuspendLayout();
             this.tpgBasic.SuspendLayout();
             this.tpgConfig.SuspendLayout();
@@ -152,7 +153,7 @@ namespace Shelf
             // btnMALExport
             // 
             this.btnMALExport.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnMALExport.Location = new System.Drawing.Point(143, 167);
+            this.btnMALExport.Location = new System.Drawing.Point(143, 160);
             this.btnMALExport.Name = "btnMALExport";
             this.btnMALExport.Size = new System.Drawing.Size(249, 52);
             this.btnMALExport.TabIndex = 11;
@@ -195,7 +196,7 @@ namespace Shelf
             // btnRefreshItems
             // 
             this.btnRefreshItems.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnRefreshItems.Location = new System.Drawing.Point(728, 12);
+            this.btnRefreshItems.Location = new System.Drawing.Point(861, 12);
             this.btnRefreshItems.Name = "btnRefreshItems";
             this.btnRefreshItems.Size = new System.Drawing.Size(170, 51);
             this.btnRefreshItems.TabIndex = 16;
@@ -220,7 +221,7 @@ namespace Shelf
             this.lvAnime.HideSelection = false;
             this.lvAnime.Location = new System.Drawing.Point(3, 3);
             this.lvAnime.Name = "lvAnime";
-            this.lvAnime.Size = new System.Drawing.Size(482, 381);
+            this.lvAnime.Size = new System.Drawing.Size(563, 381);
             this.lvAnime.TabIndex = 18;
             this.lvAnime.UseCompatibleStateImageBehavior = false;
             // 
@@ -294,6 +295,17 @@ namespace Shelf
             this.tpgTachi.DragDrop += new System.Windows.Forms.DragEventHandler(this.tpgTachi_DragDrop);
             this.tpgTachi.DragEnter += new System.Windows.Forms.DragEventHandler(this.tpgTachi_DragEnter);
             // 
+            // cbReplaceTachiLib
+            // 
+            this.cbReplaceTachiLib.AutoSize = true;
+            this.cbReplaceTachiLib.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.cbReplaceTachiLib.Location = new System.Drawing.Point(10, 194);
+            this.cbReplaceTachiLib.Name = "cbReplaceTachiLib";
+            this.cbReplaceTachiLib.Size = new System.Drawing.Size(372, 32);
+            this.cbReplaceTachiLib.TabIndex = 18;
+            this.cbReplaceTachiLib.Text = "Replace Library with Generated Backup";
+            this.cbReplaceTachiLib.UseVisualStyleBackColor = true;
+            // 
             // tabMedia
             // 
             this.tabMedia.Controls.Add(this.tpMediaAnime);
@@ -304,7 +316,7 @@ namespace Shelf
             this.tabMedia.Location = new System.Drawing.Point(454, 101);
             this.tabMedia.Name = "tabMedia";
             this.tabMedia.SelectedIndex = 0;
-            this.tabMedia.Size = new System.Drawing.Size(496, 420);
+            this.tabMedia.Size = new System.Drawing.Size(577, 420);
             this.tabMedia.TabIndex = 21;
             // 
             // tpMediaAnime
@@ -313,7 +325,7 @@ namespace Shelf
             this.tpMediaAnime.Location = new System.Drawing.Point(4, 29);
             this.tpMediaAnime.Name = "tpMediaAnime";
             this.tpMediaAnime.Padding = new System.Windows.Forms.Padding(3);
-            this.tpMediaAnime.Size = new System.Drawing.Size(488, 387);
+            this.tpMediaAnime.Size = new System.Drawing.Size(569, 387);
             this.tpMediaAnime.TabIndex = 0;
             this.tpMediaAnime.Text = "Anime";
             this.tpMediaAnime.UseVisualStyleBackColor = true;
@@ -385,33 +397,33 @@ namespace Shelf
             this.cbMediaRefresh.FormattingEnabled = true;
             this.cbMediaRefresh.Location = new System.Drawing.Point(458, 12);
             this.cbMediaRefresh.Name = "cbMediaRefresh";
-            this.cbMediaRefresh.Size = new System.Drawing.Size(251, 39);
+            this.cbMediaRefresh.Size = new System.Drawing.Size(202, 39);
             this.cbMediaRefresh.TabIndex = 12;
             // 
-            // cbReplaceTachiLib
+            // cbEntryMode
             // 
-            this.cbReplaceTachiLib.AutoSize = true;
-            this.cbReplaceTachiLib.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.cbReplaceTachiLib.Location = new System.Drawing.Point(10, 194);
-            this.cbReplaceTachiLib.Name = "cbReplaceTachiLib";
-            this.cbReplaceTachiLib.Size = new System.Drawing.Size(372, 32);
-            this.cbReplaceTachiLib.TabIndex = 18;
-            this.cbReplaceTachiLib.Text = "Replace Library with Generated Backup";
-            this.cbReplaceTachiLib.UseVisualStyleBackColor = true;
+            this.cbEntryMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbEntryMode.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.cbEntryMode.FormattingEnabled = true;
+            this.cbEntryMode.Location = new System.Drawing.Point(666, 12);
+            this.cbEntryMode.Name = "cbEntryMode";
+            this.cbEntryMode.Size = new System.Drawing.Size(179, 39);
+            this.cbEntryMode.TabIndex = 22;
             // 
             // frmMain
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(962, 533);
+            this.ClientSize = new System.Drawing.Size(1043, 533);
+            this.Controls.Add(this.cbEntryMode);
             this.Controls.Add(this.cbMediaRefresh);
             this.Controls.Add(this.tabMedia);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.lblStatus);
             this.Controls.Add(this.btnRefreshItems);
             this.Controls.Add(this.txtLog);
-            this.MinimumSize = new System.Drawing.Size(980, 580);
+            this.MinimumSize = new System.Drawing.Size(1061, 580);
             this.Name = "frmMain";
             this.Text = "frmMain";
             this.Load += new System.EventHandler(this.frmMain_Load);
@@ -462,6 +474,7 @@ namespace Shelf
         private System.Windows.Forms.TabPage tpMediaLocalManga;
         private System.Windows.Forms.ListView lvTachi;
         private System.Windows.Forms.CheckBox cbReplaceTachiLib;
+        private System.Windows.Forms.ComboBox cbEntryMode;
     }
 }
 

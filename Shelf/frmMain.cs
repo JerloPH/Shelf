@@ -57,6 +57,23 @@ namespace Shelf
             cbMediaRefresh.Items.AddRange(new string[] { "All", "Anime", "Manga", "Tachiyomi", "Local Anime", "Local Manga" });
             cbMediaRefresh.SelectedIndex = 0;
         }
+        public static bool SetDragFileOnTextBox(DragEventArgs e, TextBox tbox)
+        {
+            if (e?.Data != null)
+            {
+                string[] data = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+                foreach (var item in data)
+                {
+                    if (File.Exists(item) && (item.EndsWith("gz") || item.EndsWith("proto")))
+                    {
+                        tbox.Text = item;
+                        break;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
         #region Form-specific functions
         public void Log(string log)
         {
@@ -541,6 +558,31 @@ namespace Shelf
         {
             if (File.Exists(txtTachi.Text))
                 GlobalFunc.FileOpeninExplorer(txtTachi.Text);
+        }
+
+        private void tpgTachi_DragDrop(object sender, DragEventArgs e)
+        {
+            SetDragFileOnTextBox(e, txtTachi);
+        }
+
+        private void tabControl_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Copy;
+        }
+
+        private void tpgTachi_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Copy;
+        }
+
+        private void txtTachi_DragDrop(object sender, DragEventArgs e)
+        {
+            SetDragFileOnTextBox(e, txtTachi);
+        }
+
+        private void txtTachi_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Copy;
         }
     }
 }

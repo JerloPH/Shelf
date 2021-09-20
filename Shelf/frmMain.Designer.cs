@@ -54,10 +54,10 @@ namespace Shelf
             this.tpMediaManga = new System.Windows.Forms.TabPage();
             this.lvManga = new System.Windows.Forms.ListView();
             this.tpMediaTachi = new System.Windows.Forms.TabPage();
+            this.lvTachi = new System.Windows.Forms.ListView();
             this.tpMediaLocalAnime = new System.Windows.Forms.TabPage();
             this.tpMediaLocalManga = new System.Windows.Forms.TabPage();
             this.cbMediaRefresh = new System.Windows.Forms.ComboBox();
-            this.lvTachi = new System.Windows.Forms.ListView();
             this.tabControl.SuspendLayout();
             this.tpgBasic.SuspendLayout();
             this.tpgConfig.SuspendLayout();
@@ -171,11 +171,14 @@ namespace Shelf
             // 
             // txtTachi
             // 
+            this.txtTachi.AllowDrop = true;
             this.txtTachi.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.txtTachi.Location = new System.Drawing.Point(10, 54);
             this.txtTachi.Name = "txtTachi";
             this.txtTachi.Size = new System.Drawing.Size(390, 38);
             this.txtTachi.TabIndex = 12;
+            this.txtTachi.DragDrop += new System.Windows.Forms.DragEventHandler(this.txtTachi_DragDrop);
+            this.txtTachi.DragEnter += new System.Windows.Forms.DragEventHandler(this.txtTachi_DragEnter);
             // 
             // btnGenTachi
             // 
@@ -232,6 +235,7 @@ namespace Shelf
             // 
             // tabControl
             // 
+            this.tabControl.AllowDrop = true;
             this.tabControl.Controls.Add(this.tpgBasic);
             this.tabControl.Controls.Add(this.tpgConfig);
             this.tabControl.Controls.Add(this.tpgTachi);
@@ -240,9 +244,11 @@ namespace Shelf
             this.tabControl.SelectedIndex = 0;
             this.tabControl.Size = new System.Drawing.Size(425, 273);
             this.tabControl.TabIndex = 20;
+            this.tabControl.DragEnter += new System.Windows.Forms.DragEventHandler(this.tabControl_DragEnter);
             // 
             // tpgBasic
             // 
+            this.tpgBasic.AllowDrop = true;
             this.tpgBasic.Controls.Add(this.txtUsername);
             this.tpgBasic.Controls.Add(this.cbMedia);
             this.tpgBasic.Controls.Add(this.label1);
@@ -259,6 +265,7 @@ namespace Shelf
             // 
             // tpgConfig
             // 
+            this.tpgConfig.AllowDrop = true;
             this.tpgConfig.Controls.Add(this.btnChangeConfig);
             this.tpgConfig.Controls.Add(this.btnRefresh);
             this.tpgConfig.Location = new System.Drawing.Point(4, 29);
@@ -271,6 +278,7 @@ namespace Shelf
             // 
             // tpgTachi
             // 
+            this.tpgTachi.AllowDrop = true;
             this.tpgTachi.Controls.Add(this.label3);
             this.tpgTachi.Controls.Add(this.txtTachi);
             this.tpgTachi.Controls.Add(this.btnChangeTachi);
@@ -281,6 +289,8 @@ namespace Shelf
             this.tpgTachi.TabIndex = 2;
             this.tpgTachi.Text = "Tachiyomi";
             this.tpgTachi.UseVisualStyleBackColor = true;
+            this.tpgTachi.DragDrop += new System.Windows.Forms.DragEventHandler(this.tpgTachi_DragDrop);
+            this.tpgTachi.DragEnter += new System.Windows.Forms.DragEventHandler(this.tpgTachi_DragEnter);
             // 
             // tabMedia
             // 
@@ -338,6 +348,16 @@ namespace Shelf
             this.tpMediaTachi.Text = "Tachiyomi";
             this.tpMediaTachi.UseVisualStyleBackColor = true;
             // 
+            // lvTachi
+            // 
+            this.lvTachi.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lvTachi.HideSelection = false;
+            this.lvTachi.Location = new System.Drawing.Point(3, 3);
+            this.lvTachi.Name = "lvTachi";
+            this.lvTachi.Size = new System.Drawing.Size(482, 381);
+            this.lvTachi.TabIndex = 20;
+            this.lvTachi.UseCompatibleStateImageBehavior = false;
+            // 
             // tpMediaLocalAnime
             // 
             this.tpMediaLocalAnime.Location = new System.Drawing.Point(4, 29);
@@ -366,18 +386,9 @@ namespace Shelf
             this.cbMediaRefresh.Size = new System.Drawing.Size(251, 39);
             this.cbMediaRefresh.TabIndex = 12;
             // 
-            // lvTachi
-            // 
-            this.lvTachi.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lvTachi.HideSelection = false;
-            this.lvTachi.Location = new System.Drawing.Point(3, 3);
-            this.lvTachi.Name = "lvTachi";
-            this.lvTachi.Size = new System.Drawing.Size(482, 381);
-            this.lvTachi.TabIndex = 20;
-            this.lvTachi.UseCompatibleStateImageBehavior = false;
-            // 
             // frmMain
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(962, 533);

@@ -12,6 +12,7 @@ using Shelf.Enum;
 using Shelf.Anilist;
 using Shelf.Json;
 using Shelf.Functions;
+using System.ComponentModel;
 
 namespace Shelf
 {
@@ -264,8 +265,11 @@ namespace Shelf
         {
             cbMedia.Items.AddRange(new string[] { "ALL", "ANIME", "MANGA" });
             cbMedia.SelectedIndex = 0;
-            cbEntryMode.DataSource = MediaEntryMode.GetValues(typeof(MediaEntryMode));
-            cbEntryMode.SelectedIndex = 0;
+            try
+            {
+                UIHelper.PopulateCombobox<MediaEntryMode>(cbEntryMode);
+            }
+            catch (Exception ex) { Logs.Err(ex); GlobalFunc.Alert("Mode not initialized!"); }
             Log("Click on 'Refresh Token' to start!");
             TokenDate = DateTime.Now.AddMinutes(-61);
             Log($"Date of Token: {TokenDate}");

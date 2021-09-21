@@ -57,13 +57,13 @@ namespace Shelf.Functions
                     }
                     else
                     {
-                        // Skip MAL Entries
+                        // Skip MAL Entries, showing non-MAL entries
                         if (item.Media.IdMal == null)
                             data2.Add(item);
                         else
                         {
-                            if (item.Media.IdMal > 0)
-                                continue;
+                            if (item.Media.IdMal < 1)
+                                data2.Add(item);
                         }
                     }
                 }

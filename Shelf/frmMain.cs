@@ -13,6 +13,7 @@ using Shelf.Anilist;
 using Shelf.Json;
 using Shelf.Functions;
 using System.ComponentModel;
+using Shelf.Entity;
 
 namespace Shelf
 {
@@ -25,6 +26,8 @@ namespace Shelf
         private DateTime? TokenDate = null;
         private ImageList animeCoverList = new ImageList();
         private ImageList mangaCoverList = new ImageList();
+        private ImageList localmangaCoverList = new ImageList();
+        private LocalMedia localMedia = new LocalMedia();
 
         // Public Properties
         public Form ConfigForm { get; set; } = null; // Config form
@@ -54,9 +57,47 @@ namespace Shelf
             lvTachi.LargeImageList = mangaCoverList;
             lvTachi.View = lvAnime.View;
             lvTachi.Sorting = lvAnime.Sorting;
+            // Local Manga
+            lvLocalManga.LargeImageList = localmangaCoverList;
+            lvLocalManga.View = lvAnime.View;
+            lvLocalManga.Sorting = lvAnime.Sorting;
             // Other Controls
             cbMediaRefresh.Items.AddRange(new string[] { "All", "Anime", "Manga", "Tachiyomi", "Local Anime", "Local Manga" });
             cbMediaRefresh.SelectedIndex = 0;
+            cbMedia.Items.AddRange(new string[] { "ALL", "ANIME", "MANGA" });
+            cbMedia.SelectedIndex = 0;
+        }
+        private async Task InitializeObjects()
+        {
+            // Paths for Local Media
+            try
+            {
+                await Task.Run(delegate
+                {
+                    this.Invoke((Action)delegate
+                    {
+                        if (File.Exists(GlobalFunc.FILE_LOCAL_MEDIA))
+                        {
+                            localMedia = GlobalFunc.JsonDecode<LocalMedia>(GlobalFunc.FILE_LOCAL_MEDIA);
+                        }
+                        else
+                        {
+                            localMedia.anime_paths = new List<LocalMediaPaths>();
+                            localMedia.manga_paths = new List<LocalMediaPaths>();
+                            if (GlobalFunc.DEBUG)
+                            {
+                                string path1 = GlobalFunc.CreateNewFolder(GlobalFunc.DIR_TEMP, "mangaFolder1");
+                                string path2 = GlobalFunc.CreateNewFolder(GlobalFunc.DIR_TEMP, "mangaFolder2");
+                                localMedia.manga_paths.Add(new LocalMediaPaths() { folder = path1, isSeparateSources = false });
+                                localMedia.manga_paths.Add(new LocalMediaPaths() { folder = path2, isSeparateSources = false });
+                                GlobalFunc.JsonEncode(localMedia, GlobalFunc.FILE_LOCAL_MEDIA);
+                            }
+                        }
+                        UIHelper.BindLocalMediaToDataGrid(gridPathLocalManga, localMedia.manga_paths);
+                    });
+                });
+            }
+            catch (Exception ex) { Logs.Err(ex); }
         }
         public static bool SetDragFileOnTextBox(DragEventArgs e, TextBox tbox)
         {
@@ -135,7 +176,7 @@ namespace Shelf
         {
             return await Task.Run(async delegate
             {
-                int count = 0;
+                long count = 0;
                 int max = 0;
                 Log($"Refreshing {type} list..");
                 SetStatus($"Refreshing {type} list..");
@@ -152,7 +193,7 @@ namespace Shelf
                 {
                     count += 1;
                     SetStatus($"Adding item..{count}/{max}");
-                    await AddItemToListView(lv, imglist, item, type);
+                    await AddItemToListView(lv, imglist, item, type, count);
                     Thread.Sleep(10);
                     if (count >= 10 && GlobalFunc.DEBUG)
                         break;
@@ -162,34 +203,32 @@ namespace Shelf
                 return true;
             });
         }
-        public async Task<bool> AddItemToListView(ListView lv, ImageList imglist, Entry item, MediaType type)
+        public async Task<bool> AddItemToListView(ListView lv, ImageList imglist, Entry item, MediaType type, long count)
         {
             // Declare variables
             var lvitem = new ListViewItem();
             Image img = null;
-            // Download Image, if not existing
-            if (item.Media.Id > 0)
+            bool isLocal = (type == MediaType.LOCAL_ANIME || type == MediaType.LOCAL_MANGA);
+            // Get Image
+            if (isLocal)
             {
-                img = await LoadImageFromTemp(item.Media.Id, type);
-                if (img == null)
-                {
-                    string file = GetCoverFilePath(item.Media.Id, type);
-                    img = await DownloadImage(item.Media.CoverImage.Medium, file);
-                }
-                else
-                    Logs.App($"{type}: Loaded local image for: {item.Media.Id}.");
+                img = await LoadImageLocal(item.Path); // Load Local
             }
             else
             {
+                // Load Image for Anilist entry
+                img = await LoadImageAnilist(item.Media.Id, item.Media.CoverImage.Medium, type);
+            }
+            if (img == null)
+            {
                 img = Properties.Resources.nocover;
             }
-
             // Run Task
             return await Task.Run(delegate
             {
                 if (img != null)
                 {
-                    string key = item.Media.Id.ToString();
+                    string key = (isLocal ? count.ToString() : item.Media.Id.ToString());
                     this.Invoke((Action) delegate
                     {
                         if (!imglist.Images.ContainsKey(key))
@@ -198,7 +237,7 @@ namespace Shelf
                         }
                         else
                         {
-                            if (item.Media.Id > 0)
+                            if (key != "0")
                                 img.Dispose();
                         }
                         lvitem.ImageKey = key;
@@ -219,6 +258,38 @@ namespace Shelf
                 return true;
             });
         }
+        public async Task<Image> LoadImageLocal(string path)
+        {
+            try
+            {
+                return await Task.Run(delegate
+                {
+                    // TODO: Load 'cover.jpg' from folder
+                    Image img = null;
+                    return img;
+                });
+            }
+            catch (Exception ex) { Logs.Err(ex); }
+            return null;
+        }
+        public async Task<Image> LoadImageAnilist(long Id, string link, MediaType type)
+        {
+            try
+            {
+                if (Id > 0)
+                {
+                    Image img = await LoadImageFromTemp(Id, type);
+                    if (img == null)
+                    {
+                        string file = GetCoverFilePath(Id, type);
+                        img = await DownloadImage(link, file);
+                    }
+                    return img;
+                }
+            }
+            catch (Exception ex) { Logs.Err(ex); }
+            return null;
+        }
         public async Task<Image> LoadImageFromTemp(long Id, MediaType type)
         {
             try
@@ -232,10 +303,7 @@ namespace Shelf
                     });
                 }
             }
-            catch (Exception ex)
-            {
-                Logs.Err(ex);
-            }
+            catch (Exception ex) { Logs.Err(ex); }
             return null;
         }
         public async Task<Image> DownloadImage(string link, string saveTo)
@@ -261,10 +329,8 @@ namespace Shelf
         }
         #endregion
         // ####################################################################### Events
-        private void frmMain_Load(object sender, EventArgs e)
+        private async void frmMain_Load(object sender, EventArgs e)
         {
-            cbMedia.Items.AddRange(new string[] { "ALL", "ANIME", "MANGA" });
-            cbMedia.SelectedIndex = 0;
             try
             {
                 UIHelper.PopulateCombobox<MediaEntryMode>(cbEntryMode);
@@ -274,6 +340,7 @@ namespace Shelf
             TokenDate = DateTime.Now.AddMinutes(-61);
             Log($"Date of Token: {TokenDate}");
             //btnRefresh.PerformClick(); // Fetch access code and token
+            await InitializeObjects();
         }
         private void frmMain_Resize(object sender, EventArgs e)
         {
@@ -490,23 +557,24 @@ namespace Shelf
             bool loadAnime = cbMediaRefresh.SelectedIndex == 0 || cbMediaRefresh.Text.Equals("anime", StringComparison.OrdinalIgnoreCase);
             bool loadManga = cbMediaRefresh.SelectedIndex == 0 || cbMediaRefresh.Text.Equals("manga", StringComparison.OrdinalIgnoreCase);
             bool loadTachi = cbMediaRefresh.SelectedIndex == 0 || cbMediaRefresh.Text.Equals("tachiyomi", StringComparison.OrdinalIgnoreCase);
+            bool loadLocalManga = cbMediaRefresh.SelectedIndex == 0 || cbMediaRefresh.Text.Equals("local manga", StringComparison.OrdinalIgnoreCase);
             // Switch Entry Mode
             if (cbEntryMode.SelectedIndex > 0)
                 mode = (MediaEntryMode)cbEntryMode.SelectedIndex;
 
-            // Refresh Anime?
+            // Refresh Anime
             if (loadAnime)
             {
                 var anime = await MediaTasks.GetAnimeList(mode);
                 await RefreshMedia(MediaType.ANIME, anime, lvAnime, animeCoverList, true);
             }
-            // Refresh Manga?
+            // Refresh Manga
             if (loadManga)
             {
                 manga = await MediaTasks.GetMangaList(mode);
                 await RefreshMedia(MediaType.MANGA, manga, lvManga, mangaCoverList, false);
             }
-            // Refresh Manga?
+            // Refresh Tachiyomi Manga
             if (loadTachi)
             {
                 Log("Loading Tachiyomi library..");
@@ -518,6 +586,12 @@ namespace Shelf
                 }
                 else
                     Log("Tachiyomi backup file is missing!");
+            }
+            // Refresh Local Manga
+            if (loadLocalManga)
+            {
+                var localManga = await MediaTasks.GetLocalMedia(localMedia.manga_paths);
+                await RefreshMedia(MediaType.LOCAL_MANGA, localManga, lvLocalManga, localmangaCoverList, true);
             }
             SetStatus("Idle");
             btnRefreshItems.Enabled = true;
@@ -559,6 +633,12 @@ namespace Shelf
         private void txtTachi_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Copy;
+        }
+
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            // TODO: Remove this WIP
+            GlobalFunc.JsonEncode(localMedia.manga_paths, GlobalFunc.FILE_LOCAL_MEDIA + "_manga.json");
         }
     }
 }

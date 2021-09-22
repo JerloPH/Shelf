@@ -59,6 +59,9 @@ namespace Shelf.Json
 
         [JsonProperty("media")]
         public Media Media { get; set; }
+
+        [JsonIgnore]
+        public string Path { get; set; }
     }
 
     public partial class EntryDate

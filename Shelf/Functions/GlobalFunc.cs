@@ -28,6 +28,7 @@ namespace Shelf.Functions
         public static string DIR_TEMP_ANIMECOVER = "";
         public static string DIR_TEMP_MANGACOVER = "";
         public static string FILE_ANILIST_CONFIG = "";
+        public static string FILE_LOCAL_MEDIA = "";
         public static string FILE_ANIME = "";
         public static string FILE_MANGA = "";
         public static string FILE_LOG = "";
@@ -64,6 +65,7 @@ namespace Shelf.Functions
                 FILE_MANGA = Path.Combine(DIR_DATA, "AnilistMediaMANGA.json");
                 FILE_AUTH_CODE = Path.Combine(DIR_DATA, "AuthCode.tkn");
                 FILE_PUB_TKN = Path.Combine(DIR_DATA, "PublicToken.tkn");
+                FILE_LOCAL_MEDIA = Path.Combine(DIR_DATA, "LocalMediaPaths.json");
             }
             catch (Exception ex) { Logs.Err(ex); GlobalFunc.Alert("Some files are not initialized!"); }
             try
@@ -115,7 +117,6 @@ namespace Shelf.Functions
         }
         public static bool WriteFile(string filename, string content)
         {
-            if (String.IsNullOrWhiteSpace(content)) { return false; }
             try
             {
                 if (File.Exists(filename))
@@ -190,6 +191,29 @@ namespace Shelf.Functions
             }
             catch (Exception ex) { Logs.Err(ex); }
             return media;
+        }
+        public static T JsonDecode<T>(string file) where T : class
+        {
+            try
+            {
+                string content = ReadFromFile(file);
+                if (!String.IsNullOrWhiteSpace(content))
+                {
+                    var media = JsonConvert.DeserializeObject<T>(content);
+                    return media;
+                }
+            }
+            catch { throw; }
+            return null;
+        }
+        public static bool JsonEncode<T>(T data, string file) where T : class
+        {
+            if (null == data) return false;
+            try
+            {
+                return WriteFile(file, JsonConvert.SerializeObject(data, Formatting.Indented));
+            }
+            catch  { throw; }
         }
         public static byte[] ProtoSerialize<T>(T record) where T : class
         {

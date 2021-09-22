@@ -394,6 +394,20 @@ namespace Shelf.Functions
                     return await GetEntriesStripByMode(entries, mode);
             });
         }
+
+        public static async Task<List<Entry>> GetLocalMedia(List<LocalMediaPaths> data)
+        {
+            try
+            {
+                // TODO: Add folders as 'Entry'
+                return await Task.Run(delegate
+                {
+                    var list = new List<Entry>();
+                    return list;
+                });
+            }
+            catch { throw; }
+        }
         // ############################################################ End of Class
     }
 }

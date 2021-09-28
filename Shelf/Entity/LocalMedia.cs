@@ -1,9 +1,6 @@
 ﻿using Newtonsoft.Json;
-using System;
+using Shelf.Enum;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Shelf.Entity
 {
@@ -23,5 +20,8 @@ namespace Shelf.Entity
 
         [JsonProperty("isSeparateSources")]
         public bool isSeparateSources { get; set; }
+
+        [JsonProperty("MediaType")]
+        public MediaAniManga mediaType { get; set; }
     }
 }

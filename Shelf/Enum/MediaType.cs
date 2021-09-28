@@ -9,4 +9,9 @@ namespace Shelf.Enum
         LOCAL_ANIME = 3,
         LOCAL_MANGA = 4
     }
+    public enum MediaAniManga
+    {
+        ANIME = 0,
+        MANGA = 1
+    }
 }

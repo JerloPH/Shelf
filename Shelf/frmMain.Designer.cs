@@ -51,11 +51,11 @@ namespace Shelf
             this.tpgTachi = new System.Windows.Forms.TabPage();
             this.cbReplaceTachiLib = new System.Windows.Forms.CheckBox();
             this.tpgLocal = new System.Windows.Forms.TabPage();
-            this.tabLocalMedia = new System.Windows.Forms.TabControl();
-            this.tpgLocalAnime = new System.Windows.Forms.TabPage();
-            this.tpgLocalManga = new System.Windows.Forms.TabPage();
             this.btnLocalMangaAdd = new System.Windows.Forms.Button();
             this.gridPathLocalManga = new System.Windows.Forms.DataGridView();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.Column3 = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.label4 = new System.Windows.Forms.Label();
             this.tabMedia = new System.Windows.Forms.TabControl();
             this.tpMediaAnime = new System.Windows.Forms.TabPage();
@@ -65,16 +65,14 @@ namespace Shelf
             this.lvTachi = new System.Windows.Forms.ListView();
             this.tpMediaLocalAnime = new System.Windows.Forms.TabPage();
             this.tpMediaLocalManga = new System.Windows.Forms.TabPage();
+            this.lvLocalManga = new System.Windows.Forms.ListView();
             this.cbMediaRefresh = new System.Windows.Forms.ComboBox();
             this.cbEntryMode = new System.Windows.Forms.ComboBox();
-            this.lvLocalManga = new System.Windows.Forms.ListView();
             this.tabControl.SuspendLayout();
             this.tpgBasic.SuspendLayout();
             this.tpgConfig.SuspendLayout();
             this.tpgTachi.SuspendLayout();
             this.tpgLocal.SuspendLayout();
-            this.tabLocalMedia.SuspendLayout();
-            this.tpgLocalManga.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridPathLocalManga)).BeginInit();
             this.tabMedia.SuspendLayout();
             this.tpMediaAnime.SuspendLayout();
@@ -322,7 +320,9 @@ namespace Shelf
             // 
             // tpgLocal
             // 
-            this.tpgLocal.Controls.Add(this.tabLocalMedia);
+            this.tpgLocal.Controls.Add(this.btnLocalMangaAdd);
+            this.tpgLocal.Controls.Add(this.gridPathLocalManga);
+            this.tpgLocal.Controls.Add(this.label4);
             this.tpgLocal.Location = new System.Drawing.Point(4, 29);
             this.tpgLocal.Name = "tpgLocal";
             this.tpgLocal.Padding = new System.Windows.Forms.Padding(3);
@@ -331,43 +331,10 @@ namespace Shelf
             this.tpgLocal.Text = "Local Media";
             this.tpgLocal.UseVisualStyleBackColor = true;
             // 
-            // tabLocalMedia
-            // 
-            this.tabLocalMedia.Controls.Add(this.tpgLocalAnime);
-            this.tabLocalMedia.Controls.Add(this.tpgLocalManga);
-            this.tabLocalMedia.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabLocalMedia.Location = new System.Drawing.Point(3, 3);
-            this.tabLocalMedia.Name = "tabLocalMedia";
-            this.tabLocalMedia.SelectedIndex = 0;
-            this.tabLocalMedia.Size = new System.Drawing.Size(411, 268);
-            this.tabLocalMedia.TabIndex = 0;
-            // 
-            // tpgLocalAnime
-            // 
-            this.tpgLocalAnime.Location = new System.Drawing.Point(4, 29);
-            this.tpgLocalAnime.Name = "tpgLocalAnime";
-            this.tpgLocalAnime.Padding = new System.Windows.Forms.Padding(3);
-            this.tpgLocalAnime.Size = new System.Drawing.Size(403, 235);
-            this.tpgLocalAnime.TabIndex = 0;
-            this.tpgLocalAnime.Text = "Anime";
-            this.tpgLocalAnime.UseVisualStyleBackColor = true;
-            // 
-            // tpgLocalManga
-            // 
-            this.tpgLocalManga.Controls.Add(this.btnLocalMangaAdd);
-            this.tpgLocalManga.Controls.Add(this.gridPathLocalManga);
-            this.tpgLocalManga.Controls.Add(this.label4);
-            this.tpgLocalManga.Location = new System.Drawing.Point(4, 29);
-            this.tpgLocalManga.Name = "tpgLocalManga";
-            this.tpgLocalManga.Size = new System.Drawing.Size(403, 235);
-            this.tpgLocalManga.TabIndex = 1;
-            this.tpgLocalManga.Text = "Manga";
-            this.tpgLocalManga.UseVisualStyleBackColor = true;
-            // 
             // btnLocalMangaAdd
             // 
             this.btnLocalMangaAdd.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnLocalMangaAdd.Location = new System.Drawing.Point(216, 3);
+            this.btnLocalMangaAdd.Location = new System.Drawing.Point(241, 8);
             this.btnLocalMangaAdd.Name = "btnLocalMangaAdd";
             this.btnLocalMangaAdd.Size = new System.Drawing.Size(170, 48);
             this.btnLocalMangaAdd.TabIndex = 23;
@@ -379,18 +346,43 @@ namespace Shelf
             // 
             this.gridPathLocalManga.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.gridPathLocalManga.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.gridPathLocalManga.Location = new System.Drawing.Point(3, 57);
+            this.gridPathLocalManga.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Column1,
+            this.Column2,
+            this.Column3});
+            this.gridPathLocalManga.Location = new System.Drawing.Point(6, 60);
             this.gridPathLocalManga.Name = "gridPathLocalManga";
             this.gridPathLocalManga.RowHeadersWidth = 51;
             this.gridPathLocalManga.RowTemplate.Height = 29;
-            this.gridPathLocalManga.Size = new System.Drawing.Size(383, 175);
+            this.gridPathLocalManga.Size = new System.Drawing.Size(405, 208);
             this.gridPathLocalManga.TabIndex = 15;
+            // 
+            // Column1
+            // 
+            this.Column1.DataPropertyName = "folder";
+            this.Column1.HeaderText = "Column1";
+            this.Column1.MinimumWidth = 6;
+            this.Column1.Name = "Column1";
+            // 
+            // Column2
+            // 
+            this.Column2.DataPropertyName = "isSeparateSources";
+            this.Column2.HeaderText = "Column2";
+            this.Column2.MinimumWidth = 6;
+            this.Column2.Name = "Column2";
+            // 
+            // Column3
+            // 
+            this.Column3.DataPropertyName = "mediaType";
+            this.Column3.HeaderText = "Column3";
+            this.Column3.MinimumWidth = 6;
+            this.Column3.Name = "Column3";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label4.Location = new System.Drawing.Point(3, 0);
+            this.label4.Location = new System.Drawing.Point(6, 3);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(81, 31);
             this.label4.TabIndex = 14;
@@ -481,6 +473,16 @@ namespace Shelf
             this.tpMediaLocalManga.Text = "Local Manga";
             this.tpMediaLocalManga.UseVisualStyleBackColor = true;
             // 
+            // lvLocalManga
+            // 
+            this.lvLocalManga.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lvLocalManga.HideSelection = false;
+            this.lvLocalManga.Location = new System.Drawing.Point(0, 0);
+            this.lvLocalManga.Name = "lvLocalManga";
+            this.lvLocalManga.Size = new System.Drawing.Size(569, 387);
+            this.lvLocalManga.TabIndex = 21;
+            this.lvLocalManga.UseCompatibleStateImageBehavior = false;
+            // 
             // cbMediaRefresh
             // 
             this.cbMediaRefresh.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -500,16 +502,6 @@ namespace Shelf
             this.cbEntryMode.Name = "cbEntryMode";
             this.cbEntryMode.Size = new System.Drawing.Size(179, 39);
             this.cbEntryMode.TabIndex = 22;
-            // 
-            // lvLocalManga
-            // 
-            this.lvLocalManga.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lvLocalManga.HideSelection = false;
-            this.lvLocalManga.Location = new System.Drawing.Point(0, 0);
-            this.lvLocalManga.Name = "lvLocalManga";
-            this.lvLocalManga.Size = new System.Drawing.Size(569, 387);
-            this.lvLocalManga.TabIndex = 21;
-            this.lvLocalManga.UseCompatibleStateImageBehavior = false;
             // 
             // frmMain
             // 
@@ -536,9 +528,7 @@ namespace Shelf
             this.tpgTachi.ResumeLayout(false);
             this.tpgTachi.PerformLayout();
             this.tpgLocal.ResumeLayout(false);
-            this.tabLocalMedia.ResumeLayout(false);
-            this.tpgLocalManga.ResumeLayout(false);
-            this.tpgLocalManga.PerformLayout();
+            this.tpgLocal.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridPathLocalManga)).EndInit();
             this.tabMedia.ResumeLayout(false);
             this.tpMediaAnime.ResumeLayout(false);
@@ -583,13 +573,13 @@ namespace Shelf
         private System.Windows.Forms.CheckBox cbReplaceTachiLib;
         private System.Windows.Forms.ComboBox cbEntryMode;
         private System.Windows.Forms.TabPage tpgLocal;
-        private System.Windows.Forms.TabControl tabLocalMedia;
-        private System.Windows.Forms.TabPage tpgLocalAnime;
-        private System.Windows.Forms.TabPage tpgLocalManga;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.DataGridView gridPathLocalManga;
         private System.Windows.Forms.Button btnLocalMangaAdd;
         private System.Windows.Forms.ListView lvLocalManga;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn Column2;
+        private System.Windows.Forms.DataGridViewComboBoxColumn Column3;
     }
 }
 

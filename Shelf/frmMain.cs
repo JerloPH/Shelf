@@ -58,6 +58,8 @@ namespace Shelf
             lvTachi.View = lvAnime.View;
             lvTachi.Sorting = lvAnime.Sorting;
             // Local Manga
+            localmangaCoverList.ImageSize = animeCoverList.ImageSize;
+            localmangaCoverList.ColorDepth = animeCoverList.ColorDepth;
             lvLocalManga.LargeImageList = localmangaCoverList;
             lvLocalManga.View = lvAnime.View;
             lvLocalManga.Sorting = lvAnime.Sorting;
@@ -82,22 +84,23 @@ namespace Shelf
                         }
                         else
                         {
-                            localMedia.anime_paths = new List<LocalMediaPaths>();
+                            // TODO: Combine 'anime_paths' and 'manga_paths', using 'mediaType' property to differentiate
                             localMedia.manga_paths = new List<LocalMediaPaths>();
                             if (GlobalFunc.DEBUG)
                             {
                                 string path1 = GlobalFunc.CreateNewFolder(GlobalFunc.DIR_TEMP, "mangaFolder1");
                                 string path2 = GlobalFunc.CreateNewFolder(GlobalFunc.DIR_TEMP, "mangaFolder2");
-                                localMedia.manga_paths.Add(new LocalMediaPaths() { folder = path1, isSeparateSources = false });
-                                localMedia.manga_paths.Add(new LocalMediaPaths() { folder = path2, isSeparateSources = false });
+                                localMedia.manga_paths.Add(new LocalMediaPaths() { folder = path1, isSeparateSources = false, mediaType = MediaAniManga.MANGA });
+                                localMedia.manga_paths.Add(new LocalMediaPaths() { folder = path2, isSeparateSources = false, mediaType = MediaAniManga.MANGA });
                                 GlobalFunc.JsonEncode(localMedia, GlobalFunc.FILE_LOCAL_MEDIA);
                             }
                         }
-                        UIHelper.BindLocalMediaToDataGrid(gridPathLocalManga, localMedia.manga_paths);
+                        UIHelper.BindLocalMediaToDataGrid(gridPathLocalManga, localMedia.manga_paths, new string[] { "Path", "Separate Source", "Media" });
+                        (gridPathLocalManga.Columns[2] as DataGridViewComboBoxColumn).DataSource = System.Enum.GetValues(typeof(MediaAniManga));
                     });
                 });
             }
-            catch (Exception ex) { Logs.Err(ex); }
+            catch (Exception ex) { GlobalFunc.Alert("Some UI are not initialized!"); Logs.Err(ex); }
         }
         public static bool SetDragFileOnTextBox(DragEventArgs e, TextBox tbox)
         {
@@ -176,6 +179,9 @@ namespace Shelf
         {
             return await Task.Run(async delegate
             {
+                if (medias == null)
+                    return false;
+                
                 long count = 0;
                 int max = 0;
                 Log($"Refreshing {type} list..");
@@ -189,14 +195,20 @@ namespace Shelf
                     });
                 }
                 max = medias.Count;
-                foreach (var item in medias)
+                if (max > 0)
                 {
-                    count += 1;
-                    SetStatus($"Adding item..{count}/{max}");
-                    await AddItemToListView(lv, imglist, item, type, count);
-                    Thread.Sleep(10);
-                    if (count >= 10 && GlobalFunc.DEBUG)
-                        break;
+                    foreach (var item in medias)
+                    {
+                        if (item != null)
+                        {
+                            count += 1;
+                            SetStatus($"Adding item..{count}/{max}");
+                            await AddItemToListView(lv, imglist, item, type, count);
+                            Thread.Sleep(10);
+                            if (count >= 10 && GlobalFunc.DEBUG)
+                                break;
+                        }
+                    }
                 }
                 Log($"{type} items loaded!");
                 lv.Invoke((Action)delegate { lv.Sort(); });
@@ -264,8 +276,11 @@ namespace Shelf
             {
                 return await Task.Run(delegate
                 {
-                    // TODO: Load 'cover.jpg' from folder
                     Image img = null;
+                    string file = $"{path}\\cover.jpg";
+                    if (File.Exists(file))
+                        img = Image.FromFile(file);
+
                     return img;
                 });
             }
@@ -527,9 +542,10 @@ namespace Shelf
                         if (IsReplaceTachiLib)
                         {
                             await RefreshMedia(MediaType.MANGA, entries, lvTachi, mangaCoverList, false);
-                            SetStatus("Idle");
                         }
-                        GlobalFunc.Alert("Done generating Tachiyomi backup file!");
+                        SetStatus("Idle");
+                        if (entries?.Count > 0)
+                            GlobalFunc.Alert("Done generating Tachiyomi backup file!");
                     }
                     else
                         GlobalFunc.Alert($"Tachiyomi file isn't supported!\nOnly '{String.Join('/', ext)}' files are accepted.");
@@ -537,7 +553,7 @@ namespace Shelf
                 catch (Exception ex)
                 {
                     Logs.Err(ex);
-                    GlobalFunc.Alert("Invalid Tachiyomi Filepath!");
+                    GlobalFunc.Alert("Error occured on loading Tachiyomi!");
                 }
             }
             else
@@ -637,8 +653,8 @@ namespace Shelf
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            // TODO: Remove this WIP
-            GlobalFunc.JsonEncode(localMedia.manga_paths, GlobalFunc.FILE_LOCAL_MEDIA + "_manga.json");
+            // TODO: Change to a form that will add Path
+            GlobalFunc.JsonEncode(localMedia, GlobalFunc.FILE_LOCAL_MEDIA);
         }
     }
 }

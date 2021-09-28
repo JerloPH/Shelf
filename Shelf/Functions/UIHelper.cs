@@ -29,22 +29,34 @@ namespace Shelf.Functions
             }
             catch { throw; }
         }
-        public static void BindLocalMediaToDataGrid(DataGridView grid, List<LocalMediaPaths> data)
+        public static void BindLocalMediaToDataGrid(DataGridView grid, List<LocalMediaPaths> data, string[] headers)
         {
             try
             {
-                BindingList<LocalMediaPaths> localMangaBindList = null;
+                BindingList<LocalMediaPaths> localBindList = null;
                 if (data?.Count > 0)
                 {
-                    localMangaBindList = new BindingList<LocalMediaPaths>(data);
+                    localBindList = new BindingList<LocalMediaPaths>(data);
                 }
                 else
-                    localMangaBindList = new BindingList<LocalMediaPaths>(new List<LocalMediaPaths>());
+                    localBindList = new BindingList<LocalMediaPaths>(new List<LocalMediaPaths>());
 
-                var source = new BindingSource(localMangaBindList, null);
+                var source = new BindingSource(data, null);
                 grid.DataSource = source;
-                grid.Columns[0].HeaderText = "Path";
-                grid.Columns[1].HeaderText = "Separate source";
+                if (headers != null)
+                {
+                    if (headers.Length > 0)
+                    {
+                        grid.Columns[0].HeaderText = headers[0];
+                        if (headers.Length > 1)
+                        {
+                            for (int count = 1; count < headers.Length; count++)
+                            {
+                                grid.Columns[count].HeaderText = headers[count];
+                            }
+                        }
+                    }
+                }
             }
             catch { throw; }
         }

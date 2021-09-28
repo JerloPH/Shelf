@@ -290,8 +290,6 @@ namespace Shelf.Functions
 
                                     // Add entry to result list
                                     var newEntry = new Entry();
-                                    newEntry.Media = new Media();
-                                    newEntry.Media.Title = new Title();
                                     newEntry.Media.Id = 0;
                                     newEntry.Media.Title.Romaji = entry.Title;
                                     listEntries.Add(newEntry);
@@ -376,8 +374,6 @@ namespace Shelf.Functions
                             try
                             {
                                 var newEntry = new Entry();
-                                newEntry.Media = new Media();
-                                newEntry.Media.Title = new Title();
                                 if (!String.IsNullOrWhiteSpace(item.Title))
                                     newEntry.Media.Title.Romaji = item.Title;
 
@@ -399,11 +395,32 @@ namespace Shelf.Functions
         {
             try
             {
-                // TODO: Add folders as 'Entry'
                 return await Task.Run(delegate
                 {
-                    var list = new List<Entry>();
-                    return list;
+                    var listEntries = new List<Entry>();
+                    var listFolders = new List<string>();
+                    foreach (var item in data)
+                    {
+                        if (item.isSeparateSources)
+                        {
+                            var srcFolders = GlobalFunc.SearchFoldersFromDirectory(item.folder);
+                            foreach (var source in srcFolders)
+                            {
+                                listFolders.AddRange(GlobalFunc.SearchFoldersFromDirectory(source));
+                            }
+                        }
+                        else
+                            listFolders.AddRange(GlobalFunc.SearchFoldersFromDirectory(item.folder));
+                    }
+                    foreach (string folder in listFolders)
+                    {
+                        var newEntry = new Entry();
+                        newEntry.Media.Title.Romaji = new DirectoryInfo(folder).Name;
+                        newEntry.Path = folder;
+                        listEntries.Add(newEntry);
+                        Logs.Debug($"Local media: {folder}");
+                    }
+                    return listEntries;
                 });
             }
             catch { throw; }

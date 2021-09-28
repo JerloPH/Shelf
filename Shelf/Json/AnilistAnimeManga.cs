@@ -62,6 +62,14 @@ namespace Shelf.Json
 
         [JsonIgnore]
         public string Path { get; set; }
+
+        public Entry()
+        {
+            Media = new Media();
+            Media.Id = 0;
+            Media.Title = new Title();
+            Media.CoverImage = new CoverImage();
+        }
     }
 
     public partial class EntryDate

@@ -33,6 +33,7 @@ namespace Shelf.Functions
         public static string FILE_MANGA = "";
         public static string FILE_LOG = "";
         public static string FILE_LOG_ERR = "";
+        public static string FILE_LOG_DEBUG = "";
         public static string FILE_AUTH_CODE = "";
         public static string FILE_PUB_TKN = "";
         public static string DATE_TODAY = "";
@@ -59,6 +60,7 @@ namespace Shelf.Functions
                 // File locations
                 FILE_LOG = Path.Combine(DIR_START, "ShelfApp.log");
                 FILE_LOG_ERR = Path.Combine(DIR_START, "ShelfApp_Error.log");
+                FILE_LOG_DEBUG = Path.Combine(DIR_START, "Shelf_Debug.log");
                 // Data files
                 FILE_ANILIST_CONFIG = Path.Combine(DIR_DATA, "anilistConfig.json");
                 FILE_ANIME = Path.Combine(DIR_DATA, "AnilistMediaANIME.json");
@@ -317,6 +319,26 @@ namespace Shelf.Functions
                 Alert("Cannot Browse to file!");
             }
             return false;
+        }
+        public static List<string> SearchFoldersFromDirectory(string sDir)
+        {
+            List<string> list = new List<string>();
+            string directory = sDir.TrimEnd('\\');
+            try
+            {
+                foreach (string foldertoAdd in Directory.GetDirectories(directory))
+                {
+                    if (Directory.Exists(foldertoAdd))
+                    {
+                        list.Add(foldertoAdd); // Add to list
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logs.Err(ex);
+            }
+            return list;
         }
         #endregion
         #region Messages

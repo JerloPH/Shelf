@@ -21,6 +21,11 @@ namespace Shelf.Functions
             }
             catch (Exception ex) { Console.WriteLine(ex.ToString()); }
         }
+        public static void Debug(string content)
+        {
+            if (!String.IsNullOrWhiteSpace(content))
+                LogString(GlobalFunc.FILE_LOG_DEBUG, content);
+        }
         public static void App(string content)
         {
             if (!String.IsNullOrWhiteSpace(content))

@@ -418,7 +418,29 @@ namespace Shelf.Functions
                     foreach (string folder in listFolders)
                     {
                         var newEntry = new Entry();
-                        newEntry.Media.Title.Romaji = new DirectoryInfo(folder).Name;
+                        string fileDetails = Path.Combine(folder, "details.json");
+                        if (File.Exists(fileDetails))
+                        {
+                            try
+                            {
+                                var deets = GlobalFunc.JsonDecode<LocalMediaDetails>(fileDetails);
+                                if (String.IsNullOrWhiteSpace(deets.titleRomaji))
+                                    newEntry.Media.Title.Romaji = deets.title;
+                                else
+                                {
+                                    newEntry.Media.Title.Romaji = deets.titleRomaji;
+                                    newEntry.Media.Title.English = deets.title;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Logs.Err(ex);
+                                newEntry.Media.Title.Romaji = new DirectoryInfo(folder).Name;
+                            }
+                        }
+                        else
+                            newEntry.Media.Title.Romaji = new DirectoryInfo(folder).Name;
+
                         newEntry.Path = folder;
                         listEntries.Add(newEntry);
                         Logs.Debug($"Local media: {folder}");

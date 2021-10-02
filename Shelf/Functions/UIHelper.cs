@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -28,6 +29,14 @@ namespace Shelf.Functions
                 cb.SelectedIndex = 0;
             }
             catch { throw; }
+        }
+        public static void SetupListViewAndImgList(ListView grid, ImageList list)
+        {
+            list.ImageSize = new Size(120, 180);
+            list.ColorDepth = ColorDepth.Depth32Bit;
+            grid.LargeImageList = list;
+            grid.View = View.LargeIcon;
+            grid.Sorting = SortOrder.Ascending;
         }
         public static void BindLocalMediaToDataGrid(DataGridView grid, List<LocalMediaPaths> data, string[] headers)
         {

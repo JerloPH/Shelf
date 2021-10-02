@@ -68,6 +68,7 @@ namespace Shelf
             this.lvLocalManga = new System.Windows.Forms.ListView();
             this.cbMediaRefresh = new System.Windows.Forms.ComboBox();
             this.cbEntryMode = new System.Windows.Forms.ComboBox();
+            this.lvLocalAnime = new System.Windows.Forms.ListView();
             this.tabControl.SuspendLayout();
             this.tpgBasic.SuspendLayout();
             this.tpgConfig.SuspendLayout();
@@ -78,6 +79,7 @@ namespace Shelf
             this.tpMediaAnime.SuspendLayout();
             this.tpMediaManga.SuspendLayout();
             this.tpMediaTachi.SuspendLayout();
+            this.tpMediaLocalAnime.SuspendLayout();
             this.tpMediaLocalManga.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -456,6 +458,7 @@ namespace Shelf
             // 
             // tpMediaLocalAnime
             // 
+            this.tpMediaLocalAnime.Controls.Add(this.lvLocalAnime);
             this.tpMediaLocalAnime.Location = new System.Drawing.Point(4, 29);
             this.tpMediaLocalAnime.Name = "tpMediaLocalAnime";
             this.tpMediaLocalAnime.Size = new System.Drawing.Size(569, 387);
@@ -503,6 +506,16 @@ namespace Shelf
             this.cbEntryMode.Size = new System.Drawing.Size(179, 39);
             this.cbEntryMode.TabIndex = 22;
             // 
+            // lvLocalAnime
+            // 
+            this.lvLocalAnime.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lvLocalAnime.HideSelection = false;
+            this.lvLocalAnime.Location = new System.Drawing.Point(0, 0);
+            this.lvLocalAnime.Name = "lvLocalAnime";
+            this.lvLocalAnime.Size = new System.Drawing.Size(569, 387);
+            this.lvLocalAnime.TabIndex = 22;
+            this.lvLocalAnime.UseCompatibleStateImageBehavior = false;
+            // 
             // frmMain
             // 
             this.AllowDrop = true;
@@ -534,6 +547,7 @@ namespace Shelf
             this.tpMediaAnime.ResumeLayout(false);
             this.tpMediaManga.ResumeLayout(false);
             this.tpMediaTachi.ResumeLayout(false);
+            this.tpMediaLocalAnime.ResumeLayout(false);
             this.tpMediaLocalManga.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -580,6 +594,7 @@ namespace Shelf
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewCheckBoxColumn Column2;
         private System.Windows.Forms.DataGridViewComboBoxColumn Column3;
+        private System.Windows.Forms.ListView lvLocalAnime;
     }
 }
 

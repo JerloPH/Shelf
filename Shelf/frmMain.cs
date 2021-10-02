@@ -26,6 +26,7 @@ namespace Shelf
         private DateTime? TokenDate = null;
         private ImageList animeCoverList = new ImageList();
         private ImageList mangaCoverList = new ImageList();
+        private ImageList localanimeCoverList = new ImageList();
         private ImageList localmangaCoverList = new ImageList();
         private LocalMedia localMedia = new LocalMedia();
 
@@ -41,28 +42,11 @@ namespace Shelf
         }
         public void InitializeItems()
         {
-            // Anime media listview
-            animeCoverList.ImageSize = new Size(120, 180);
-            animeCoverList.ColorDepth = ColorDepth.Depth32Bit;
-            lvAnime.LargeImageList = animeCoverList;
-            lvAnime.View = View.LargeIcon;
-            lvAnime.Sorting = SortOrder.Ascending;
-            // Manga media listview, copying some Anime properties
-            mangaCoverList.ImageSize = animeCoverList.ImageSize;
-            mangaCoverList.ColorDepth = animeCoverList.ColorDepth;
-            lvManga.LargeImageList = mangaCoverList;
-            lvManga.View = lvAnime.View;
-            lvManga.Sorting = lvAnime.Sorting;
-            // Tachiyomi library
-            lvTachi.LargeImageList = mangaCoverList;
-            lvTachi.View = lvAnime.View;
-            lvTachi.Sorting = lvAnime.Sorting;
-            // Local Manga
-            localmangaCoverList.ImageSize = animeCoverList.ImageSize;
-            localmangaCoverList.ColorDepth = animeCoverList.ColorDepth;
-            lvLocalManga.LargeImageList = localmangaCoverList;
-            lvLocalManga.View = lvAnime.View;
-            lvLocalManga.Sorting = lvAnime.Sorting;
+            UIHelper.SetupListViewAndImgList(lvAnime, animeCoverList); // Anime media listview
+            UIHelper.SetupListViewAndImgList(lvManga, mangaCoverList); // Manga media listview
+            UIHelper.SetupListViewAndImgList(lvTachi, mangaCoverList); // Tachiyomi library
+            UIHelper.SetupListViewAndImgList(lvLocalAnime, localanimeCoverList); // Local Anime
+            UIHelper.SetupListViewAndImgList(lvLocalManga, localmangaCoverList); // Local Manga
             // Other Controls
             cbMediaRefresh.Items.AddRange(new string[] { "All", "Anime", "Manga", "Tachiyomi", "Local Anime", "Local Manga" });
             cbMediaRefresh.SelectedIndex = 0;
@@ -238,8 +222,9 @@ namespace Shelf
                 
                 long count = 0;
                 int max = 0;
-                Log($"Refreshing {type} list..");
-                SetStatus($"Refreshing {type} list..");
+                string typeCaption = type.ToString().Replace("_", " ");
+                Log($"Refreshing {typeCaption} list..");
+                SetStatus($"Refreshing {typeCaption} list..");
                 lv.Invoke((Action)delegate { lv.Items.Clear(); });
                 if (IsClearCover)
                 {
@@ -264,7 +249,7 @@ namespace Shelf
                         }
                     }
                 }
-                Log($"{type} items loaded!");
+                Log($"{typeCaption} items loaded!");
                 lv.Invoke((Action)delegate { lv.Sort(); });
                 return true;
             });
@@ -633,6 +618,12 @@ namespace Shelf
                 }
                 else
                     Log("Tachiyomi backup file is missing!");
+            }
+            // Refresh Local Anime
+            if (loadLocalAnime)
+            {
+                var localAnime = await MediaTasks.GetLocalMedia(localMedia.paths, MediaAniManga.ANIME);
+                await RefreshMedia(MediaType.LOCAL_ANIME, localAnime, lvLocalAnime, localanimeCoverList, true);
             }
             // Refresh Local Manga
             if (loadLocalManga)

@@ -391,7 +391,7 @@ namespace Shelf.Functions
             });
         }
 
-        public static async Task<List<Entry>> GetLocalMedia(List<LocalMediaPaths> data)
+        public static async Task<List<Entry>> GetLocalMedia(List<LocalMediaPaths> data, MediaAniManga type)
         {
             try
             {
@@ -401,6 +401,9 @@ namespace Shelf.Functions
                     var listFolders = new List<string>();
                     foreach (var item in data)
                     {
+                        if (item.mediaType != type)
+                            continue;
+
                         if (item.isSeparateSources)
                         {
                             var srcFolders = GlobalFunc.SearchFoldersFromDirectory(item.folder);

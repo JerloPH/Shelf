@@ -84,7 +84,6 @@ namespace Shelf
                         }
                         else
                         {
-                            // TODO: Combine 'anime_paths' and 'manga_paths', using 'mediaType' property to differentiate
                             localMedia.paths = new List<LocalMediaPaths>();
                             if (GlobalFunc.DEBUG)
                             {
@@ -604,6 +603,7 @@ namespace Shelf
             bool loadAnime = cbMediaRefresh.SelectedIndex == 0 || cbMediaRefresh.Text.Equals("anime", StringComparison.OrdinalIgnoreCase);
             bool loadManga = cbMediaRefresh.SelectedIndex == 0 || cbMediaRefresh.Text.Equals("manga", StringComparison.OrdinalIgnoreCase);
             bool loadTachi = cbMediaRefresh.SelectedIndex == 0 || cbMediaRefresh.Text.Equals("tachiyomi", StringComparison.OrdinalIgnoreCase);
+            bool loadLocalAnime = cbMediaRefresh.SelectedIndex == 0 || cbMediaRefresh.Text.Equals("local anime", StringComparison.OrdinalIgnoreCase);
             bool loadLocalManga = cbMediaRefresh.SelectedIndex == 0 || cbMediaRefresh.Text.Equals("local manga", StringComparison.OrdinalIgnoreCase);
             // Switch Entry Mode
             if (cbEntryMode.SelectedIndex > 0)
@@ -637,7 +637,7 @@ namespace Shelf
             // Refresh Local Manga
             if (loadLocalManga)
             {
-                var localManga = await MediaTasks.GetLocalMedia(localMedia.paths);
+                var localManga = await MediaTasks.GetLocalMedia(localMedia.paths, MediaAniManga.MANGA);
                 await RefreshMedia(MediaType.LOCAL_MANGA, localManga, lvLocalManga, localmangaCoverList, true);
             }
             SetStatus("Idle");

@@ -417,6 +417,9 @@ namespace Shelf.Functions
                     }
                     foreach (string folder in listFolders)
                     {
+                        if (String.IsNullOrWhiteSpace(folder))
+                            continue;
+
                         var newEntry = new Entry();
                         string fileDetails = Path.Combine(folder, "details.json");
                         if (File.Exists(fileDetails))

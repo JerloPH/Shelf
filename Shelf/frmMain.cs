@@ -95,8 +95,8 @@ namespace Shelf
                                 GlobalFunc.JsonEncode(localMedia, GlobalFunc.FILE_LOCAL_MEDIA);
                             }
                         }
-                        UIHelper.BindLocalMediaToDataGrid(gridPathLocalManga, localMedia.paths, new string[] { "Path", "Separate Source", "Media" });
-                        (gridPathLocalManga.Columns[2] as DataGridViewComboBoxColumn).DataSource = System.Enum.GetValues(typeof(MediaAniManga));
+                        UIHelper.BindLocalMediaToDataGrid(gridPathLocal, localMedia.paths, new string[] { "Path", "Separate Source", "Media" });
+                        (gridPathLocal.Columns[2] as DataGridViewComboBoxColumn).DataSource = System.Enum.GetValues(typeof(MediaAniManga));
                     });
                 });
             }

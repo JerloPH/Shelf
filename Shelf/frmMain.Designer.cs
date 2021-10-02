@@ -52,7 +52,7 @@ namespace Shelf
             this.cbReplaceTachiLib = new System.Windows.Forms.CheckBox();
             this.tpgLocal = new System.Windows.Forms.TabPage();
             this.btnLocalMangaAdd = new System.Windows.Forms.Button();
-            this.gridPathLocalManga = new System.Windows.Forms.DataGridView();
+            this.gridPathLocal = new System.Windows.Forms.DataGridView();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Column3 = new System.Windows.Forms.DataGridViewComboBoxColumn();
@@ -73,7 +73,7 @@ namespace Shelf
             this.tpgConfig.SuspendLayout();
             this.tpgTachi.SuspendLayout();
             this.tpgLocal.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.gridPathLocalManga)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridPathLocal)).BeginInit();
             this.tabMedia.SuspendLayout();
             this.tpMediaAnime.SuspendLayout();
             this.tpMediaManga.SuspendLayout();
@@ -321,7 +321,7 @@ namespace Shelf
             // tpgLocal
             // 
             this.tpgLocal.Controls.Add(this.btnLocalMangaAdd);
-            this.tpgLocal.Controls.Add(this.gridPathLocalManga);
+            this.tpgLocal.Controls.Add(this.gridPathLocal);
             this.tpgLocal.Controls.Add(this.label4);
             this.tpgLocal.Location = new System.Drawing.Point(4, 29);
             this.tpgLocal.Name = "tpgLocal";
@@ -342,20 +342,20 @@ namespace Shelf
             this.btnLocalMangaAdd.UseVisualStyleBackColor = true;
             this.btnLocalMangaAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
-            // gridPathLocalManga
+            // gridPathLocal
             // 
-            this.gridPathLocalManga.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.gridPathLocalManga.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.gridPathLocalManga.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.gridPathLocal.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.gridPathLocal.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.gridPathLocal.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column1,
             this.Column2,
             this.Column3});
-            this.gridPathLocalManga.Location = new System.Drawing.Point(6, 60);
-            this.gridPathLocalManga.Name = "gridPathLocalManga";
-            this.gridPathLocalManga.RowHeadersWidth = 51;
-            this.gridPathLocalManga.RowTemplate.Height = 29;
-            this.gridPathLocalManga.Size = new System.Drawing.Size(405, 208);
-            this.gridPathLocalManga.TabIndex = 15;
+            this.gridPathLocal.Location = new System.Drawing.Point(6, 60);
+            this.gridPathLocal.Name = "gridPathLocal";
+            this.gridPathLocal.RowHeadersWidth = 51;
+            this.gridPathLocal.RowTemplate.Height = 29;
+            this.gridPathLocal.Size = new System.Drawing.Size(405, 208);
+            this.gridPathLocal.TabIndex = 15;
             // 
             // Column1
             // 
@@ -529,7 +529,7 @@ namespace Shelf
             this.tpgTachi.PerformLayout();
             this.tpgLocal.ResumeLayout(false);
             this.tpgLocal.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.gridPathLocalManga)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridPathLocal)).EndInit();
             this.tabMedia.ResumeLayout(false);
             this.tpMediaAnime.ResumeLayout(false);
             this.tpMediaManga.ResumeLayout(false);
@@ -574,7 +574,7 @@ namespace Shelf
         private System.Windows.Forms.ComboBox cbEntryMode;
         private System.Windows.Forms.TabPage tpgLocal;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.DataGridView gridPathLocalManga;
+        private System.Windows.Forms.DataGridView gridPathLocal;
         private System.Windows.Forms.Button btnLocalMangaAdd;
         private System.Windows.Forms.ListView lvLocalManga;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;

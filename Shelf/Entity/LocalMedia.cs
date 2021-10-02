@@ -6,11 +6,8 @@ namespace Shelf.Entity
 {
     public class LocalMedia
     {
-        [JsonProperty("anime_paths")]
-        public List<LocalMediaPaths> anime_paths { get; set; }
-
-        [JsonProperty("manga_paths")]
-        public List<LocalMediaPaths> manga_paths { get; set; }
+        [JsonProperty("paths")]
+        public List<LocalMediaPaths> paths { get; set; }
     }
 
     public class LocalMediaPaths

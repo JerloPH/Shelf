@@ -85,17 +85,17 @@ namespace Shelf
                         else
                         {
                             // TODO: Combine 'anime_paths' and 'manga_paths', using 'mediaType' property to differentiate
-                            localMedia.manga_paths = new List<LocalMediaPaths>();
+                            localMedia.paths = new List<LocalMediaPaths>();
                             if (GlobalFunc.DEBUG)
                             {
                                 string path1 = GlobalFunc.CreateNewFolder(GlobalFunc.DIR_TEMP, "mangaFolder1");
                                 string path2 = GlobalFunc.CreateNewFolder(GlobalFunc.DIR_TEMP, "mangaFolder2");
-                                localMedia.manga_paths.Add(new LocalMediaPaths() { folder = path1, isSeparateSources = false, mediaType = MediaAniManga.MANGA });
-                                localMedia.manga_paths.Add(new LocalMediaPaths() { folder = path2, isSeparateSources = false, mediaType = MediaAniManga.MANGA });
+                                localMedia.paths.Add(new LocalMediaPaths() { folder = path1, isSeparateSources = false, mediaType = MediaAniManga.MANGA });
+                                localMedia.paths.Add(new LocalMediaPaths() { folder = path2, isSeparateSources = false, mediaType = MediaAniManga.MANGA });
                                 GlobalFunc.JsonEncode(localMedia, GlobalFunc.FILE_LOCAL_MEDIA);
                             }
                         }
-                        UIHelper.BindLocalMediaToDataGrid(gridPathLocalManga, localMedia.manga_paths, new string[] { "Path", "Separate Source", "Media" });
+                        UIHelper.BindLocalMediaToDataGrid(gridPathLocalManga, localMedia.paths, new string[] { "Path", "Separate Source", "Media" });
                         (gridPathLocalManga.Columns[2] as DataGridViewComboBoxColumn).DataSource = System.Enum.GetValues(typeof(MediaAniManga));
                     });
                 });
@@ -637,7 +637,7 @@ namespace Shelf
             // Refresh Local Manga
             if (loadLocalManga)
             {
-                var localManga = await MediaTasks.GetLocalMedia(localMedia.manga_paths);
+                var localManga = await MediaTasks.GetLocalMedia(localMedia.paths);
                 await RefreshMedia(MediaType.LOCAL_MANGA, localManga, lvLocalManga, localmangaCoverList, true);
             }
             SetStatus("Idle");

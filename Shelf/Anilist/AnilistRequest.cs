@@ -90,7 +90,7 @@ namespace Shelf.Anilist
         public static async Task<string> RequestPublicToken(string authCode)
         {
             if (String.IsNullOrWhiteSpace(authCode))
-                return "";
+                throw new Exception("No Authorization Code!");
 
             string returnString = "";
             try
@@ -122,15 +122,12 @@ namespace Shelf.Anilist
                 else
                 {
                     GlobalFunc.WriteFile(GlobalFunc.FILE_PUB_TKN, "");
-                    GlobalFunc.Alert("Unsuccessful on Fetching Public Token!");
-                    returnString = "";
+                    throw new Exception($"Unsuccesful request! " +
+                        $"Status code: {(int)response.StatusCode}," +
+                        $" Response: {response.Content}");
                 }
             }
-            catch (Exception ex)
-            {
-                returnString = "";
-                GlobalFunc.Alert(ex.ToString());
-            }
+            catch { throw; }
             return returnString;
         }
         public static async Task<AnilistAnimeManga> RequestMediaList(string publicTkn, string userName, string MEDIA = "ANIME")

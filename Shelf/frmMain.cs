@@ -153,6 +153,61 @@ namespace Shelf
         }
         #endregion
         #region Tasks
+        public async Task<string> RequestAuthCode()
+        {
+            return await Task.Run(delegate
+            {
+                string code = "";
+                Invoke((Action)delegate
+                {
+                    var form = new frmGetAuthCode();
+                    form.ShowDialog(this);
+                    code = form.AuthCode;
+                    form.Dispose();
+                    GlobalFunc.WriteFile(GlobalFunc.FILE_AUTH_CODE, code);
+                });
+                return code;
+            });
+        }
+        public async Task<bool> RequestPublicTkn()
+        {
+            return await Task.Run(async delegate
+            {
+                // Get Authorization Code
+                if (File.Exists(GlobalFunc.FILE_AUTH_CODE))
+                {
+                    AuthCode = GlobalFunc.ReadFromFile(GlobalFunc.FILE_AUTH_CODE);
+                }
+                if (String.IsNullOrWhiteSpace(AuthCode))
+                {
+                    AuthCode = await RequestAuthCode();
+                }
+                Log("Requesting token..");
+                // Request Access Token, using Auth code
+                try
+                {
+                    PublicTkn = await AnilistRequest.RequestPublicToken(AuthCode);
+                }
+                catch (Exception ex)
+                {
+                    Logs.Err(ex);
+                    PublicTkn = "";
+                }
+                if (String.IsNullOrWhiteSpace(PublicTkn))
+                {
+                    AuthCode = ""; // reset authorization code if token is invalidated.
+                    GlobalFunc.WriteFile(GlobalFunc.FILE_AUTH_CODE, "");
+                    Log("No Public Token acquired! Need to Authorize again.");
+                    return false;
+                }
+                else
+                {
+                    TokenDate = DateTime.Now;
+                    Log($"Token refreshed! Date acquired: {TokenDate}");
+                }
+                return true;
+            });
+        }
         public async Task<bool> RequestMedia(string media, string username, string token)
         {
             // Get media, and write to json file
@@ -367,39 +422,15 @@ namespace Shelf
             if (!IsRefreshing)
             {
                 btnFetchMedia.Enabled = false; // Disable fetching media files
-                // Get Authorization Code
-                if (File.Exists(GlobalFunc.FILE_AUTH_CODE))
-                {
-                    AuthCode = GlobalFunc.ReadFromFile(GlobalFunc.FILE_AUTH_CODE);
-                }
-                if (String.IsNullOrWhiteSpace(AuthCode))
-                {
-                    var form = new frmGetAuthCode();
-                    form.ShowDialog(this);
-                    AuthCode = form.AuthCode;
-                    form.Dispose();
-                    GlobalFunc.WriteFile(GlobalFunc.FILE_AUTH_CODE, AuthCode);
-                }
                 // Start fetching
                 IsRefreshing = true;
                 btnRefresh.Enabled = false;
                 // Check if token is valid
                 if (TokenDate.Value.AddMinutes(59) <= DateTime.Now)
                 {
-                    Log("Requesting token..");
-                    // Request Access Token, using Auth code
-                    PublicTkn = await AnilistRequest.RequestPublicToken(AuthCode);
-                    if (String.IsNullOrWhiteSpace(PublicTkn))
-                    {
-                        AuthCode = ""; // reset authorization code if token is invalidated.
-                        GlobalFunc.WriteFile(GlobalFunc.FILE_AUTH_CODE, "");
-                        Log("No Public Token acquired! Try again.");
-                    }
-                    else
-                    {
-                        TokenDate = DateTime.Now;
-                        Log($"Token refreshed! Date acquired: {TokenDate}");
-                    }
+                    bool success = await RequestPublicTkn();
+                    if (!success)
+                        success = await RequestPublicTkn();
                 }
                 else
                     Log("Token is still valid.");

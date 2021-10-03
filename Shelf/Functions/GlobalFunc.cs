@@ -27,6 +27,7 @@ namespace Shelf.Functions
         public static string DIR_TEMP = "";
         public static string DIR_TEMP_ANIMECOVER = "";
         public static string DIR_TEMP_MANGACOVER = "";
+        public static string FILE_APPCONFIG = "";
         public static string FILE_ANILIST_CONFIG = "";
         public static string FILE_LOCAL_MEDIA = "";
         public static string FILE_ANIME = "";
@@ -57,17 +58,19 @@ namespace Shelf.Functions
                 DIR_TEMP = CreateNewFolder(DIR_START, "temp");
                 DIR_TEMP_ANIMECOVER = CreateNewFolder(DIR_TEMP, "coverAnime");
                 DIR_TEMP_MANGACOVER = CreateNewFolder(DIR_TEMP, "coverManga");
-                // File locations
+                // Logs
                 FILE_LOG = Path.Combine(DIR_START, "ShelfApp.log");
                 FILE_LOG_ERR = Path.Combine(DIR_START, "ShelfApp_Error.log");
                 FILE_LOG_DEBUG = Path.Combine(DIR_START, "Shelf_Debug.log");
                 // Data files
+                FILE_APPCONFIG = Path.Combine(DIR_DATA, "AppSettings.json");
                 FILE_ANILIST_CONFIG = Path.Combine(DIR_DATA, "anilistConfig.json");
                 FILE_ANIME = Path.Combine(DIR_DATA, "AnilistMediaANIME.json");
                 FILE_MANGA = Path.Combine(DIR_DATA, "AnilistMediaMANGA.json");
                 FILE_AUTH_CODE = Path.Combine(DIR_DATA, "AuthCode.tkn");
                 FILE_PUB_TKN = Path.Combine(DIR_DATA, "PublicToken.tkn");
                 FILE_LOCAL_MEDIA = Path.Combine(DIR_DATA, "LocalMediaPaths.json");
+                AppSettings.Load();
             }
             catch (Exception ex) { Logs.Err(ex); GlobalFunc.Alert("Some files are not initialized!"); }
             try
@@ -196,6 +199,8 @@ namespace Shelf.Functions
         }
         public static T JsonDecode<T>(string file) where T : class
         {
+            if (!File.Exists(file))
+                throw new Exception($"Json file does not exist! File: {file}");
             try
             {
                 string content = ReadFromFile(file);

@@ -438,15 +438,24 @@ namespace Shelf.Functions
                             catch (Exception ex)
                             {
                                 Logs.Err(ex);
-                                newEntry.Media.Title.Romaji = new DirectoryInfo(folder).Name;
+                                newEntry.Media.Title.Romaji = "";
                             }
                         }
-                        else
-                            newEntry.Media.Title.Romaji = new DirectoryInfo(folder).Name;
-
+                        if (String.IsNullOrWhiteSpace(newEntry.Media.Title.Romaji))
+                        {
+                            try
+                            {
+                                newEntry.Media.Title.Romaji = new DirectoryInfo(folder).Name;
+                            }
+                            catch (Exception ex)
+                            {
+                                Logs.Err(ex);
+                                continue;
+                            }
+                        }
                         newEntry.Path = folder;
                         listEntries.Add(newEntry);
-                        Logs.Debug($"Local media: {folder}");
+                        //Logs.Debug($"Local media: {folder}");
                     }
                     return listEntries;
                 });

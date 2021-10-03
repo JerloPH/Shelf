@@ -38,17 +38,17 @@ namespace Shelf.Functions
             grid.View = View.LargeIcon;
             grid.Sorting = SortOrder.Ascending;
         }
-        public static void BindLocalMediaToDataGrid(DataGridView grid, List<LocalMediaPaths> data, string[] headers)
+        public static void BindLocalMediaToDataGrid<T>(DataGridView grid, List<T> data, string[] headers)
         {
             try
             {
-                BindingList<LocalMediaPaths> localBindList = null;
+                BindingList<T> localBindList = null;
                 if (data?.Count > 0)
                 {
-                    localBindList = new BindingList<LocalMediaPaths>(data);
+                    localBindList = new BindingList<T>(data);
                 }
                 else
-                    localBindList = new BindingList<LocalMediaPaths>(new List<LocalMediaPaths>());
+                    localBindList = new BindingList<T>(new List<T>());
 
                 var source = new BindingSource(data, null);
                 grid.DataSource = source;

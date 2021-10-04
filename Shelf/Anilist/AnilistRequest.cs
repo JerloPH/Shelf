@@ -21,8 +21,8 @@ namespace Shelf.Anilist
         // Private properties
         private static string AniClient { get; set; } = "";
         private static string AniSecret { get; set; } = "";
-        private static readonly string QueryMediaList = @"query ($name: String, $type: MediaType) {
-          MediaListCollection(userName: $name, type: $type) {
+        private static readonly string QueryMediaList = @"query ($userID: Int, $type: MediaType) {
+          MediaListCollection(userId: $userID, type: $type) {
             lists {
               name
               entries {
@@ -130,7 +130,40 @@ namespace Shelf.Anilist
             catch { throw; }
             return returnString;
         }
-        public static async Task<AnilistAnimeManga> RequestMediaList(string publicTkn, string userName, string MEDIA = "ANIME")
+        public static async Task<string> RequestUserId(string pubTkn)
+        {
+            if (String.IsNullOrWhiteSpace(pubTkn))
+                throw new Exception("No Public Token!");
+
+            string returnString = "";
+            try
+            {
+                var client = new RestClient("https://graphql.anilist.co");
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+
+                var request = new RestRequest("application/json", Method.POST);
+                request.Timeout = 0;
+                request.AddJsonBody(new
+                {
+                    query = "{Viewer{id}}"
+                });
+                request.AddHeader("Authorization", $"Bearer {pubTkn}");
+                request.RequestFormat = DataFormat.Json;
+                request.AddHeader("Content-Type", "application/json");
+                request.AddHeader("Accept", "application/json");
+
+                var response = await client.ExecuteAsync(request);
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    var content = response.Content; // Raw content as string
+                    var json = JObject.Parse(content);
+                    returnString = (string)json["data"]["Viewer"]["id"];
+                }
+            }
+            catch { throw; }
+            return returnString;
+        }
+        public static async Task<AnilistAnimeManga> RequestMediaList(string publicTkn, string userId, string MEDIA = "ANIME")
         {
             AnilistAnimeManga returnObject = null;
             try
@@ -143,7 +176,10 @@ namespace Shelf.Anilist
                 request.AddJsonBody(new
                 {
                     query = QueryMediaList,
-                    variables = "{ \"name\": \""+userName+"\", \"type\": \""+MEDIA+"\"}"
+                    variables = new {
+                        userID = userId,
+                        type = MEDIA
+                    }
                 });
                 request.AddHeader("Authorization", $"Bearer {publicTkn}");
                 request.RequestFormat = DataFormat.Json;

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Shelf.Enum;
 using Shelf.Functions;
 
 namespace Shelf.Views
@@ -15,7 +16,9 @@ namespace Shelf.Views
     {
         private Type selectedType = null;
         private string selectedName = "";
+        private string selectedCaption = "";
         private bool requireRestart = false;
+        private SettingType selectedSetType = SettingType.Default;
         public frmSettings()
         {
             InitializeComponent();
@@ -36,8 +39,10 @@ namespace Shelf.Views
                 {
                     panelValue.Controls.Clear(); // Clear previous controls
                     selectedName = row.Cells["colName"].Value.ToString();
+                    selectedCaption = row.Cells["colCaption"].Value.ToString();
                     selectedType = AppSettings.getType(selectedName);
                     requireRestart = (bool)row.Cells["colRestart"].Value;
+                    selectedSetType = (SettingType)row.Cells["colSetType"].Value;
                     lblDesc.Text = row.Cells["colDesc"].Value.ToString();
                     if (selectedType != null)
                     {
@@ -48,6 +53,16 @@ namespace Shelf.Views
                                 ctrl.Dock = DockStyle.Fill;
                                 ctrl.Text = row.Cells["colValue"].Value.ToString();
                                 panelValue.Controls.Add(ctrl);
+                                if (selectedSetType == SettingType.Directory || selectedSetType == SettingType.File)
+                                {
+                                    var browse = new Button();
+                                    browse.Text = "Browse";
+                                    browse.Size = new Size(120, ctrl.Height);
+                                    browse.Dock = DockStyle.Right;
+                                    browse.Tag = ctrl;
+                                    browse.MouseClick += Browse_MouseClick;
+                                    panelValue.Controls.Add(browse);
+                                }
                                 break;
                             case TypeCode.Boolean:
                                 var cb = new ComboBox();
@@ -59,6 +74,27 @@ namespace Shelf.Views
                                 panelValue.Controls.Add(cb);
                                 break;
                         }
+                    }
+                }
+            }
+        }
+
+        private void Browse_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (sender != null)
+            {
+                var ctrl = sender as Button;
+                if (ctrl?.Tag != null)
+                {
+                    TextBox txt = ctrl.Tag as TextBox;
+                    if (txt != null)
+                    {
+                        string initialVal = txt.Text;
+                        try
+                        {
+                            txt.Text = GlobalFunc.BrowseForDirectory(selectedCaption, GlobalFunc.DIR_OUTPUT, initialVal, selectedSetType);
+                        }
+                        catch (Exception ex) { Logs.Err(ex); txt.Text = initialVal; }
                     }
                 }
             }
@@ -76,8 +112,12 @@ namespace Shelf.Views
                     {
                         case TypeCode.String:
                             var txt = ctrl as TextBox;
-                            Logs.Debug($"Name: {selectedName}, Value: {txt.Text}");
-                            isSuccess = AppSettings.setValue(selectedName, txt.Text);
+                            string value = txt.Text;
+                            Logs.Debug($"Name: {selectedName}, Value: {value}");
+                            if (selectedSetType != SettingType.Default)
+                                value = value.TrimEnd('\\').TrimEnd('/');
+
+                            isSuccess = AppSettings.setValue(selectedName, value);
                             break;
                         case TypeCode.Boolean:
                             var cb = ctrl as ComboBox;
@@ -89,15 +129,38 @@ namespace Shelf.Views
             }
             if (isSuccess)
             {
-                AppSettings.Save();
                 gridSetting.Refresh();
-                Logs.Debug($"New value: {AppSettings.AppConfig.tachibackup}");
-                if (requireRestart)
+            }
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            AppSettings.SaveAppConfig();
+            if (requireRestart)
+            {
+                GlobalFunc.Alert("Required App Restart for\nsome Settings to take effect.");
+            }
+            else
+                GlobalFunc.Alert("Changes applied!");
+        }
+
+        private void btnReset_Click(object sender, EventArgs e)
+        {
+            AppSettings.LoadAppConfig();
+            gridSetting.Refresh();
+        }
+
+        private void gridSetting_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            int index = gridSetting.Columns["colValue"].Index;
+            if (e.ColumnIndex == index)
+            {
+                if (e.Value is bool)
                 {
-                    GlobalFunc.Alert("Required App Restart for\nsome Settings to take effect.");
+                    bool value = (bool)e.Value;
+                    e.Value = (value) ? "Yes" : "No";
+                    e.FormattingApplied = true;
                 }
-                else
-                    GlobalFunc.Alert("Changes applied!");
             }
         }
     }

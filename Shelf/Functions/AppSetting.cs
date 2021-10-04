@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
+using Shelf.Enum;
 using Shelf.Views;
 
 namespace Shelf.Functions
@@ -16,9 +17,9 @@ namespace Shelf.Functions
     {
         public static AppSettingsEntity AppConfig { get; set; } = null;
         public static List<AppSettingsListEntity> AppConfigList { get; set; } = new List<AppSettingsListEntity>();
-        public static List<String> RequiredRestart { get; set; } = new List<string>();
+        public static List<String> AppConfigRequiredRestart { get; set; } = new List<string>();
 
-        public static void Save()
+        public static void SaveAppConfig()
         {
             string jsonfile = GlobalFunc.FILE_APPCONFIG;
             try
@@ -27,12 +28,13 @@ namespace Shelf.Functions
             }
             catch (Exception ex) { Logs.Err(ex); }
         }
-        public static void Load()
+        public static void LoadAppConfig(bool isLoadForm = false)
         {
             string jsonfile = GlobalFunc.FILE_APPCONFIG;
             try
             {
                 AppConfig = GlobalFunc.JsonDecode<AppSettingsEntity>(jsonfile);
+                AppConfigRequiredRestart.Clear();
                 // TODO: Load from Resources files: 'requiredRestart.txt'
                 // and add them to 'RequiredRestart' list.
             }
@@ -43,7 +45,7 @@ namespace Shelf.Functions
                 AppConfig.DefaultValues();
                 GlobalFunc.JsonEncode(AppConfig, jsonfile);
             }
-
+            // Bind settings properties to 'AppConfigList', for use in 'DataGridView' in 'frmSettingss'
             try
             {
                 AppConfigList.Clear();
@@ -62,7 +64,12 @@ namespace Shelf.Functions
                             .Cast<DescriptionAttribute>().Single();
                         item.Caption = displayNameAttr.DisplayName;
                         item.Description = descAttr.Description;
-                        item.Restart = RequiredRestart.Contains(prop.Name);
+                        item.Restart = AppConfigRequiredRestart.Contains(prop.Name);
+                        item.settingType = SettingType.Default;
+                        // Set type special cases
+                        if (item.Name.Equals("tachibackup"))
+                            item.settingType = SettingType.Directory;
+
                         AppConfigList.Add(item); // Add to List for Data Binding.
 
                         // Log to debug
@@ -72,8 +79,11 @@ namespace Shelf.Functions
                 }
                 // TODO: Add button on main form to show settings
                 // and remove below code.
-                var form = new frmSettings();
-                form.Show();
+                if (isLoadForm)
+                {
+                    var form = new frmSettings();
+                    form.Show();
+                }
             }
             catch (Exception ex) { Logs.Err(ex); }
         }
@@ -112,42 +122,6 @@ namespace Shelf.Functions
             catch (Exception ex) { Logs.Err(ex); }
             return null;
         }
-        public static bool setValueLoop(string name, object defValue)
-        {
-            bool success = false;
-            string debugTime = "ffffff";
-            Logs.Debug($"ForEach Loop {DateTime.Now.ToString(debugTime)}");
-            try
-            {
-                PropertyInfo[] props = typeof(AppSettingsEntity).GetProperties();
-                foreach (PropertyInfo prop in props)
-                {
-                    if (prop != null)
-                    {
-                        if (prop.Name.Equals(name))
-                        {
-                            prop.SetValue(AppConfig, defValue);
-                            success = true;
-                            break;
-                        }
-                    }
-                    //var attr = (JsonPropertyAttribute)prop.GetCustomAttribute(typeof(JsonPropertyAttribute));
-                    //if (attr != null)
-                    //{
-                    //    Logs.Debug($"Property: {prop.Name}");
-                    //    Logs.Debug($"Value: {attr.PropertyName}");
-                    //    if (attr.PropertyName.Equals(name))
-                    //    {
-                    //        prop.SetValue(AppConfig, defValue);
-                    //        return true;
-                    //    }
-                    //}
-                }
-            }
-            catch (Exception ex) { Logs.Err(ex); }
-            Logs.Debug($"ForEach Loop done {DateTime.Now.ToString(debugTime)}");
-            return success;
-        }
     }
     public class AppSettingsListEntity
     {
@@ -156,6 +130,7 @@ namespace Shelf.Functions
         public string Description { get; set; }
         public object Value { get; set; }
         public bool Restart { get; set; }
+        public SettingType settingType { get; set; }
     }
     public class AppSettingsEntity
     {
@@ -163,6 +138,8 @@ namespace Shelf.Functions
         {
             tachibackup = "";
             isAlwaysDownloadCover = false;
+            isAutoFetchMedia = false;
+            isAlwaysUseRomaji = false;
         }
         
         #region Properties
@@ -171,6 +148,12 @@ namespace Shelf.Functions
 
         [DisplayName("Always Download Cover"), Description("Always download cover from Anilist")]
         public bool isAlwaysDownloadCover { get; set; }
+
+        [DisplayName("Automatically Refresh Media"), Description("Fetch Media List upon Load")]
+        public bool isAutoFetchMedia { get; set; }
+
+        [DisplayName("Always Display Romaji"), Description("Only use Romaji title of Entry")]
+        public bool isAlwaysUseRomaji { get; set; }
         #endregion
     }
 }

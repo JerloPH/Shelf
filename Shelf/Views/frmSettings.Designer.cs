@@ -36,6 +36,7 @@ namespace Shelf.Views
             this.colValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colDesc = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colRestart = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colSetType = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panelControls = new System.Windows.Forms.Panel();
             this.panelAction = new System.Windows.Forms.Panel();
             this.btnSave = new System.Windows.Forms.Button();
@@ -74,7 +75,8 @@ namespace Shelf.Views
             this.colCaption,
             this.colValue,
             this.colDesc,
-            this.colRestart});
+            this.colRestart,
+            this.colSetType});
             this.gridSetting.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gridSetting.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.gridSetting.Location = new System.Drawing.Point(0, 0);
@@ -84,6 +86,7 @@ namespace Shelf.Views
             this.gridSetting.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.gridSetting.Size = new System.Drawing.Size(632, 413);
             this.gridSetting.TabIndex = 1;
+            this.gridSetting.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.gridSetting_CellFormatting);
             this.gridSetting.SelectionChanged += new System.EventHandler(this.gridSetting_SelectionChanged);
             // 
             // colName
@@ -124,6 +127,14 @@ namespace Shelf.Views
             this.colRestart.Name = "colRestart";
             this.colRestart.Visible = false;
             // 
+            // colSetType
+            // 
+            this.colSetType.DataPropertyName = "settingType";
+            this.colSetType.HeaderText = "Setting Type";
+            this.colSetType.MinimumWidth = 6;
+            this.colSetType.Name = "colSetType";
+            this.colSetType.Visible = false;
+            // 
             // panelControls
             // 
             this.panelControls.Controls.Add(this.panelAction);
@@ -156,6 +167,7 @@ namespace Shelf.Views
             this.btnSave.TabIndex = 4;
             this.btnSave.Text = "SAVE";
             this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // btnReset
             // 
@@ -168,6 +180,7 @@ namespace Shelf.Views
             this.btnReset.TabIndex = 3;
             this.btnReset.Text = "RESET";
             this.btnReset.UseVisualStyleBackColor = true;
+            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
             // panelValueSet
             // 
@@ -213,13 +226,11 @@ namespace Shelf.Views
             // 
             // lblDesc
             // 
-            this.lblDesc.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblDesc.AutoSize = true;
+            this.lblDesc.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblDesc.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lblDesc.Location = new System.Drawing.Point(0, 0);
             this.lblDesc.Name = "lblDesc";
-            this.lblDesc.Size = new System.Drawing.Size(134, 31);
+            this.lblDesc.Size = new System.Drawing.Size(632, 41);
             this.lblDesc.TabIndex = 0;
             this.lblDesc.Text = "Description";
             this.lblDesc.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -240,7 +251,6 @@ namespace Shelf.Views
             this.panelAction.ResumeLayout(false);
             this.panelValueSet.ResumeLayout(false);
             this.panelDesc.ResumeLayout(false);
-            this.panelDesc.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -257,11 +267,12 @@ namespace Shelf.Views
         private System.Windows.Forms.Panel panelAction;
         private System.Windows.Forms.Button btnReset;
         private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.Button btnApply;
         private System.Windows.Forms.DataGridViewTextBoxColumn colName;
         private System.Windows.Forms.DataGridViewTextBoxColumn colCaption;
         private System.Windows.Forms.DataGridViewTextBoxColumn colValue;
         private System.Windows.Forms.DataGridViewTextBoxColumn colDesc;
         private System.Windows.Forms.DataGridViewTextBoxColumn colRestart;
-        private System.Windows.Forms.Button btnApply;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colSetType;
     }
 }

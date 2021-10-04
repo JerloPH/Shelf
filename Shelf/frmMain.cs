@@ -21,6 +21,7 @@ namespace Shelf
     {
         private bool IsRefreshing = false;
         private bool IsFetchingMedia = false;
+        private string AnilistUserId = "";
         private string AuthCode = "";
         private string PublicTkn = "";
         private DateTime? TokenDate = null;
@@ -29,6 +30,7 @@ namespace Shelf
         private ImageList localanimeCoverList = new ImageList();
         private ImageList localmangaCoverList = new ImageList();
         private LocalMedia localMedia = new LocalMedia();
+        public AppSettingsEntity Setting = null;
 
         // Public Properties
         public Form ConfigForm { get; set; } = null; // Config form
@@ -36,22 +38,6 @@ namespace Shelf
         public frmMain()
         {
             InitializeComponent();
-            GlobalFunc.InitializedApp(); // Initialize directory and files
-            AnilistRequest.Initialize(); // Initialize config
-            InitializeItems(); // Initialize controls
-        }
-        public void InitializeItems()
-        {
-            UIHelper.SetupListViewAndImgList(lvAnime, animeCoverList); // Anime media listview
-            UIHelper.SetupListViewAndImgList(lvManga, mangaCoverList); // Manga media listview
-            UIHelper.SetupListViewAndImgList(lvTachi, mangaCoverList); // Tachiyomi library
-            UIHelper.SetupListViewAndImgList(lvLocalAnime, localanimeCoverList); // Local Anime
-            UIHelper.SetupListViewAndImgList(lvLocalManga, localmangaCoverList); // Local Manga
-            // Other Controls
-            cbMediaRefresh.Items.AddRange(new string[] { "All", "Anime", "Manga", "Tachiyomi", "Local Anime", "Local Manga" });
-            cbMediaRefresh.SelectedIndex = 0;
-            cbMedia.Items.AddRange(new string[] { "ALL", "ANIME", "MANGA" });
-            cbMedia.SelectedIndex = 0;
         }
         private async Task InitializeObjects()
         {
@@ -62,6 +48,20 @@ namespace Shelf
                 {
                     this.Invoke((Action)delegate
                     {
+                        // Initialize controls
+                        UIHelper.SetupListViewAndImgList(lvAnime, animeCoverList); // Anime media listview
+                        UIHelper.SetupListViewAndImgList(lvManga, mangaCoverList); // Manga media listview
+                        UIHelper.SetupListViewAndImgList(lvTachi, mangaCoverList); // Tachiyomi library
+                        UIHelper.SetupListViewAndImgList(lvLocalAnime, localanimeCoverList); // Local Anime
+                        UIHelper.SetupListViewAndImgList(lvLocalManga, localmangaCoverList); // Local Manga
+                                                                                             // Other Controls
+                        cbMediaRefresh.Items.AddRange(new string[] { "All", "Anime", "Manga", "Tachiyomi", "Local Anime", "Local Manga" });
+                        cbMediaRefresh.SelectedIndex = 0;
+                        cbMedia.Items.AddRange(new string[] { "ALL", "ANIME", "MANGA" });
+                        cbMedia.SelectedIndex = 0;
+
+                        UIHelper.PopulateCombobox<MediaEntryMode>(cbEntryMode);
+                        // Initialize Local Media Paths
                         if (File.Exists(GlobalFunc.FILE_LOCAL_MEDIA))
                         {
                             localMedia = GlobalFunc.JsonDecode<LocalMedia>(GlobalFunc.FILE_LOCAL_MEDIA);
@@ -80,10 +80,39 @@ namespace Shelf
                         }
                         UIHelper.BindLocalMediaToDataGrid(gridPathLocal, localMedia.paths, new string[] { "Path", "Separate Source", "Media" });
                         (gridPathLocal.Columns[2] as DataGridViewComboBoxColumn).DataSource = System.Enum.GetValues(typeof(MediaAniManga));
+                        Log("Initialized Local Media Paths!");
                     });
                 });
             }
             catch (Exception ex) { GlobalFunc.Alert("Some UI are not initialized!"); Logs.Err(ex); }
+        }
+        private async Task LoadTachiyomiBackupFiles()
+        {
+            // Load Tachiyomi backups
+            // TODO: Change Tachiyomi TextBox to ComboBox
+            await Task.Run(delegate {
+                Log("Initializing Tachiyomi backups..");
+                try
+                {
+                    string tachibackupfolder = Setting.tachibackup;
+                    if (Directory.Exists(tachibackupfolder))
+                    {
+                        foreach (string item in Directory.GetFiles(tachibackupfolder))
+                        {
+                            if (File.Exists(item))
+                            {
+                                if (item.Substring(item.Length - 2, 2).Equals("gz"))
+                                {
+                                    txtTachi.Text = item;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    Log("Loaded Tachiyomi backup files.");
+                }
+                catch (Exception ex) { Logs.Err(ex); Log("Error on loading tachiyomi backups folder!"); }
+            });
         }
         public static bool SetDragFileOnTextBox(DragEventArgs e, TextBox tbox)
         {
@@ -152,50 +181,57 @@ namespace Shelf
                 return code;
             });
         }
-        public async Task<bool> RequestPublicTkn()
+        public async Task<string> RequestPublicTkn()
         {
             return await Task.Run(async delegate
             {
+                string token = "";
+                Log("Loading Authorization Code..");
                 // Get Authorization Code
-                if (File.Exists(GlobalFunc.FILE_AUTH_CODE))
-                {
-                    AuthCode = GlobalFunc.ReadFromFile(GlobalFunc.FILE_AUTH_CODE);
-                }
                 if (String.IsNullOrWhiteSpace(AuthCode))
                 {
-                    AuthCode = await RequestAuthCode();
+                    if (File.Exists(GlobalFunc.FILE_AUTH_CODE))
+                        AuthCode = GlobalFunc.ReadFromFile(GlobalFunc.FILE_AUTH_CODE);
+
+                    if (String.IsNullOrWhiteSpace(AuthCode))
+                        AuthCode = await RequestAuthCode();
                 }
                 Log("Requesting token..");
                 // Request Access Token, using Auth code
                 try
                 {
-                    PublicTkn = await AnilistRequest.RequestPublicToken(AuthCode);
+                    token = await AnilistRequest.RequestPublicToken(AuthCode);
                 }
-                catch (Exception ex)
+                catch (Exception ex) { Logs.Err(ex); token = ""; }
+                if (String.IsNullOrWhiteSpace(token))
                 {
-                    Logs.Err(ex);
-                    PublicTkn = "";
-                }
-                if (String.IsNullOrWhiteSpace(PublicTkn))
-                {
-                    AuthCode = ""; // reset authorization code if token is invalidated.
-                    GlobalFunc.WriteFile(GlobalFunc.FILE_AUTH_CODE, "");
-                    Log("No Public Token acquired! Need to Authorize again.");
-                    return false;
+                    this.Invoke((Action) delegate
+                    {
+                        AuthCode = ""; // reset authorization code if token is invalidated.
+                    });
+                    if (GlobalFunc.WriteFile(GlobalFunc.FILE_AUTH_CODE, ""))
+                        Log("No Public Token acquired! Need to Authorize again.");
+                    else
+                        Log("Old Auth code detected! Manually remove them from data folder.");
+
+                    return "";
                 }
                 else
                 {
-                    TokenDate = DateTime.Now;
+                    this.Invoke((Action)delegate
+                    {
+                        TokenDate = DateTime.Now;
+                    });
                     Log($"Token refreshed! Date acquired: {TokenDate}");
                 }
-                return true;
+                return token;
             });
         }
-        public async Task<bool> RequestMedia(string media, string username, string token)
+        public async Task<bool> RequestMedia(string media, string userId, string token)
         {
             // Get media, and write to json file
             Log($"Requesting {media}...");
-            var anilistMedia = await AnilistRequest.RequestMediaList(token, username, media);
+            var anilistMedia = await AnilistRequest.RequestMediaList(token, userId, media);
             if (anilistMedia != null)
             {
                 Log($"{media} data fetched!");
@@ -383,18 +419,26 @@ namespace Shelf
         }
         #endregion
         // ####################################################################### Events
-        private async void frmMain_Load(object sender, EventArgs e)
+        private void frmMain_Load(object sender, EventArgs e)
         {
-            try
+            var form = new frmLoading("Loading", "Form Loading");
+            form.BackgroundWorker.DoWork += (sender1, e1) =>
             {
-                UIHelper.PopulateCombobox<MediaEntryMode>(cbEntryMode);
-            }
-            catch (Exception ex) { Logs.Err(ex); GlobalFunc.Alert("Mode not initialized!"); }
+                this.Invoke((Action) async delegate
+                {
+                    GlobalFunc.InitializedApp(); // Initialize directory and files
+                    AnilistRequest.Initialize(); // Initialize config
+                    Setting = AppSettings.AppConfig;
+                    await InitializeObjects();
+                    await LoadTachiyomiBackupFiles();
+                });
+            };
+            form.ShowDialog(this);
+            
             Log("Click on 'Refresh Token' to start!");
             TokenDate = DateTime.Now.AddMinutes(-61);
             Log($"Date of Token: {TokenDate}");
             //btnRefresh.PerformClick(); // Fetch access code and token
-            await InitializeObjects();
         }
         private void frmMain_Resize(object sender, EventArgs e)
         {
@@ -410,11 +454,22 @@ namespace Shelf
                 IsRefreshing = true;
                 btnRefresh.Enabled = false;
                 // Check if token is valid
-                if (TokenDate.Value.AddMinutes(59) <= DateTime.Now)
+                if (TokenDate.Value.AddMinutes(59) <= DateTime.Now || (String.IsNullOrWhiteSpace(PublicTkn)))
                 {
-                    bool success = await RequestPublicTkn();
-                    if (!success)
-                        success = await RequestPublicTkn();
+                    PublicTkn = await RequestPublicTkn();
+                    if (String.IsNullOrWhiteSpace(PublicTkn))
+                        PublicTkn = await RequestPublicTkn();
+
+                    if (String.IsNullOrWhiteSpace(AnilistUserId))
+                    {
+                        try
+                        {
+                            Log("Requesting user Id..");
+                            AnilistUserId = await AnilistRequest.RequestUserId(PublicTkn);
+                            Log($"User found! User ID: {AnilistUserId}");
+                        }
+                        catch (Exception ex) { Logs.Err(ex); Log("User Id not fetched!"); };
+                    }
                 }
                 else
                     Log("Token is still valid.");
@@ -428,28 +483,21 @@ namespace Shelf
 
         private async void btnFetchMedia_Click(object sender, EventArgs e)
         {
-            if (String.IsNullOrWhiteSpace(txtUsername.Text))
-            {
-                Log("Username is empty!");
-                txtUsername.Focus();
-                return;
-            }
             if (!IsFetchingMedia)
             {
                 IsFetchingMedia = true;
                 btnFetchMedia.Enabled = false;
                 if (!String.IsNullOrWhiteSpace(PublicTkn))
                 {
-                    // What type of media?
+                    // // Get media, and write to json file
                     if (cbMedia.SelectedIndex > 0)
                     {
-                        await RequestMedia(cbMedia.Text, txtUsername.Text, PublicTkn);
+                        await RequestMedia(cbMedia.Text, AnilistUserId, PublicTkn);
                     }
-                    else
+                    else // Get all media
                     {
-                        // Get media, and write to json file
-                        await RequestMedia("ANIME", txtUsername.Text, PublicTkn);
-                        await RequestMedia("MANGA", txtUsername.Text, PublicTkn);
+                        await RequestMedia("ANIME", AnilistUserId, PublicTkn);
+                        await RequestMedia("MANGA", AnilistUserId, PublicTkn);
                     }
                 }
                 else
@@ -475,6 +523,12 @@ namespace Shelf
 
         private async void btnMALExport_Click(object sender, EventArgs e)
         {
+            if (String.IsNullOrWhiteSpace(txtUsername.Text))
+            {
+                Log("Username is empty!");
+                txtUsername.Focus();
+                return;
+            }
             string username = txtUsername.Text;
             string outputAnime = "";
             string outputManga = "";
@@ -482,12 +536,6 @@ namespace Shelf
             string outputMangaNonMal = "";
             bool processAnime = cbMedia.SelectedIndex == 0 || cbMedia.SelectedIndex == 1;
             bool processManga = cbMedia.SelectedIndex == 0 || cbMedia.SelectedIndex == 2;
-            if (String.IsNullOrWhiteSpace(username))
-            {
-                GlobalFunc.Alert("Username is empty!");
-                txtUsername.Focus();
-                return;
-            }
             btnMALExport.Enabled = false;
             // Process Anime
             if (processAnime)
@@ -637,7 +685,7 @@ namespace Shelf
 
         private void btnChangeTachi_Click(object sender, EventArgs e)
         {
-            string file = GlobalFunc.BrowseForFile("Browse for Tachiyomi backup file", "Tachiyomi backups|*.proto;*.gz", GlobalFunc.DIR_START);
+            string file = GlobalFunc.BrowseForFile("Browse for Tachiyomi backup file", "Tachiyomi backups|*.proto;*.gz", Setting.tachibackup);
             if (File.Exists(file))
                 txtTachi.Text = file;
         }

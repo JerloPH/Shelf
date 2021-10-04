@@ -15,6 +15,8 @@ using ProtoBuf.WellKnownTypes;
 using System.IO.Compression;
 using System.Diagnostics;
 using Shelf.Anilist;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using Shelf.Enum;
 
 namespace Shelf.Functions
 {
@@ -70,7 +72,7 @@ namespace Shelf.Functions
                 FILE_AUTH_CODE = Path.Combine(DIR_DATA, "AuthCode.tkn");
                 FILE_PUB_TKN = Path.Combine(DIR_DATA, "PublicToken.tkn");
                 FILE_LOCAL_MEDIA = Path.Combine(DIR_DATA, "LocalMediaPaths.json");
-                AppSettings.Load();
+                AppSettings.LoadAppConfig(true);
             }
             catch (Exception ex) { Logs.Err(ex); GlobalFunc.Alert("Some files are not initialized!"); }
             try
@@ -295,7 +297,7 @@ namespace Shelf.Functions
             string ret = "";
             OpenFileDialog selectFile = new OpenFileDialog
             {
-                InitialDirectory = InitialDir,
+                InitialDirectory = Directory.Exists(InitialDir) ? InitialDir : DIR_START,
                 Filter = filter,
                 Title = Title,
                 CheckFileExists = true,
@@ -309,6 +311,27 @@ namespace Shelf.Functions
                 ret = selectFile.FileName;
             }
             selectFile.Dispose();
+            return ret;
+        }
+        public static string BrowseForDirectory(string title, string initialDir, string initialVal, SettingType setType)
+        {
+            string ret = initialVal;
+            try
+            {
+                using (CommonOpenFileDialog dialog = new CommonOpenFileDialog())
+                {
+                    dialog.Title = title;
+                    dialog.Multiselect = false;
+                    dialog.InitialDirectory = initialDir;
+                    dialog.IsFolderPicker = setType == SettingType.Directory;
+                    if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+                    {
+                        if (!String.IsNullOrWhiteSpace(dialog.FileName))
+                            ret = dialog.FileName;
+                    }
+                }
+            }
+            catch { throw; }
             return ret;
         }
         public static bool FileOpeninExplorer(string filePath)

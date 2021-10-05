@@ -453,57 +453,11 @@ namespace Shelf
             }
             return null;
         }
-        #endregion
-        // ####################################################################### Custom Events
-        private void CblistTachiSkip_ItemCheck(object sender, ItemCheckEventArgs e)
-        {
-            var checkedIndices = this.cblistTachiSkip.CheckedIndices.Cast<int>().ToList();
-            if (e.NewValue == CheckState.Checked)
-                checkedIndices.Add(e.Index);
-            else
-                if (checkedIndices.Contains(e.Index))
-                checkedIndices.Remove(e.Index);
-
-            GlobalFunc.INCLUDED_STATUS.Clear();
-            foreach (int index in checkedIndices)
-            {
-                string item = cblistTachiSkip.Items[index].ToString();
-                if (!GlobalFunc.INCLUDED_STATUS.Contains(item))
-                    GlobalFunc.INCLUDED_STATUS.Add(item);
-            }
-            //Log($"Status => {string.Join(',', GlobalFunc.INCLUDED_STATUS)}");
-        }
-        // ####################################################################### Events
-        private void frmMain_Load(object sender, EventArgs e)
-        {
-            var form = new frmLoading("Loading", "Form Loading");
-            form.BackgroundWorker.DoWork += (sender1, e1) =>
-            {
-                this.Invoke((Action) async delegate
-                {
-                    GlobalFunc.InitializedApp(); // Initialize directory and files
-                    AnilistRequest.Initialize(); // Initialize config
-                    Setting = AppSettings.AppConfig;
-                    await InitializeObjects();
-                    await LoadTachiyomiBackupFiles();
-                });
-            };
-            form.ShowDialog(this);
-            
-            Log("Click on 'Refresh Token' to start!");
-            TokenDate = DateTime.Now.AddMinutes(-61);
-            Log($"Date of Token: {TokenDate}");
-            //btnRefresh.PerformClick(); // Fetch access code and token
-        }
-        private void frmMain_Resize(object sender, EventArgs e)
-        {
-            tabMedia.Width = this.ClientRectangle.Width - tabMedia.Left - 16;
-            tabMedia.Height = this.ClientRectangle.Height - tabMedia.Top - 16;
-        }
-        private async void btnRefresh_Click(object sender, EventArgs e)
+        private async void RefreshToken()
         {
             if (!IsRefreshing)
             {
+                Log("Refreshing token..");
                 btnFetchMedia.Enabled = false; // Disable fetching media files
                 // Start fetching
                 IsRefreshing = true;
@@ -534,6 +488,63 @@ namespace Shelf
                 IsRefreshing = false;
                 btnFetchMedia.Enabled = true; // Enable fetching media files
             }
+            else
+                Log("Wait for previous refresh to finish!");
+        }
+        #endregion
+        // ####################################################################### Custom Events
+        private void CblistTachiSkip_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            var checkedIndices = this.cblistTachiSkip.CheckedIndices.Cast<int>().ToList();
+            if (e.NewValue == CheckState.Checked)
+                checkedIndices.Add(e.Index);
+            else
+                if (checkedIndices.Contains(e.Index))
+                checkedIndices.Remove(e.Index);
+
+            GlobalFunc.INCLUDED_STATUS.Clear();
+            foreach (int index in checkedIndices)
+            {
+                string item = cblistTachiSkip.Items[index].ToString();
+                if (!GlobalFunc.INCLUDED_STATUS.Contains(item))
+                    GlobalFunc.INCLUDED_STATUS.Add(item);
+            }
+            //Log($"Status => {string.Join(',', GlobalFunc.INCLUDED_STATUS)}");
+        }
+        // ####################################################################### Events
+        private void frmMain_Load(object sender, EventArgs e)
+        {
+            var form = new frmLoading("Loading", "Form Loading");
+            form.BackgroundWorker.DoWork += (sender1, e1) =>
+            {
+                this.Invoke(new Action(async () =>
+                {
+                    GlobalFunc.InitializedApp(); // Initialize directory and files
+                    AnilistRequest.Initialize(); // Initialize config
+                    Setting = AppSettings.AppConfig;
+                    await InitializeObjects();
+                    await LoadTachiyomiBackupFiles();
+
+                    Log("Click on 'Refresh Token' to start!");
+                    TokenDate = DateTime.Now.AddMinutes(-61);
+                    Log($"Date of Token: {TokenDate}");
+                    IsRefreshing = false;
+                    if (Setting.isAutoFetchTkn)
+                    {
+                        RefreshToken(); // Fetch access code and token
+                    }
+                }));
+            };
+            form.ShowDialog(this);
+        }
+        private void frmMain_Resize(object sender, EventArgs e)
+        {
+            tabMedia.Width = this.ClientRectangle.Width - tabMedia.Left - 16;
+            tabMedia.Height = this.ClientRectangle.Height - tabMedia.Top - 16;
+        }
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            RefreshToken();
         }
 
         private async void btnFetchMedia_Click(object sender, EventArgs e)

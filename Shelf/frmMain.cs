@@ -129,7 +129,7 @@ namespace Shelf
                     {
                         cmbTachiBackup.DisplayMember = "Name";
                         cmbTachiBackup.ValueMember = "File";
-                        UIHelper.BindComboBoxToDataSource(cmbTachiBackup, TachiBackups);
+                        cmbTachiBackup.SelectedIndex = 0;
                     });
                     Log("Loaded Tachiyomi backup files.");
                 }
@@ -146,12 +146,15 @@ namespace Shelf
                     var entry = new TachiBackupFile();
                     entry.Name = fileInfo.Name;
                     entry.File = item;
-                    TachiBackups.Add(entry);
-                    cmbTachiBackup.Refresh();
+                    var matches = TachiBackups.Where(p => p.File == entry.File).ToList();
+                    if (matches == null || matches.Count < 1)
+                    {
+                        TachiBackups.Add(entry);
+                        cmbTachiBackup.Items.Add(entry);
+                    }
                 }
                 catch (Exception ex) { Logs.Err(ex); }
             }
-            Logs.Debug($"Tachi backups => \n{JsonConvert.SerializeObject(TachiBackups)}");
         }
         #region Form-specific functions
         public void Log(string log)

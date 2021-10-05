@@ -38,23 +38,6 @@ namespace Shelf.Functions
             grid.View = View.LargeIcon;
             grid.Sorting = SortOrder.Ascending;
         }
-        public static void BindComboBoxToDataSource<T>(ComboBox ctrl, List<T> data)
-        {
-            try
-            {
-                BindingList<T> localBindList = null;
-                if (data?.Count > 0)
-                {
-                    localBindList = new BindingList<T>(data);
-                }
-                else
-                    localBindList = new BindingList<T>(new List<T>());
-
-                var source = new BindingSource(data, null);
-                ctrl.DataSource = source;
-            }
-            catch { throw; }
-        }
         public static void BindLocalMediaToDataGrid<T>(DataGridView grid, List<T> data, string[] headers)
         {
             try

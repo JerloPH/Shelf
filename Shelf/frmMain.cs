@@ -14,6 +14,7 @@ using Shelf.Json;
 using Shelf.Functions;
 using System.ComponentModel;
 using Shelf.Entity;
+using Newtonsoft.Json;
 
 namespace Shelf
 {
@@ -29,7 +30,9 @@ namespace Shelf
         private ImageList mangaCoverList = new ImageList();
         private ImageList localanimeCoverList = new ImageList();
         private ImageList localmangaCoverList = new ImageList();
-        private LocalMedia localMedia = new LocalMedia();
+        private LocalMedia localMedia = null;
+        private List<TachiBackupFile> TachiBackups = null;
+
         public AppSettingsEntity Setting = null;
 
         // Public Properties
@@ -38,6 +41,8 @@ namespace Shelf
         public frmMain()
         {
             InitializeComponent();
+            localMedia = new LocalMedia();
+            TachiBackups = new List<TachiBackupFile>();
         }
         private async Task InitializeObjects()
         {
@@ -73,9 +78,7 @@ namespace Shelf
                                 if (item.Equals("COMPLETED") || item.Equals("DROPPED"))
                                     check = false;
                             }
-
                             cblistTachiSkip.SetItemChecked(index, check);
-                            Logs.Debug($"Added skip => {item}");
                         }
                         cblistTachiSkip.ItemCheck += CblistTachiSkip_ItemCheck;
                         cblistTachiSkip.MultiColumn = true;
@@ -119,37 +122,36 @@ namespace Shelf
                     {
                         foreach (string item in Directory.GetFiles(tachibackupfolder))
                         {
-                            if (File.Exists(item))
-                            {
-                                if (item.Substring(item.Length - 2, 2).Equals("gz"))
-                                {
-                                    txtTachi.Text = item;
-                                    break;
-                                }
-                            }
+                            AddTachiBackupFile(item);
                         }
                     }
+                    this.Invoke((Action)delegate
+                    {
+                        cmbTachiBackup.DisplayMember = "Name";
+                        cmbTachiBackup.ValueMember = "File";
+                        UIHelper.BindComboBoxToDataSource(cmbTachiBackup, TachiBackups);
+                    });
                     Log("Loaded Tachiyomi backup files.");
                 }
                 catch (Exception ex) { Logs.Err(ex); Log("Error on loading tachiyomi backups folder!"); }
             });
         }
-        public static bool SetDragFileOnTextBox(DragEventArgs e, TextBox tbox)
+        public void AddTachiBackupFile(string item)
         {
-            if (e?.Data != null)
+            if (File.Exists(item) && (item.EndsWith("gz") || item.EndsWith("proto")))
             {
-                string[] data = (string[])e.Data.GetData(DataFormats.FileDrop, false);
-                foreach (var item in data)
+                try
                 {
-                    if (File.Exists(item) && (item.EndsWith("gz") || item.EndsWith("proto")))
-                    {
-                        tbox.Text = item;
-                        break;
-                    }
+                    FileInfo fileInfo = new FileInfo(item);
+                    var entry = new TachiBackupFile();
+                    entry.Name = fileInfo.Name;
+                    entry.File = item;
+                    TachiBackups.Add(entry);
+                    cmbTachiBackup.Refresh();
                 }
-                return true;
+                catch (Exception ex) { Logs.Err(ex); }
             }
-            return false;
+            Logs.Debug($"Tachi backups => \n{JsonConvert.SerializeObject(TachiBackups)}");
         }
         #region Form-specific functions
         public void Log(string log)
@@ -633,7 +635,7 @@ namespace Shelf
             bool IsReplaceTachiLib = cbReplaceTachiLib.Checked;
             List<string> ext = new List<string>();
             ext.AddRange(new string[]{ "proto", "gz" });
-            string file = txtTachi.Text.Trim();
+            string file = ((TachiBackupFile)cmbTachiBackup.SelectedItem).File;
             if (File.Exists(file))
             {
                 try
@@ -670,7 +672,7 @@ namespace Shelf
             // vars
             MediaEntryMode mode = MediaEntryMode.All;
             var manga = new List<Entry>();
-            string tachibackup = txtTachi.Text;
+            string tachibackup = ((TachiBackupFile)cmbTachiBackup.SelectedItem).File;
             // Declare which media to refresh
             bool loadAnime = cbMediaRefresh.SelectedIndex == 0 || cbMediaRefresh.Text.Equals("anime", StringComparison.OrdinalIgnoreCase);
             bool loadManga = cbMediaRefresh.SelectedIndex == 0 || cbMediaRefresh.Text.Equals("manga", StringComparison.OrdinalIgnoreCase);
@@ -725,19 +727,26 @@ namespace Shelf
         private void btnChangeTachi_Click(object sender, EventArgs e)
         {
             string file = GlobalFunc.BrowseForFile("Browse for Tachiyomi backup file", "Tachiyomi backups|*.proto;*.gz", Setting.tachibackup);
-            if (File.Exists(file))
-                txtTachi.Text = file;
+            AddTachiBackupFile(file);
         }
 
         private void btnTachiGoto_Click(object sender, EventArgs e)
         {
-            if (File.Exists(txtTachi.Text))
-                GlobalFunc.FileOpeninExplorer(txtTachi.Text);
+            string file = ((TachiBackupFile)cmbTachiBackup.SelectedItem).File;
+            if (File.Exists(file))
+                GlobalFunc.FileOpeninExplorer(file);
         }
 
         private void tpgTachi_DragDrop(object sender, DragEventArgs e)
         {
-            SetDragFileOnTextBox(e, txtTachi);
+            if (e?.Data != null)
+            {
+                string[] data = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+                foreach (string item in data)
+                {
+                    AddTachiBackupFile(item);
+                }
+            }
         }
 
         private void tabControl_DragEnter(object sender, DragEventArgs e)
@@ -746,16 +755,6 @@ namespace Shelf
         }
 
         private void tpgTachi_DragEnter(object sender, DragEventArgs e)
-        {
-            e.Effect = DragDropEffects.Copy;
-        }
-
-        private void txtTachi_DragDrop(object sender, DragEventArgs e)
-        {
-            SetDragFileOnTextBox(e, txtTachi);
-        }
-
-        private void txtTachi_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Copy;
         }

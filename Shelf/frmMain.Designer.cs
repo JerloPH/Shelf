@@ -39,10 +39,9 @@ namespace Shelf
             this.btnChangeConfig = new System.Windows.Forms.Button();
             this.btnMALExport = new System.Windows.Forms.Button();
             this.lblTachiBackupFile = new System.Windows.Forms.Label();
-            this.txtTachi = new System.Windows.Forms.TextBox();
             this.btnGenTachi = new System.Windows.Forms.Button();
             this.btnRefreshItems = new System.Windows.Forms.Button();
-            this.btnChangeTachi = new System.Windows.Forms.Button();
+            this.btnAddTachiBackup = new System.Windows.Forms.Button();
             this.lvAnime = new System.Windows.Forms.ListView();
             this.lblStatus = new System.Windows.Forms.Label();
             this.tabControl = new System.Windows.Forms.TabControl();
@@ -52,6 +51,7 @@ namespace Shelf
             this.panelTachiSkip = new System.Windows.Forms.Panel();
             this.cblistTachiSkip = new System.Windows.Forms.CheckedListBox();
             this.panelTachi = new System.Windows.Forms.Panel();
+            this.cmbTachiBackup = new System.Windows.Forms.ComboBox();
             this.cbReplaceTachiLib = new System.Windows.Forms.CheckBox();
             this.tpgLocal = new System.Windows.Forms.TabPage();
             this.btnLocalMangaAdd = new System.Windows.Forms.Button();
@@ -190,25 +190,14 @@ namespace Shelf
             this.lblTachiBackupFile.TabIndex = 13;
             this.lblTachiBackupFile.Text = "Tachiyomi Backup File:";
             // 
-            // txtTachi
-            // 
-            this.txtTachi.AllowDrop = true;
-            this.txtTachi.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.txtTachi.Location = new System.Drawing.Point(3, 34);
-            this.txtTachi.Name = "txtTachi";
-            this.txtTachi.Size = new System.Drawing.Size(390, 38);
-            this.txtTachi.TabIndex = 12;
-            this.txtTachi.DragDrop += new System.Windows.Forms.DragEventHandler(this.txtTachi_DragDrop);
-            this.txtTachi.DragEnter += new System.Windows.Forms.DragEventHandler(this.txtTachi_DragEnter);
-            // 
             // btnGenTachi
             // 
-            this.btnGenTachi.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnGenTachi.Font = new System.Drawing.Font("Segoe UI Semibold", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.btnGenTachi.Location = new System.Drawing.Point(3, 136);
             this.btnGenTachi.Name = "btnGenTachi";
             this.btnGenTachi.Size = new System.Drawing.Size(249, 52);
             this.btnGenTachi.TabIndex = 14;
-            this.btnGenTachi.Text = "To Tachi Backup";
+            this.btnGenTachi.Text = "Export Backup";
             this.btnGenTachi.UseVisualStyleBackColor = true;
             this.btnGenTachi.Click += new System.EventHandler(this.btnGenTachi_Click);
             // 
@@ -223,16 +212,16 @@ namespace Shelf
             this.btnRefreshItems.UseVisualStyleBackColor = true;
             this.btnRefreshItems.Click += new System.EventHandler(this.btnRefreshItems_Click);
             // 
-            // btnChangeTachi
+            // btnAddTachiBackup
             // 
-            this.btnChangeTachi.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnChangeTachi.Location = new System.Drawing.Point(0, 78);
-            this.btnChangeTachi.Name = "btnChangeTachi";
-            this.btnChangeTachi.Size = new System.Drawing.Size(249, 52);
-            this.btnChangeTachi.TabIndex = 17;
-            this.btnChangeTachi.Text = "Change Tachi File";
-            this.btnChangeTachi.UseVisualStyleBackColor = true;
-            this.btnChangeTachi.Click += new System.EventHandler(this.btnChangeTachi_Click);
+            this.btnAddTachiBackup.Font = new System.Drawing.Font("Segoe UI Semibold", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnAddTachiBackup.Location = new System.Drawing.Point(0, 78);
+            this.btnAddTachiBackup.Name = "btnAddTachiBackup";
+            this.btnAddTachiBackup.Size = new System.Drawing.Size(249, 52);
+            this.btnAddTachiBackup.TabIndex = 17;
+            this.btnAddTachiBackup.Text = "Add backup";
+            this.btnAddTachiBackup.UseVisualStyleBackColor = true;
+            this.btnAddTachiBackup.Click += new System.EventHandler(this.btnChangeTachi_Click);
             // 
             // lvAnime
             // 
@@ -332,16 +321,26 @@ namespace Shelf
             // 
             // panelTachi
             // 
+            this.panelTachi.Controls.Add(this.cmbTachiBackup);
             this.panelTachi.Controls.Add(this.cbReplaceTachiLib);
             this.panelTachi.Controls.Add(this.lblTachiBackupFile);
-            this.panelTachi.Controls.Add(this.txtTachi);
-            this.panelTachi.Controls.Add(this.btnChangeTachi);
+            this.panelTachi.Controls.Add(this.btnAddTachiBackup);
             this.panelTachi.Controls.Add(this.btnGenTachi);
             this.panelTachi.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelTachi.Location = new System.Drawing.Point(0, 0);
             this.panelTachi.Name = "panelTachi";
             this.panelTachi.Size = new System.Drawing.Size(417, 232);
             this.panelTachi.TabIndex = 0;
+            // 
+            // cmbTachiBackup
+            // 
+            this.cmbTachiBackup.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbTachiBackup.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.cmbTachiBackup.FormattingEnabled = true;
+            this.cmbTachiBackup.Location = new System.Drawing.Point(3, 34);
+            this.cmbTachiBackup.Name = "cmbTachiBackup";
+            this.cmbTachiBackup.Size = new System.Drawing.Size(398, 36);
+            this.cmbTachiBackup.TabIndex = 19;
             // 
             // cbReplaceTachiLib
             // 
@@ -601,10 +600,9 @@ namespace Shelf
         private System.Windows.Forms.Button btnChangeConfig;
         private System.Windows.Forms.Button btnMALExport;
         private System.Windows.Forms.Label lblTachiBackupFile;
-        private System.Windows.Forms.TextBox txtTachi;
         private System.Windows.Forms.Button btnGenTachi;
         private System.Windows.Forms.Button btnRefreshItems;
-        private System.Windows.Forms.Button btnChangeTachi;
+        private System.Windows.Forms.Button btnAddTachiBackup;
         private System.Windows.Forms.ListView lvAnime;
         private System.Windows.Forms.Label lblStatus;
         private System.Windows.Forms.TabControl tabControl;
@@ -634,6 +632,7 @@ namespace Shelf
         private System.Windows.Forms.Panel panelTachi;
         private System.Windows.Forms.Panel panelTachiSkip;
         private System.Windows.Forms.CheckedListBox cblistTachiSkip;
+        private System.Windows.Forms.ComboBox cmbTachiBackup;
     }
 }
 

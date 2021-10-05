@@ -401,7 +401,10 @@ namespace Shelf
             {
                 if (Id > 0)
                 {
-                    Image img = await LoadImageFromTemp(Id, type);
+                    Image img = null;
+                    if (!Setting.isAlwaysDownloadCover)
+                        img = await LoadImageFromTemp(Id, type);
+
                     if (img == null)
                     {
                         string file = GetCoverFilePath(Id, type);

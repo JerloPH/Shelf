@@ -156,7 +156,7 @@ namespace Shelf.Functions
         [DisplayName("Always Display Romaji"), Description("Only use Romaji title of Entry")]
         public bool isAlwaysUseRomaji { get; set; }
 
-        [DisplayName("Automatically Uncheck status for Tachi Backup"), Description("Automatically Skip 'Completed' and 'Dropped'\nstatus on Tachiyomi backup export")]
+        [DisplayName("Automatically Uncheck status for Tachi Backup"), Description("Uncheck Completed/Dropped on Tachiyomi backup")]
         public bool isAutoSkipTachi { get; set; }
         #endregion
     }

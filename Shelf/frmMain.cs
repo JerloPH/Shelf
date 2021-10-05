@@ -67,7 +67,14 @@ namespace Shelf
                         foreach (string item in status)
                         {
                             int index = cblistTachiSkip.Items.Add(item);
-                            cblistTachiSkip.SetItemChecked(index, true);
+                            bool check = true;
+                            if (Setting.isAutoSkipTachi)
+                            {
+                                if (item.Equals("COMPLETED") || item.Equals("DROPPED"))
+                                    check = false;
+                            }
+
+                            cblistTachiSkip.SetItemChecked(index, check);
                             Logs.Debug($"Added skip => {item}");
                         }
                         cblistTachiSkip.ItemCheck += CblistTachiSkip_ItemCheck;

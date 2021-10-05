@@ -140,6 +140,7 @@ namespace Shelf.Functions
             isAlwaysDownloadCover = false;
             isAutoFetchMedia = false;
             isAlwaysUseRomaji = false;
+            isAutoSkipTachi = false;
         }
         
         #region Properties
@@ -154,6 +155,9 @@ namespace Shelf.Functions
 
         [DisplayName("Always Display Romaji"), Description("Only use Romaji title of Entry")]
         public bool isAlwaysUseRomaji { get; set; }
+
+        [DisplayName("Automatically Uncheck status for Tachi Backup"), Description("Automatically Skip 'Completed' and 'Dropped'\nstatus on Tachiyomi backup export")]
+        public bool isAutoSkipTachi { get; set; }
         #endregion
     }
 }

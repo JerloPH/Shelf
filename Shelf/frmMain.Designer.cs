@@ -110,7 +110,7 @@ namespace Shelf
             // 
             // btnFetchMedia
             // 
-            this.btnFetchMedia.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnFetchMedia.Font = new System.Drawing.Font("Segoe UI Semibold", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.btnFetchMedia.Location = new System.Drawing.Point(143, 102);
             this.btnFetchMedia.Name = "btnFetchMedia";
             this.btnFetchMedia.Size = new System.Drawing.Size(249, 52);
@@ -170,12 +170,12 @@ namespace Shelf
             // 
             // btnMALExport
             // 
-            this.btnMALExport.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnMALExport.Font = new System.Drawing.Font("Segoe UI Semibold", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.btnMALExport.Location = new System.Drawing.Point(143, 160);
             this.btnMALExport.Name = "btnMALExport";
             this.btnMALExport.Size = new System.Drawing.Size(249, 52);
             this.btnMALExport.TabIndex = 11;
-            this.btnMALExport.Text = "To MAL Export";
+            this.btnMALExport.Text = "Export MAL";
             this.btnMALExport.UseVisualStyleBackColor = true;
             this.btnMALExport.Click += new System.EventHandler(this.btnMALExport_Click);
             // 

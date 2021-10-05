@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -33,10 +34,16 @@ namespace Shelf.Functions
             string jsonfile = GlobalFunc.FILE_APPCONFIG;
             try
             {
-                AppConfig = GlobalFunc.JsonDecode<AppSettingsEntity>(jsonfile);
+                AppConfig = GlobalFunc.JsonDecode<AppSettingsEntity>(jsonfile); // Load settings
+                // Add settings properties name that requires restart on change.
                 AppConfigRequiredRestart.Clear();
-                // TODO: Load from Resources files: 'requiredRestart.txt'
-                // and add them to 'RequiredRestart' list.
+                string file = Path.Combine(GlobalFunc.DIR_RES, "requiredRestart.txt");
+                string content = GlobalFunc.ReadFromFile(file);
+                if (!String.IsNullOrWhiteSpace(content))
+                {
+                    string[] items = content.Split('*');
+                    AppConfigRequiredRestart.AddRange(items);
+                }
             }
             catch (Exception ex) { Logs.Err(ex); }
             if (AppConfig == null)

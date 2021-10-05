@@ -112,7 +112,6 @@ namespace Shelf
         private async Task LoadTachiyomiBackupFiles()
         {
             // Load Tachiyomi backups
-            // TODO: Change Tachiyomi TextBox to ComboBox
             await Task.Run(delegate {
                 Log("Initializing Tachiyomi backups..");
                 try

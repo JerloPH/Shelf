@@ -23,6 +23,7 @@ namespace Shelf.Functions
     public static class GlobalFunc
     {
         public static string DIR_START = "";
+        public static string DIR_RES = "";
         public static string DIR_DATA = "";
         public static string DIR_OUTPUT = "";
         public static string DIR_OUTPUT_ROOT = "";
@@ -54,6 +55,7 @@ namespace Shelf.Functions
                 DATE_TODAY = DateTime.Now.ToString("yyyy-MM-dd");
                 DIR_START = AppContext.BaseDirectory;
                 // Directories
+                DIR_RES = CreateNewFolder(DIR_START, "Resources");
                 DIR_DATA = CreateNewFolder(DIR_START, "data");
                 DIR_OUTPUT_ROOT = CreateNewFolder(DIR_START, "output");
                 DIR_OUTPUT = CreateNewFolder(DIR_OUTPUT_ROOT, DATE_TODAY);

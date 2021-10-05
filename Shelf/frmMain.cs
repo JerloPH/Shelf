@@ -61,6 +61,18 @@ namespace Shelf
                         cbMedia.SelectedIndex = 0;
 
                         UIHelper.PopulateCombobox<MediaEntryMode>(cbEntryMode);
+
+                        // Populate panel with checkboxes
+                        string[] status = new string[] { "CURRENT", "PAUSED", "PLANNING", "REPEATING", "COMPLETED", "DROPPED" };
+                        foreach (string item in status)
+                        {
+                            int index = cblistTachiSkip.Items.Add(item);
+                            cblistTachiSkip.SetItemChecked(index, true);
+                            Logs.Debug($"Added skip => {item}");
+                        }
+                        cblistTachiSkip.ItemCheck += CblistTachiSkip_ItemCheck;
+                        cblistTachiSkip.MultiColumn = true;
+
                         // Initialize Local Media Paths
                         if (File.Exists(GlobalFunc.FILE_LOCAL_MEDIA))
                         {
@@ -86,6 +98,7 @@ namespace Shelf
             }
             catch (Exception ex) { GlobalFunc.Alert("Some UI are not initialized!"); Logs.Err(ex); }
         }
+
         private async Task LoadTachiyomiBackupFiles()
         {
             // Load Tachiyomi backups
@@ -418,6 +431,25 @@ namespace Shelf
             return null;
         }
         #endregion
+        // ####################################################################### Custom Events
+        private void CblistTachiSkip_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            var checkedIndices = this.cblistTachiSkip.CheckedIndices.Cast<int>().ToList();
+            if (e.NewValue == CheckState.Checked)
+                checkedIndices.Add(e.Index);
+            else
+                if (checkedIndices.Contains(e.Index))
+                checkedIndices.Remove(e.Index);
+
+            GlobalFunc.INCLUDED_STATUS.Clear();
+            foreach (int index in checkedIndices)
+            {
+                string item = cblistTachiSkip.Items[index].ToString();
+                if (!GlobalFunc.INCLUDED_STATUS.Contains(item))
+                    GlobalFunc.INCLUDED_STATUS.Add(item);
+            }
+            //Log($"Status => {string.Join(',', GlobalFunc.INCLUDED_STATUS)}");
+        }
         // ####################################################################### Events
         private void frmMain_Load(object sender, EventArgs e)
         {

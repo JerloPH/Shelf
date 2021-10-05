@@ -41,7 +41,7 @@ namespace Shelf.Functions
         public static string FILE_PUB_TKN = "";
         public static string DATE_TODAY = "";
 
-        public static List<string> SKIP_STATUS { get; set; } = new List<string>();
+        public static List<string> INCLUDED_STATUS { get; set; } = new List<string>();
         public static bool DEBUG { get; set; } = false;
 
         public static void InitializedApp()
@@ -81,8 +81,6 @@ namespace Shelf.Functions
                     AnilistRequest.UpdateConfig("", "");
             }
             catch (Exception ex) { Logs.Err(ex); };
-            // Add to Lists
-            SKIP_STATUS.AddRange(new string[] { "COMPLETED", "DROPPED" });
         }
         public static string CreateNewFolder(string root, string folderName)
         {

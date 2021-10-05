@@ -38,7 +38,7 @@ namespace Shelf
             this.label2 = new System.Windows.Forms.Label();
             this.btnChangeConfig = new System.Windows.Forms.Button();
             this.btnMALExport = new System.Windows.Forms.Button();
-            this.label3 = new System.Windows.Forms.Label();
+            this.lblTachiBackupFile = new System.Windows.Forms.Label();
             this.txtTachi = new System.Windows.Forms.TextBox();
             this.btnGenTachi = new System.Windows.Forms.Button();
             this.btnRefreshItems = new System.Windows.Forms.Button();
@@ -49,6 +49,9 @@ namespace Shelf
             this.tpgBasic = new System.Windows.Forms.TabPage();
             this.tpgConfig = new System.Windows.Forms.TabPage();
             this.tpgTachi = new System.Windows.Forms.TabPage();
+            this.panelTachiSkip = new System.Windows.Forms.Panel();
+            this.cblistTachiSkip = new System.Windows.Forms.CheckedListBox();
+            this.panelTachi = new System.Windows.Forms.Panel();
             this.cbReplaceTachiLib = new System.Windows.Forms.CheckBox();
             this.tpgLocal = new System.Windows.Forms.TabPage();
             this.btnLocalMangaAdd = new System.Windows.Forms.Button();
@@ -64,15 +67,17 @@ namespace Shelf
             this.tpMediaTachi = new System.Windows.Forms.TabPage();
             this.lvTachi = new System.Windows.Forms.ListView();
             this.tpMediaLocalAnime = new System.Windows.Forms.TabPage();
+            this.lvLocalAnime = new System.Windows.Forms.ListView();
             this.tpMediaLocalManga = new System.Windows.Forms.TabPage();
             this.lvLocalManga = new System.Windows.Forms.ListView();
             this.cbMediaRefresh = new System.Windows.Forms.ComboBox();
             this.cbEntryMode = new System.Windows.Forms.ComboBox();
-            this.lvLocalAnime = new System.Windows.Forms.ListView();
             this.tabControl.SuspendLayout();
             this.tpgBasic.SuspendLayout();
             this.tpgConfig.SuspendLayout();
             this.tpgTachi.SuspendLayout();
+            this.panelTachiSkip.SuspendLayout();
+            this.panelTachi.SuspendLayout();
             this.tpgLocal.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridPathLocal)).BeginInit();
             this.tabMedia.SuspendLayout();
@@ -96,11 +101,11 @@ namespace Shelf
             // 
             // txtLog
             // 
-            this.txtLog.Location = new System.Drawing.Point(12, 325);
+            this.txtLog.Location = new System.Drawing.Point(12, 357);
             this.txtLog.Multiline = true;
             this.txtLog.Name = "txtLog";
             this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtLog.Size = new System.Drawing.Size(425, 196);
+            this.txtLog.Size = new System.Drawing.Size(425, 164);
             this.txtLog.TabIndex = 4;
             // 
             // btnFetchMedia
@@ -174,21 +179,22 @@ namespace Shelf
             this.btnMALExport.UseVisualStyleBackColor = true;
             this.btnMALExport.Click += new System.EventHandler(this.btnMALExport_Click);
             // 
-            // label3
+            // lblTachiBackupFile
             // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.label3.Location = new System.Drawing.Point(0, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(249, 31);
-            this.label3.TabIndex = 13;
-            this.label3.Text = "Tachiyomi Backup File:";
+            this.lblTachiBackupFile.AutoSize = true;
+            this.lblTachiBackupFile.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblTachiBackupFile.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.lblTachiBackupFile.Location = new System.Drawing.Point(0, 0);
+            this.lblTachiBackupFile.Name = "lblTachiBackupFile";
+            this.lblTachiBackupFile.Size = new System.Drawing.Size(249, 31);
+            this.lblTachiBackupFile.TabIndex = 13;
+            this.lblTachiBackupFile.Text = "Tachiyomi Backup File:";
             // 
             // txtTachi
             // 
             this.txtTachi.AllowDrop = true;
             this.txtTachi.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.txtTachi.Location = new System.Drawing.Point(10, 34);
+            this.txtTachi.Location = new System.Drawing.Point(3, 34);
             this.txtTachi.Name = "txtTachi";
             this.txtTachi.Size = new System.Drawing.Size(390, 38);
             this.txtTachi.TabIndex = 12;
@@ -198,7 +204,7 @@ namespace Shelf
             // btnGenTachi
             // 
             this.btnGenTachi.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnGenTachi.Location = new System.Drawing.Point(10, 136);
+            this.btnGenTachi.Location = new System.Drawing.Point(3, 136);
             this.btnGenTachi.Name = "btnGenTachi";
             this.btnGenTachi.Size = new System.Drawing.Size(249, 52);
             this.btnGenTachi.TabIndex = 14;
@@ -220,7 +226,7 @@ namespace Shelf
             // btnChangeTachi
             // 
             this.btnChangeTachi.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnChangeTachi.Location = new System.Drawing.Point(10, 78);
+            this.btnChangeTachi.Location = new System.Drawing.Point(0, 78);
             this.btnChangeTachi.Name = "btnChangeTachi";
             this.btnChangeTachi.Size = new System.Drawing.Size(249, 52);
             this.btnChangeTachi.TabIndex = 17;
@@ -258,7 +264,7 @@ namespace Shelf
             this.tabControl.Location = new System.Drawing.Point(12, 12);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(425, 307);
+            this.tabControl.Size = new System.Drawing.Size(425, 343);
             this.tabControl.TabIndex = 20;
             this.tabControl.DragEnter += new System.Windows.Forms.DragEventHandler(this.tabControl_DragEnter);
             // 
@@ -274,7 +280,7 @@ namespace Shelf
             this.tpgBasic.Location = new System.Drawing.Point(4, 29);
             this.tpgBasic.Name = "tpgBasic";
             this.tpgBasic.Padding = new System.Windows.Forms.Padding(3);
-            this.tpgBasic.Size = new System.Drawing.Size(417, 274);
+            this.tpgBasic.Size = new System.Drawing.Size(417, 310);
             this.tpgBasic.TabIndex = 0;
             this.tpgBasic.Text = "Basic";
             this.tpgBasic.UseVisualStyleBackColor = true;
@@ -287,7 +293,7 @@ namespace Shelf
             this.tpgConfig.Location = new System.Drawing.Point(4, 29);
             this.tpgConfig.Name = "tpgConfig";
             this.tpgConfig.Padding = new System.Windows.Forms.Padding(3);
-            this.tpgConfig.Size = new System.Drawing.Size(417, 274);
+            this.tpgConfig.Size = new System.Drawing.Size(417, 310);
             this.tpgConfig.TabIndex = 1;
             this.tpgConfig.Text = "Config";
             this.tpgConfig.UseVisualStyleBackColor = true;
@@ -295,25 +301,53 @@ namespace Shelf
             // tpgTachi
             // 
             this.tpgTachi.AllowDrop = true;
-            this.tpgTachi.Controls.Add(this.cbReplaceTachiLib);
-            this.tpgTachi.Controls.Add(this.label3);
-            this.tpgTachi.Controls.Add(this.txtTachi);
-            this.tpgTachi.Controls.Add(this.btnChangeTachi);
-            this.tpgTachi.Controls.Add(this.btnGenTachi);
+            this.tpgTachi.Controls.Add(this.panelTachiSkip);
+            this.tpgTachi.Controls.Add(this.panelTachi);
             this.tpgTachi.Location = new System.Drawing.Point(4, 29);
             this.tpgTachi.Name = "tpgTachi";
-            this.tpgTachi.Size = new System.Drawing.Size(417, 274);
+            this.tpgTachi.Size = new System.Drawing.Size(417, 310);
             this.tpgTachi.TabIndex = 2;
             this.tpgTachi.Text = "Tachiyomi";
             this.tpgTachi.UseVisualStyleBackColor = true;
             this.tpgTachi.DragDrop += new System.Windows.Forms.DragEventHandler(this.tpgTachi_DragDrop);
             this.tpgTachi.DragEnter += new System.Windows.Forms.DragEventHandler(this.tpgTachi_DragEnter);
             // 
+            // panelTachiSkip
+            // 
+            this.panelTachiSkip.Controls.Add(this.cblistTachiSkip);
+            this.panelTachiSkip.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelTachiSkip.Location = new System.Drawing.Point(0, 232);
+            this.panelTachiSkip.Name = "panelTachiSkip";
+            this.panelTachiSkip.Size = new System.Drawing.Size(417, 78);
+            this.panelTachiSkip.TabIndex = 1;
+            // 
+            // cblistTachiSkip
+            // 
+            this.cblistTachiSkip.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cblistTachiSkip.FormattingEnabled = true;
+            this.cblistTachiSkip.Location = new System.Drawing.Point(0, 0);
+            this.cblistTachiSkip.Name = "cblistTachiSkip";
+            this.cblistTachiSkip.Size = new System.Drawing.Size(417, 78);
+            this.cblistTachiSkip.TabIndex = 0;
+            // 
+            // panelTachi
+            // 
+            this.panelTachi.Controls.Add(this.cbReplaceTachiLib);
+            this.panelTachi.Controls.Add(this.lblTachiBackupFile);
+            this.panelTachi.Controls.Add(this.txtTachi);
+            this.panelTachi.Controls.Add(this.btnChangeTachi);
+            this.panelTachi.Controls.Add(this.btnGenTachi);
+            this.panelTachi.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelTachi.Location = new System.Drawing.Point(0, 0);
+            this.panelTachi.Name = "panelTachi";
+            this.panelTachi.Size = new System.Drawing.Size(417, 232);
+            this.panelTachi.TabIndex = 0;
+            // 
             // cbReplaceTachiLib
             // 
             this.cbReplaceTachiLib.AutoSize = true;
             this.cbReplaceTachiLib.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.cbReplaceTachiLib.Location = new System.Drawing.Point(10, 194);
+            this.cbReplaceTachiLib.Location = new System.Drawing.Point(3, 194);
             this.cbReplaceTachiLib.Name = "cbReplaceTachiLib";
             this.cbReplaceTachiLib.Size = new System.Drawing.Size(372, 32);
             this.cbReplaceTachiLib.TabIndex = 18;
@@ -328,7 +362,7 @@ namespace Shelf
             this.tpgLocal.Location = new System.Drawing.Point(4, 29);
             this.tpgLocal.Name = "tpgLocal";
             this.tpgLocal.Padding = new System.Windows.Forms.Padding(3);
-            this.tpgLocal.Size = new System.Drawing.Size(417, 274);
+            this.tpgLocal.Size = new System.Drawing.Size(417, 310);
             this.tpgLocal.TabIndex = 3;
             this.tpgLocal.Text = "Local Media";
             this.tpgLocal.UseVisualStyleBackColor = true;
@@ -466,6 +500,16 @@ namespace Shelf
             this.tpMediaLocalAnime.Text = "Local Anime";
             this.tpMediaLocalAnime.UseVisualStyleBackColor = true;
             // 
+            // lvLocalAnime
+            // 
+            this.lvLocalAnime.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lvLocalAnime.HideSelection = false;
+            this.lvLocalAnime.Location = new System.Drawing.Point(0, 0);
+            this.lvLocalAnime.Name = "lvLocalAnime";
+            this.lvLocalAnime.Size = new System.Drawing.Size(569, 387);
+            this.lvLocalAnime.TabIndex = 22;
+            this.lvLocalAnime.UseCompatibleStateImageBehavior = false;
+            // 
             // tpMediaLocalManga
             // 
             this.tpMediaLocalManga.Controls.Add(this.lvLocalManga);
@@ -506,16 +550,6 @@ namespace Shelf
             this.cbEntryMode.Size = new System.Drawing.Size(179, 39);
             this.cbEntryMode.TabIndex = 22;
             // 
-            // lvLocalAnime
-            // 
-            this.lvLocalAnime.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lvLocalAnime.HideSelection = false;
-            this.lvLocalAnime.Location = new System.Drawing.Point(0, 0);
-            this.lvLocalAnime.Name = "lvLocalAnime";
-            this.lvLocalAnime.Size = new System.Drawing.Size(569, 387);
-            this.lvLocalAnime.TabIndex = 22;
-            this.lvLocalAnime.UseCompatibleStateImageBehavior = false;
-            // 
             // frmMain
             // 
             this.AllowDrop = true;
@@ -539,7 +573,9 @@ namespace Shelf
             this.tpgBasic.PerformLayout();
             this.tpgConfig.ResumeLayout(false);
             this.tpgTachi.ResumeLayout(false);
-            this.tpgTachi.PerformLayout();
+            this.panelTachiSkip.ResumeLayout(false);
+            this.panelTachi.ResumeLayout(false);
+            this.panelTachi.PerformLayout();
             this.tpgLocal.ResumeLayout(false);
             this.tpgLocal.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridPathLocal)).EndInit();
@@ -564,7 +600,7 @@ namespace Shelf
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnChangeConfig;
         private System.Windows.Forms.Button btnMALExport;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lblTachiBackupFile;
         private System.Windows.Forms.TextBox txtTachi;
         private System.Windows.Forms.Button btnGenTachi;
         private System.Windows.Forms.Button btnRefreshItems;
@@ -595,6 +631,9 @@ namespace Shelf
         private System.Windows.Forms.DataGridViewCheckBoxColumn Column2;
         private System.Windows.Forms.DataGridViewComboBoxColumn Column3;
         private System.Windows.Forms.ListView lvLocalAnime;
+        private System.Windows.Forms.Panel panelTachi;
+        private System.Windows.Forms.Panel panelTachiSkip;
+        private System.Windows.Forms.CheckedListBox cblistTachiSkip;
     }
 }
 

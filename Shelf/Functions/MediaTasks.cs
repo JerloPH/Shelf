@@ -259,7 +259,7 @@ namespace Shelf.Functions
                     {
                         if (item.Media.Format.Equals("MANGA") || item.Media.Format.Equals("ONE_SHOT"))
                         {
-                            canAdd = !GlobalFunc.SKIP_STATUS.Contains(item.Status);
+                            canAdd = GlobalFunc.INCLUDED_STATUS.Contains(item.Status);
                             if (!mangalist.Contains(item.Media.Id) && canAdd)
                             {
                                 // Entry is missing from Tachi lib

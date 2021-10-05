@@ -361,7 +361,16 @@ namespace Shelf
                 }
                 // Add properties values to ListView item
                 lvitem.Tag = item.Media.Id;
-                lvitem.Text = (!String.IsNullOrWhiteSpace(item.Media.Title.English) ? item.Media.Title.English : item.Media.Title.Romaji);
+                string title = "";
+                if (Setting.isAlwaysUseRomaji)
+                {
+                    title = item.Media.Title.Romaji;
+                }
+                else
+                {
+                    title = (!String.IsNullOrWhiteSpace(item.Media.Title.English) ? item.Media.Title.English : item.Media.Title.Romaji);
+                }
+                lvitem.Text = title;
                 lv.BeginInvoke((Action)delegate
                 {
                     lv.Items.Add(lvitem);

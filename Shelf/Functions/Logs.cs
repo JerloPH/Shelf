@@ -5,10 +5,18 @@ namespace Shelf.Functions
 {
     public static class Logs
     {
-        public static void LogString(string file, string content)
+        public static void LogString(string file, string log)
         {
             try
             {
+                string content = log;
+                try
+                {
+                    if (!String.IsNullOrWhiteSpace(log))
+                        content = log.Replace(GlobalFunc.DIR_START.Replace(@"/", @"\"), "<root>");
+                }
+                catch { }
+
                 using (FileStream fs = new FileStream(file, FileMode.Append, FileAccess.Write))
                 {
                     using (StreamWriter s = new StreamWriter(fs))

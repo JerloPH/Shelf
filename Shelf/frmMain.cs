@@ -79,6 +79,8 @@ namespace Shelf
                                     check = false;
                             }
                             cblistTachiSkip.SetItemChecked(index, check);
+                            if (check)
+                                GlobalFunc.INCLUDED_STATUS.Add(item);
                         }
                         cblistTachiSkip.ItemCheck += CblistTachiSkip_ItemCheck;
                         cblistTachiSkip.MultiColumn = true;
@@ -673,8 +675,7 @@ namespace Shelf
                             await RefreshMedia(MediaType.MANGA, entries, lvTachi, mangaCoverList, false);
                         }
                         SetStatus("Idle");
-                        if (entries?.Count > 0)
-                            GlobalFunc.Alert("Done generating Tachiyomi backup file!");
+                        GlobalFunc.Alert((entries?.Count > 0) ? "Done generating Tachiyomi backup file!" : "All Anilist entries are\non your Tachiyomi library!");
                     }
                     else
                         GlobalFunc.Alert($"Tachiyomi file isn't supported!\nOnly '{String.Join('/', ext)}' files are accepted.");

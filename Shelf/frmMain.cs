@@ -257,22 +257,20 @@ namespace Shelf
         {
             // Get media, and write to json file
             Log($"Requesting {media}...");
-            var anilistMedia = await AnilistRequest.RequestMediaList(token, userId, media);
-            if (anilistMedia != null)
+            try
             {
-                Log($"{media} data fetched!");
-                bool result = await Task.Run(delegate { return GlobalFunc.WriteMediaJsonToFile(media, anilistMedia); });
-                if (result)
+                var anilistMedia = await AnilistRequest.RequestMediaList(token, userId, media);
+                if (anilistMedia != null)
                 {
-                    Log($"{media} files written!");
-                    return true;
+                    Log($"{media} data fetched!");
+                    bool result = await Task.Run(delegate { return GlobalFunc.WriteMediaJsonToFile(media, anilistMedia); });
+                    Log(result ? $"{media} files written!" : $"{media} is not saved!");
+                    return result;
                 }
                 else
-                    Log($"{media} is not saved!");
+                    Log($"No {media} found!");
             }
-            else
-                Log($"No {media} found!");
-
+            catch (Exception ex) { Logs.Err(ex); GlobalFunc.Alert($"Error occured on fetching {media}!\nTry again."); }
             return false;
         }
         public async Task<bool> RefreshMedia(MediaType type, List<Entry> medias, ListView lv, ImageList imglist, bool IsClearCover)
@@ -327,15 +325,11 @@ namespace Shelf
             {
                 img = await LoadImageLocal(item.Path); // Load Local
             }
-            else
-            {
-                // Load Image for Anilist entry
+            else // Load Image for Anilist entry
                 img = await LoadImageAnilist(item.Media.Id, item.Media.CoverImage.Medium, type);
-            }
+
             if (img == null)
-            {
                 img = Properties.Resources.nocover;
-            }
             // Run Task
             return await Task.Run(delegate
             {

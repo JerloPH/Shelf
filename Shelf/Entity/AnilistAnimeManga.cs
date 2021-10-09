@@ -63,6 +63,9 @@ namespace Shelf.Json
         [JsonIgnore]
         public string Path { get; set; }
 
+        [JsonIgnore]
+        public bool IsLocal { get; set; } = false;
+
         public Entry()
         {
             Media = new Media();

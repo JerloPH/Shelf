@@ -454,6 +454,7 @@ namespace Shelf.Functions
                             }
                         }
                         newEntry.Path = folder;
+                        newEntry.IsLocal = true;
                         listEntries.Add(newEntry);
                         //Logs.Debug($"Local media: {folder}");
                     }

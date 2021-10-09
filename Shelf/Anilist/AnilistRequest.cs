@@ -176,7 +176,8 @@ namespace Shelf.Anilist
                 request.AddJsonBody(new
                 {
                     query = QueryMediaList,
-                    variables = new {
+                    variables = new
+                    {
                         userID = userId,
                         type = MEDIA
                     }
@@ -193,11 +194,7 @@ namespace Shelf.Anilist
                     returnObject = JsonConvert.DeserializeObject<AnilistAnimeManga>(content);
                 }
             }
-            catch (Exception ex)
-            {
-                returnObject = null;
-                GlobalFunc.Alert(ex.ToString());
-            }
+            catch { throw; }
             return returnObject;
         }
     }

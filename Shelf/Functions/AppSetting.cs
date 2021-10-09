@@ -11,6 +11,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using Shelf.Enum;
 using Shelf.Views;
+using Shelf.Attributes;
 
 namespace Shelf.Functions
 {
@@ -71,11 +72,18 @@ namespace Shelf.Functions
                             .Cast<DescriptionAttribute>().Single();
                         item.Caption = displayNameAttr.DisplayName;
                         item.Description = descAttr.Description;
-                        item.Restart = AppConfigRequiredRestart.Contains(prop.Name);
                         item.settingType = SettingType.Default;
-                        // Set type special cases
-                        if (item.Name.Equals("tachibackup"))
-                            item.settingType = SettingType.Directory;
+                        try
+                        {
+                            object[] attribute = prop.GetCustomAttributes(typeof(CustomSettingAttrib), true);
+                            if (attribute.Length > 0)
+                            {
+                                var attribCustom = (CustomSettingAttrib)attribute[0];
+                                item.Restart = attribCustom.IsRequiredRestart;
+                                item.settingType = attribCustom.settingType;
+                            }
+                        }
+                        catch (Exception ex) { Logs.Err(ex); }
 
                         AppConfigList.Add(item); // Add to List for Data Binding.
 
@@ -152,16 +160,19 @@ namespace Shelf.Functions
         }
         
         #region Properties
-        [DisplayName("Tachiyomi Backups Location"), Description("Folder Location of Tachiyomi backups")]
+        [DisplayName("Tachiyomi Backups Location"), Description("Folder Location of Tachiyomi backups"),
+            CustomSettingAttrib(settingType = SettingType.Directory, IsRequiredRestart = true)]
         public string tachibackup { get; set; }
 
         [DisplayName("Always Download Cover"), Description("Always download cover from Anilist")]
         public bool isAlwaysDownloadCover { get; set; }
 
-        [DisplayName("Automatically Fetch Token"), Description("Fetch token upon Load")]
+        [DisplayName("Automatically Fetch Token"), Description("Fetch token upon Load"),
+            CustomSettingAttrib(IsRequiredRestart = true)]
         public bool isAutoFetchTkn { get; set; }
 
-        [DisplayName("Automatically Refresh Media"), Description("Refresh Media List upon Load")]
+        [DisplayName("Automatically Refresh Media"), Description("Refresh Media List upon Load"),
+            CustomSettingAttrib(IsRequiredRestart = true)]
         public bool isAutoRefreshmedia { get; set; } // TODO: Apply setting
 
         [DisplayName("Always Display Romaji"), Description("Only use Romaji title of Entry")]

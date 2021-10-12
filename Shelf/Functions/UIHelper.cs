@@ -40,6 +40,7 @@ namespace Shelf.Functions
         }
         public static void BindLocalMediaToDataGrid<T>(DataGridView grid, List<T> data, string[] headers)
         {
+            grid.RowHeadersVisible = false;
             try
             {
                 BindingList<T> localBindList = null;

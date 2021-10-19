@@ -1,7 +1,7 @@
 ﻿
 using System.ComponentModel;
 
-namespace Shelf.Enum
+namespace Shelf.CustomEnums
 {
     public enum MediaEntryMode
     {

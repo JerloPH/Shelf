@@ -72,6 +72,7 @@ namespace Shelf
             this.lvLocalManga = new System.Windows.Forms.ListView();
             this.cbMediaRefresh = new System.Windows.Forms.ComboBox();
             this.cbEntryMode = new System.Windows.Forms.ComboBox();
+            this.btnTachiRefresh = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.tpgBasic.SuspendLayout();
             this.tpgConfig.SuspendLayout();
@@ -195,7 +196,7 @@ namespace Shelf
             this.btnGenTachi.Font = new System.Drawing.Font("Segoe UI Semibold", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.btnGenTachi.Location = new System.Drawing.Point(3, 136);
             this.btnGenTachi.Name = "btnGenTachi";
-            this.btnGenTachi.Size = new System.Drawing.Size(249, 52);
+            this.btnGenTachi.Size = new System.Drawing.Size(218, 52);
             this.btnGenTachi.TabIndex = 14;
             this.btnGenTachi.Text = "Export Backup";
             this.btnGenTachi.UseVisualStyleBackColor = true;
@@ -217,7 +218,7 @@ namespace Shelf
             this.btnAddTachiBackup.Font = new System.Drawing.Font("Segoe UI Semibold", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.btnAddTachiBackup.Location = new System.Drawing.Point(0, 78);
             this.btnAddTachiBackup.Name = "btnAddTachiBackup";
-            this.btnAddTachiBackup.Size = new System.Drawing.Size(249, 52);
+            this.btnAddTachiBackup.Size = new System.Drawing.Size(221, 52);
             this.btnAddTachiBackup.TabIndex = 17;
             this.btnAddTachiBackup.Text = "Add backup";
             this.btnAddTachiBackup.UseVisualStyleBackColor = true;
@@ -321,6 +322,7 @@ namespace Shelf
             // 
             // panelTachi
             // 
+            this.panelTachi.Controls.Add(this.btnTachiRefresh);
             this.panelTachi.Controls.Add(this.cmbTachiBackup);
             this.panelTachi.Controls.Add(this.cbReplaceTachiLib);
             this.panelTachi.Controls.Add(this.lblTachiBackupFile);
@@ -549,6 +551,17 @@ namespace Shelf
             this.cbEntryMode.Size = new System.Drawing.Size(179, 39);
             this.cbEntryMode.TabIndex = 22;
             // 
+            // btnTachiRefresh
+            // 
+            this.btnTachiRefresh.Font = new System.Drawing.Font("Segoe UI Semibold", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnTachiRefresh.Location = new System.Drawing.Point(227, 78);
+            this.btnTachiRefresh.Name = "btnTachiRefresh";
+            this.btnTachiRefresh.Size = new System.Drawing.Size(174, 52);
+            this.btnTachiRefresh.TabIndex = 20;
+            this.btnTachiRefresh.Text = "Refresh";
+            this.btnTachiRefresh.UseVisualStyleBackColor = true;
+            this.btnTachiRefresh.Click += new System.EventHandler(this.btnTachiRefresh_Click);
+            // 
             // frmMain
             // 
             this.AllowDrop = true;
@@ -633,6 +646,7 @@ namespace Shelf
         private System.Windows.Forms.Panel panelTachiSkip;
         private System.Windows.Forms.CheckedListBox cblistTachiSkip;
         private System.Windows.Forms.ComboBox cmbTachiBackup;
+        private System.Windows.Forms.Button btnTachiRefresh;
     }
 }
 

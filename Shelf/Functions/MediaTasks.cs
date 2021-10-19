@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using ProtoBuf;
 using Shelf.Entity;
-using Shelf.Enum;
+using Shelf.CustomEnums;
 using Shelf.Json;
 using System;
 using System.Collections.Generic;
@@ -170,7 +170,7 @@ namespace Shelf.Functions
             }
             return null;
         }
-        public static async Task<List<Entry>> GenerateMissingTachiEntries(string file)
+        public static async Task<List<Entry>> GenerateMissingTachiEntries(string file, TachiBackupMode mode)
         {
             string categoryName = "Anilist";
             string outputPrefix = $"tachiyomi_{GlobalFunc.DATE_TODAY}";
@@ -196,7 +196,9 @@ namespace Shelf.Functions
                     tachi = await LoadTachiyomiBackup(file);
                     if (tachi != null)
                     {
-                        GlobalFunc.WriteObjectToJson(outputTachiLib, tachi); // Serialize to json file
+                        if (mode == TachiBackupMode.WithExtra)
+                            GlobalFunc.WriteObjectToJson(outputTachiLib, tachi); // Serialize to json file
+
                         // Iterate over the items
                         foreach (var item in tachi.Mangas)
                         {
@@ -252,7 +254,9 @@ namespace Shelf.Functions
                 }
                 if (tachiloaded)
                 {
-                    GlobalFunc.WriteObjectToJson(outputTachiNoTracker, tachilistNames); // serialize list of tachi entries titles without trackers
+                    if (mode == TachiBackupMode.WithExtra)
+                        GlobalFunc.WriteObjectToJson(outputTachiNoTracker, tachilistNames); // serialize list of tachi entries titles without trackers
+                    
                     // Fetch manga Ids from Anilist
                     var manga = await GetMangaList(MediaEntryMode.All);
                     foreach (var item in manga)
@@ -325,12 +329,15 @@ namespace Shelf.Functions
                         // Serialize to json file
                         try
                         {
-                            var backupTachiJson = new BackupTachiJson();
-                            backupTachiJson.version = 2;
-                            backupTachiJson.Mangas = backupMangaJson;
-                            backupTachiJson.Categories.Add(new object[] { categoryName, categoryId });
-                            if (!GlobalFunc.WriteObjectToJson(outputJson, backupTachiJson))
-                                GlobalFunc.Alert("Cannot serialize json backup file!");
+                            if ((int)mode > (int)TachiBackupMode.Default)
+                            {
+                                var backupTachiJson = new BackupTachiJson();
+                                backupTachiJson.version = 2;
+                                backupTachiJson.Mangas = backupMangaJson;
+                                backupTachiJson.Categories.Add(new object[] { categoryName, categoryId });
+                                if (!GlobalFunc.WriteObjectToJson(outputJson, backupTachiJson))
+                                    GlobalFunc.Alert("Cannot serialize json backup file!");
+                            }
                         }
                         catch (Exception ex) { Logs.Err(ex); GlobalFunc.Alert("Cannot serialize json backup file!\nError occured."); };
                     }

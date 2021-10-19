@@ -16,7 +16,7 @@ using System.IO.Compression;
 using System.Diagnostics;
 using Shelf.Anilist;
 using Microsoft.WindowsAPICodePack.Dialogs;
-using Shelf.Enum;
+using Shelf.CustomEnums;
 
 namespace Shelf.Functions
 {

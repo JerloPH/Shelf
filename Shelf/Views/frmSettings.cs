@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Shelf.Enum;
+using Shelf.CustomEnums;
 using Shelf.Functions;
 
 namespace Shelf.Views
@@ -46,33 +46,57 @@ namespace Shelf.Views
                     lblDesc.Text = row.Cells["colDesc"].Value.ToString();
                     if (selectedType != null)
                     {
-                        switch (Type.GetTypeCode(selectedType))
+                        if (selectedType.IsEnum)
                         {
-                            case TypeCode.String:
-                                var ctrl = new TextBox();
-                                ctrl.Dock = DockStyle.Fill;
-                                ctrl.Text = row.Cells["colValue"].Value.ToString();
-                                panelValue.Controls.Add(ctrl);
-                                if (selectedSetType == SettingType.Directory || selectedSetType == SettingType.File)
+  
+                            var cb = new ComboBox();
+                            int choice = (int)row.Cells["colValue"].Value;
+                            cb.DataSource = Enum.GetValues(selectedType)
+                                .Cast<Enum>()
+                                .Select(value => new
                                 {
-                                    var browse = new Button();
-                                    browse.Text = "Browse";
-                                    browse.Size = new Size(120, ctrl.Height);
-                                    browse.Dock = DockStyle.Right;
-                                    browse.Tag = ctrl;
-                                    browse.MouseClick += Browse_MouseClick;
-                                    panelValue.Controls.Add(browse);
-                                }
-                                break;
-                            case TypeCode.Boolean:
-                                var cb = new ComboBox();
-                                bool choice = (bool)row.Cells["colValue"].Value;
-                                cb.Items.AddRange(new string[] { "Yes", "No"});
-                                cb.DropDownStyle = ComboBoxStyle.DropDownList;
-                                cb.Dock = DockStyle.Fill;
-                                cb.SelectedIndex = choice ? 0 : 1;
-                                panelValue.Controls.Add(cb);
-                                break;
+                                    (Attribute.GetCustomAttribute(value.GetType().GetField(value.ToString()), typeof(DescriptionAttribute)) as DescriptionAttribute).Description,
+                                    value
+                                })
+                                .OrderBy(item => item.value)
+                                .ToList();
+                            cb.DisplayMember = "Description";
+                            cb.ValueMember = "Value";
+                            cb.DropDownStyle = ComboBoxStyle.DropDownList;
+                            cb.Dock = DockStyle.Fill;
+                            panelValue.Controls.Add(cb);
+                            cb.SelectedIndex = choice;
+                        }
+                        else
+                        {
+                            switch (Type.GetTypeCode(selectedType))
+                            {
+                                case TypeCode.String:
+                                    var ctrl = new TextBox();
+                                    ctrl.Dock = DockStyle.Fill;
+                                    ctrl.Text = row.Cells["colValue"].Value.ToString();
+                                    panelValue.Controls.Add(ctrl);
+                                    if (selectedSetType == SettingType.Directory || selectedSetType == SettingType.File)
+                                    {
+                                        var browse = new Button();
+                                        browse.Text = "Browse";
+                                        browse.Size = new Size(120, ctrl.Height);
+                                        browse.Dock = DockStyle.Right;
+                                        browse.Tag = ctrl;
+                                        browse.MouseClick += Browse_MouseClick;
+                                        panelValue.Controls.Add(browse);
+                                    }
+                                    break;
+                                case TypeCode.Boolean:
+                                    var cb = new ComboBox();
+                                    bool choice = (bool)row.Cells["colValue"].Value;
+                                    cb.Items.AddRange(new string[] { "Yes", "No" });
+                                    cb.DropDownStyle = ComboBoxStyle.DropDownList;
+                                    cb.Dock = DockStyle.Fill;
+                                    cb.SelectedIndex = choice ? 0 : 1;
+                                    panelValue.Controls.Add(cb);
+                                    break;
+                            }
                         }
                     }
                 }
@@ -108,28 +132,38 @@ namespace Shelf.Views
                 var ctrl = panelValue.Controls[0];
                 if (ctrl != null)
                 {
-                    switch (Type.GetTypeCode(selectedType))
+                    if (selectedType.IsEnum)
                     {
-                        case TypeCode.String:
-                            var txt = ctrl as TextBox;
-                            string value = txt.Text;
-                            Logs.Debug($"Name: {selectedName}, Value: {value}");
-                            if (selectedSetType != SettingType.Default)
-                                value = value.TrimEnd('\\').TrimEnd('/');
+                        var cb = ctrl as ComboBox;
+                        int val = cb.SelectedIndex;
+                        isSuccess = AppSettings.setValue(selectedName, val);
+                    }
+                    else
+                    {
+                        switch (Type.GetTypeCode(selectedType))
+                        {
+                            case TypeCode.String:
+                                var txt = ctrl as TextBox;
+                                string value = txt.Text;
+                                Logs.Debug($"Name: {selectedName}, Value: {value}");
+                                if (selectedSetType != SettingType.Default)
+                                    value = value.TrimEnd('\\').TrimEnd('/');
 
-                            isSuccess = AppSettings.setValue(selectedName, value);
-                            break;
-                        case TypeCode.Boolean:
-                            var cb = ctrl as ComboBox;
-                            bool choice = cb.SelectedIndex == 0;
-                            isSuccess = AppSettings.setValue(selectedName, choice);
-                            break;
+                                isSuccess = AppSettings.setValue(selectedName, value);
+                                break;
+                            case TypeCode.Boolean:
+                                var cb = ctrl as ComboBox;
+                                bool choice = cb.SelectedIndex == 0;
+                                isSuccess = AppSettings.setValue(selectedName, choice);
+                                break;
+                        }
                     }
                 }
             }
             if (isSuccess)
             {
                 gridSetting.Refresh();
+                GlobalFunc.Alert("Changes applied!");
             }
         }
 
@@ -141,7 +175,7 @@ namespace Shelf.Views
                 GlobalFunc.Alert("Required App Restart for\nsome Settings to take effect.");
             }
             else
-                GlobalFunc.Alert("Changes applied!");
+                GlobalFunc.Alert("Changes Saved!");
         }
 
         private void btnReset_Click(object sender, EventArgs e)
@@ -153,12 +187,18 @@ namespace Shelf.Views
         private void gridSetting_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             int index = gridSetting.Columns["colValue"].Index;
+            string name = selectedName;
             if (e.ColumnIndex == index)
             {
                 if (e.Value is bool)
                 {
                     bool value = (bool)e.Value;
                     e.Value = (value) ? "Yes" : "No";
+                    e.FormattingApplied = true;
+                }
+                else if (e.Value is Enum)
+                {
+                    e.Value = ((int)e.Value).ToString();
                     e.FormattingApplied = true;
                 }
             }

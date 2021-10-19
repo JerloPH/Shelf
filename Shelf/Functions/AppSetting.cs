@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using Shelf.Enum;
+using Shelf.CustomEnums;
 using Shelf.Views;
 using Shelf.Attributes;
 
@@ -157,13 +157,10 @@ namespace Shelf.Functions
             isAutoRefreshmedia = false;
             isAlwaysUseRomaji = false;
             isAutoSkipTachi = false;
+            tachiBackupMode = TachiBackupMode.Default;
         }
-        
-        #region Properties
-        [DisplayName("Tachiyomi Backups Location"), Description("Folder Location of Tachiyomi backups"),
-            CustomSettingAttrib(settingType = SettingType.Directory, IsRequiredRestart = true)]
-        public string tachibackup { get; set; }
 
+        #region Properties
         [DisplayName("Always Download Cover"), Description("Always download cover from Anilist")]
         public bool isAlwaysDownloadCover { get; set; }
 
@@ -177,6 +174,13 @@ namespace Shelf.Functions
 
         [DisplayName("Always Display Romaji"), Description("Only use Romaji title of Entry")]
         public bool isAlwaysUseRomaji { get; set; }
+
+        [DisplayName("Tachiyomi Backups Location"), Description("Folder Location of Tachiyomi backups"),
+            CustomSettingAttrib(settingType = SettingType.Directory, IsRequiredRestart = true)]
+        public string tachibackup { get; set; }
+
+        [DisplayName("Tachiyomi Backup files"), Description("Select which files will be generated")]
+        public TachiBackupMode tachiBackupMode { get; set; }
 
         [DisplayName("Automatically Uncheck status for Tachi Backup"), Description("Uncheck Completed/Dropped on Tachiyomi backup")]
         public bool isAutoSkipTachi { get; set; }

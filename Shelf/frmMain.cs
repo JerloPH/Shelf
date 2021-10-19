@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Net;
 using System.Threading;
-using Shelf.Enum;
+using Shelf.CustomEnums;
 using Shelf.Anilist;
 using Shelf.Json;
 using Shelf.Functions;
@@ -118,16 +118,21 @@ namespace Shelf
                 Log("Initializing Tachiyomi backups..");
                 try
                 {
-                    string tachibackupfolder = Setting.tachibackup;
-                    if (Directory.Exists(tachibackupfolder))
-                    {
-                        foreach (string item in Directory.GetFiles(tachibackupfolder))
-                        {
-                            AddTachiBackupFile(item);
-                        }
-                    }
                     this.Invoke((Action)delegate
                     {
+                        // Clear prev
+                        TachiBackups.Clear();
+                        cmbTachiBackup.Items.Clear();
+
+                        string tachibackupfolder = Setting.tachibackup;
+                        if (Directory.Exists(tachibackupfolder))
+                        {
+                            foreach (string item in Directory.GetFiles(tachibackupfolder))
+                            {
+                                AddTachiBackupFile(item);
+                            }
+                        }
+                    
                         cmbTachiBackup.DisplayMember = "Name";
                         cmbTachiBackup.ValueMember = "File";
                         cmbTachiBackup.SelectedIndex = 0;
@@ -663,7 +668,7 @@ namespace Shelf
                 {
                     if (ext.Contains(Path.GetExtension(file).Trim('.')))
                     {
-                        var entries = await MediaTasks.GenerateMissingTachiEntries(file);
+                        var entries = await MediaTasks.GenerateMissingTachiEntries(file, Setting.tachiBackupMode);
                         if (IsReplaceTachiLib)
                         {
                             await RefreshMedia(MediaType.MANGA, entries, lvTachi, mangaCoverList, false);
@@ -783,6 +788,14 @@ namespace Shelf
         {
             // TODO: Change to a form that will add Path
             GlobalFunc.JsonEncode(localMedia, GlobalFunc.FILE_LOCAL_MEDIA);
+        }
+
+        private async void btnTachiRefresh_Click(object sender, EventArgs e)
+        {
+            // Refresh backup list
+            btnTachiRefresh.Enabled = false;
+            await LoadTachiyomiBackupFiles();
+            btnTachiRefresh.Enabled = true;
         }
     }
 }

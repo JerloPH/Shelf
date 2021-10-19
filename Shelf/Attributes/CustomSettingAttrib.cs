@@ -1,5 +1,5 @@
 ﻿using System;
-using Shelf.Enum;
+using Shelf.CustomEnums;
 
 namespace Shelf.Attributes
 {

@@ -1,5 +1,5 @@
 ﻿
-namespace Shelf.Enum
+namespace Shelf.CustomEnums
 {
     public enum MediaType
     {

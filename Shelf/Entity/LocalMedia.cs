@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using Shelf.Enum;
+using Shelf.CustomEnums;
 using System.Collections.Generic;
 
 namespace Shelf.Entity

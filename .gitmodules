@@ -1,0 +1,3 @@
+[submodule "CustomLib"]
+	path = CustomLib
+	url = https://github.com/JerloPH/CustomLib.git

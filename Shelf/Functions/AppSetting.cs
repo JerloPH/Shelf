@@ -40,7 +40,7 @@ namespace Shelf.Functions
                 // Add settings properties name that requires restart on change.
                 AppConfigRequiredRestart.Clear();
                 string file = Path.Combine(GlobalFunc.DIR_RES, "requiredRestart.txt");
-                string content = GlobalFunc.ReadFromFile(file);
+                string content = FileHelper.ReadFromFile(file);
                 if (!String.IsNullOrWhiteSpace(content))
                 {
                     string[] items = content.Split('*');

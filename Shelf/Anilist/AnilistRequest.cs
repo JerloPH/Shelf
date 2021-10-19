@@ -58,7 +58,7 @@ namespace Shelf.Anilist
         {
             try
             {
-                string content = GlobalFunc.ReadFromFile(GlobalFunc.FILE_ANILIST_CONFIG);
+                string content = FileHelper.ReadFromFile(GlobalFunc.FILE_ANILIST_CONFIG);
                 if (jsonConfig == null)
                     jsonConfig = JsonConvert.DeserializeObject<AnilistConfig>(content);
 
@@ -78,7 +78,7 @@ namespace Shelf.Anilist
             try
             {
                 jsonstring = JsonConvert.SerializeObject(config, Formatting.Indented);
-                if (GlobalFunc.WriteFile(GlobalFunc.FILE_ANILIST_CONFIG, jsonstring))
+                if (FileHelper.WriteFile(GlobalFunc.FILE_ANILIST_CONFIG, jsonstring))
                     return Initialize(config);
             }
             catch (Exception ex) { Logs.Err(ex); }
@@ -118,11 +118,11 @@ namespace Shelf.Anilist
                     var content = response.Content; // Raw content as string
                     var returnJsonObject = JObject.Parse(content);
                     returnString = (string)returnJsonObject["access_token"];
-                    GlobalFunc.WriteFile(GlobalFunc.FILE_PUB_TKN, content);
+                    FileHelper.WriteFile(GlobalFunc.FILE_PUB_TKN, content);
                 }
                 else
                 {
-                    GlobalFunc.WriteFile(GlobalFunc.FILE_PUB_TKN, "");
+                    FileHelper.WriteFile(GlobalFunc.FILE_PUB_TKN, "");
                     throw new Exception($"Unsuccesful request! " +
                         $"Status code: {(int)response.StatusCode}," +
                         $" Response: {response.Content}");

@@ -56,17 +56,19 @@ namespace Shelf.Functions
                 DATE_TODAY = DateTime.Now.ToString("yyyy-MM-dd");
                 DIR_START = AppContext.BaseDirectory;
                 // Directories
-                DIR_RES = CreateNewFolder(DIR_START, "Resources");
-                DIR_DATA = CreateNewFolder(DIR_START, "data");
-                DIR_OUTPUT_ROOT = CreateNewFolder(DIR_START, "output");
-                DIR_OUTPUT = CreateNewFolder(DIR_OUTPUT_ROOT, DATE_TODAY);
-                DIR_TEMP = CreateNewFolder(DIR_START, "temp");
-                DIR_TEMP_ANIMECOVER = CreateNewFolder(DIR_TEMP, "coverAnime");
-                DIR_TEMP_MANGACOVER = CreateNewFolder(DIR_TEMP, "coverManga");
+                DIR_RES = FileHelper.CreateNewFolder(DIR_START, "Resources");
+                DIR_DATA = FileHelper.CreateNewFolder(DIR_START, "data");
+                DIR_OUTPUT_ROOT = FileHelper.CreateNewFolder(DIR_START, "output");
+                DIR_OUTPUT = FileHelper.CreateNewFolder(DIR_OUTPUT_ROOT, DATE_TODAY);
+                DIR_TEMP = FileHelper.CreateNewFolder(DIR_START, "temp");
+                DIR_TEMP_ANIMECOVER = FileHelper.CreateNewFolder(DIR_TEMP, "coverAnime");
+                DIR_TEMP_MANGACOVER = FileHelper.CreateNewFolder(DIR_TEMP, "coverManga");
                 // Logs
                 FILE_LOG = Path.Combine(DIR_START, "ShelfApp.log");
                 FILE_LOG_ERR = Path.Combine(DIR_START, "ShelfApp_Error.log");
                 FILE_LOG_DEBUG = Path.Combine(DIR_START, "Shelf_Debug.log");
+                Logs.Initialize(DIR_START, FILE_LOG, FILE_LOG_ERR, FILE_LOG_DEBUG, true);
+                Msg.Initialize(DIR_START, "Shelf");
                 // Data files
                 FILE_APPCONFIG = Path.Combine(DIR_DATA, "AppSettings.json");
                 FILE_ANILIST_CONFIG = Path.Combine(DIR_DATA, "anilistConfig.json");
@@ -85,16 +87,6 @@ namespace Shelf.Functions
             }
             catch (Exception ex) { Logs.Err(ex); };
         }
-        public static string CreateNewFolder(string root, string folderName)
-        {
-            try
-            {
-                string dir = Path.Combine(root, folderName);
-                Directory.CreateDirectory(dir);
-                return dir;
-            }
-            catch { throw; }
-        }
         public static string GetAppVersion()
         {
             try
@@ -110,66 +102,12 @@ namespace Shelf.Functions
             }
         }
         #region File IO
-        public static string ReadFromFile(string filename)
-        {
-            string content = String.Empty;
-            try
-            {
-                using (StreamReader sr = new StreamReader(filename))
-                {
-                    content = sr.ReadToEnd();
-                }
-            }
-            catch (Exception ex) { Logs.Err(ex); }
-            return content;
-        }
-        public static bool WriteFile(string filename, string content)
-        {
-            try
-            {
-                if (File.Exists(filename))
-                    File.Delete(filename);
-            }
-            catch { throw new Exception("Cannot overwrite existing file!"); }
-            try
-            {
-                using (StreamWriter sw = new StreamWriter(filename))
-                {
-                    sw.Write(content);
-                }
-                return true;
-            }
-            catch (Exception ex) { Logs.Err(ex); }
-            return false;
-        }
-        public static void AppendFile(string file, string content, bool Addline=false)
-        {
-            try
-            {
-                using (FileStream fs = new FileStream(file, FileMode.Append, FileAccess.Write))
-                {
-                    using (StreamWriter s = new StreamWriter(fs))
-                    {
-                        s.Write(content + (Addline ? "\n" : ""));
-                        s.Close();
-                    }
-                    fs.Close();
-                }
-            }
-            catch (Exception ex) { Logs.Err(ex); }
-        }
-        public static void PrependFile(string file, string content)
-        {
-            string prev = ReadFromFile(file);
-            WriteFile(file, content);
-            AppendFile(file, prev);
-        }
         public static bool WriteObjectToJson(string file, object data)
         {
             try
             {
                 string content = JsonConvert.SerializeObject(data, Formatting.Indented);
-                WriteFile(file, content);
+                FileHelper.WriteFile(file, content);
                 return true;
             }
             catch (Exception ex) { Logs.Err(ex); }
@@ -193,7 +131,7 @@ namespace Shelf.Functions
             AnilistAnimeManga media = null;
             try
             {
-                string content = ReadFromFile(file);
+                string content = FileHelper.ReadFromFile(file);
                 if (!String.IsNullOrWhiteSpace(content))
                     media = JsonConvert.DeserializeObject<AnilistAnimeManga>(content);
             }
@@ -206,7 +144,7 @@ namespace Shelf.Functions
                 throw new Exception($"Json file does not exist! File: {file}");
             try
             {
-                string content = ReadFromFile(file);
+                string content = FileHelper.ReadFromFile(file);
                 if (!String.IsNullOrWhiteSpace(content))
                 {
                     var media = JsonConvert.DeserializeObject<T>(content);
@@ -221,7 +159,7 @@ namespace Shelf.Functions
             if (null == data) return false;
             try
             {
-                return WriteFile(file, JsonConvert.SerializeObject(data, Formatting.Indented));
+                return FileHelper.WriteFile(file, JsonConvert.SerializeObject(data, Formatting.Indented));
             }
             catch  { throw; }
         }
@@ -238,61 +176,7 @@ namespace Shelf.Functions
             }
             catch { throw; }
         }
-        public static void Compress(string filepath)
-        {
-            try
-            {
-                FileInfo fileToCompress = new FileInfo(filepath);
-                using (FileStream originalFileStream = fileToCompress.OpenRead())
-                {
-                    if ((File.GetAttributes(fileToCompress.FullName) &
-                       FileAttributes.Hidden) != FileAttributes.Hidden & fileToCompress.Extension != ".gz")
-                    {
-                        using (FileStream compressedFileStream = File.Create(fileToCompress.FullName + ".gz"))
-                        {
-                            using (GZipStream compressionStream = new GZipStream(compressedFileStream,
-                               CompressionMode.Compress))
-                            {
-                                originalFileStream.CopyTo(compressionStream);
-                            }
-                        }
-                        //FileInfo info = new FileInfo(filepath + ".gz");
-                        //Logs.App($"Compressed {fileToCompress.Name} from {fileToCompress.Length} to {info.Length} bytes.");
-                    }
-                }
-            }
-            catch (Exception ex) { Logs.Err(ex); }
-        }
-        public static string Decompress(string filepath, string newFileName)
-        {
-            try
-            {
-                if (File.Exists(newFileName))
-                {
-                    File.Delete(newFileName);
-                }
-                FileInfo fileToDecompress = new FileInfo(filepath);
-                using (FileStream originalFileStream = fileToDecompress.OpenRead())
-                {
-                    string currentFileName = fileToDecompress.FullName;
-                    using (FileStream file = File.Create(newFileName))
-                    {
-                        using (GZipStream decStream = new GZipStream(originalFileStream, CompressionMode.Decompress, false))
-                        {
-                            decStream.CopyTo(file);
-                            //Console.WriteLine($"Decompressed: {file.Name}");
-                        }
-                        file.SetLength(file.Position);
-                        file.Close();
-                    }
-                    originalFileStream.Close();
-                }
-                if (File.Exists(newFileName))
-                    return newFileName;
-            }
-            catch (Exception ex) { Logs.Err(ex); }
-            return "";
-        }
+        
         public static string BrowseForFile(string Title, string filter, string InitialDir)
         {
             string ret = "";

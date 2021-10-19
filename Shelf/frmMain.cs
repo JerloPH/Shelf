@@ -97,8 +97,8 @@ namespace Shelf
                             localMedia.paths = new List<LocalMediaPaths>();
                             if (GlobalFunc.DEBUG)
                             {
-                                string path1 = GlobalFunc.CreateNewFolder(GlobalFunc.DIR_TEMP, "mangaFolder1");
-                                string path2 = GlobalFunc.CreateNewFolder(GlobalFunc.DIR_TEMP, "mangaFolder2");
+                                string path1 = FileHelper.CreateNewFolder(GlobalFunc.DIR_TEMP, "mangaFolder1");
+                                string path2 = FileHelper.CreateNewFolder(GlobalFunc.DIR_TEMP, "mangaFolder2");
                                 localMedia.paths.Add(new LocalMediaPaths() { folder = path1, isSeparateSources = false, mediaType = MediaAniManga.MANGA });
                                 localMedia.paths.Add(new LocalMediaPaths() { folder = path2, isSeparateSources = false, mediaType = MediaAniManga.MANGA });
                                 GlobalFunc.JsonEncode(localMedia, GlobalFunc.FILE_LOCAL_MEDIA);
@@ -211,7 +211,7 @@ namespace Shelf
                     form.ShowDialog(this);
                     code = form.AuthCode;
                     form.Dispose();
-                    GlobalFunc.WriteFile(GlobalFunc.FILE_AUTH_CODE, code);
+                    FileHelper.WriteFile(GlobalFunc.FILE_AUTH_CODE, code);
                 });
                 return code;
             });
@@ -226,7 +226,7 @@ namespace Shelf
                 if (String.IsNullOrWhiteSpace(AuthCode))
                 {
                     if (File.Exists(GlobalFunc.FILE_AUTH_CODE))
-                        AuthCode = GlobalFunc.ReadFromFile(GlobalFunc.FILE_AUTH_CODE);
+                        AuthCode = FileHelper.ReadFromFile(GlobalFunc.FILE_AUTH_CODE);
 
                     if (String.IsNullOrWhiteSpace(AuthCode))
                         AuthCode = await RequestAuthCode();
@@ -244,7 +244,7 @@ namespace Shelf
                     {
                         AuthCode = ""; // reset authorization code if token is invalidated.
                     });
-                    if (GlobalFunc.WriteFile(GlobalFunc.FILE_AUTH_CODE, ""))
+                    if (FileHelper.WriteFile(GlobalFunc.FILE_AUTH_CODE, ""))
                         Log("No Public Token acquired! Need to Authorize again.");
                     else
                         Log("Old Auth code detected! Manually remove them from data folder.");
@@ -622,7 +622,7 @@ namespace Shelf
                 {
                     outputAnime = Path.Combine(GlobalFunc.DIR_OUTPUT, $"anime_{GlobalFunc.DATE_TODAY}.xml");
                     outputAnimeNonMal = Path.Combine(GlobalFunc.DIR_OUTPUT, $"anime_NonMal_{GlobalFunc.DATE_TODAY}.json");
-                    GlobalFunc.WriteFile(outputAnime, "");
+                    FileHelper.WriteFile(outputAnime, "");
                 }
                 catch (Exception ex) { Logs.Err(ex); GlobalFunc.Alert("Cannot create Anime output!"); return; }
             }
@@ -632,7 +632,7 @@ namespace Shelf
                 {
                     outputManga = Path.Combine(GlobalFunc.DIR_OUTPUT, $"manga_{GlobalFunc.DATE_TODAY}.xml");
                     outputMangaNonMal = Path.Combine(GlobalFunc.DIR_OUTPUT, $"manga_NonMal_{GlobalFunc.DATE_TODAY}.json");
-                    GlobalFunc.WriteFile(outputManga, "");
+                    FileHelper.WriteFile(outputManga, "");
                 }
                 catch (Exception ex) { Logs.Err(ex); GlobalFunc.Alert("Cannot create Manga output!"); return; }
             }

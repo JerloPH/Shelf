@@ -102,7 +102,7 @@ namespace Shelf.Functions
                     if (item.Media.IdMal != null)
                     {
                         xmltoWrite = MAL.XmlMedia(media, item);
-                        GlobalFunc.AppendFile(outputfile, xmltoWrite);
+                        FileHelper.AppendFile(outputfile, xmltoWrite);
 
                         // Add count
                         AnilistStatus = item.Status;
@@ -136,10 +136,10 @@ namespace Shelf.Functions
                 }
                 // Append finalizer
                 xmltoWrite = $"</my{media}list>";
-                GlobalFunc.AppendFile(outputfile, xmltoWrite);
+                FileHelper.AppendFile(outputfile, xmltoWrite);
                 // Prepend 'myinfo' tree
                 prepend = MAL.PrependInfo(media, username, count);
-                GlobalFunc.PrependFile(outputfile, prepend);
+                FileHelper.PrependFile(outputfile, prepend);
                 GlobalFunc.WriteObjectToJson(outputNonMal, nonMal); // Serialize to json
             });
         }
@@ -154,7 +154,7 @@ namespace Shelf.Functions
                 {
                     if (file.Substring(file.Length - 2).Equals("gz"))
                     {
-                        filetoRead = GlobalFunc.Decompress(file, $"{Path.Combine(GlobalFunc.DIR_TEMP, $"tachiyomiBackup_{GlobalFunc.DATE_TODAY}.proto")}");
+                        filetoRead = FileHelper.Decompress(file, $"{Path.Combine(GlobalFunc.DIR_TEMP, $"tachiyomiBackup_{GlobalFunc.DATE_TODAY}.proto")}");
                     }
                     using (var ms = File.OpenRead(filetoRead))
                     {
@@ -323,7 +323,7 @@ namespace Shelf.Functions
                             if (streamdata != null)
                             {
                                 File.WriteAllBytes(outputProto, streamdata);
-                                GlobalFunc.Compress(outputProto);
+                                FileHelper.Compress(outputProto);
                             }
                         }
                         catch (Exception ex) { Logs.Err(ex); GlobalFunc.Alert("Cannot serialize proto backup file!"); }

@@ -12,6 +12,7 @@ using System.Net;
 using System.IO;
 using Shelf.Functions;
 using Newtonsoft.Json.Linq;
+using JerloPH_CSharp;
 
 namespace Shelf.Anilist
 {

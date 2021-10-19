@@ -15,6 +15,7 @@ using Shelf.Functions;
 using System.ComponentModel;
 using Shelf.Entity;
 using Newtonsoft.Json;
+using JerloPH_CSharp;
 
 namespace Shelf
 {
@@ -44,12 +45,12 @@ namespace Shelf
             localMedia = new LocalMedia();
             TachiBackups = new List<TachiBackupFile>();
         }
-        private async Task InitializeObjects()
+        private async Task<bool> InitializeObjects()
         {
-            // Paths for Local Media
-            try
+            // Initialize all objects
+            return await Task.Run(delegate
             {
-                await Task.Run(delegate
+                try
                 {
                     this.Invoke((Action)delegate
                     {
@@ -61,11 +62,11 @@ namespace Shelf
                         UIHelper.SetupListViewAndImgList(lvLocalManga, localmangaCoverList); // Local Manga
                                                                                              // Other Controls
                         cbMediaRefresh.Items.AddRange(new string[] { "All", "Anime", "Manga", "Tachiyomi", "Local Anime", "Local Manga" });
-                        cbMediaRefresh.SelectedIndex = 0;
-                        cbMedia.Items.AddRange(new string[] { "ALL", "ANIME", "MANGA" });
-                        cbMedia.SelectedIndex = 0;
+                            cbMediaRefresh.SelectedIndex = 0;
+                            cbMedia.Items.AddRange(new string[] { "ALL", "ANIME", "MANGA" });
+                            cbMedia.SelectedIndex = 0;
 
-                        UIHelper.PopulateCombobox<MediaEntryMode>(cbEntryMode);
+                            UIHelper.PopulateCombobox<MediaEntryMode>(cbEntryMode);
 
                         // Populate panel with checkboxes
                         string[] status = new string[] { "CURRENT", "PAUSED", "PLANNING", "REPEATING", "COMPLETED", "DROPPED" };
@@ -84,6 +85,7 @@ namespace Shelf
                         }
                         cblistTachiSkip.ItemCheck += CblistTachiSkip_ItemCheck;
                         cblistTachiSkip.MultiColumn = true;
+                        Log("Initialized UI Controls!");
 
                         // Initialize Local Media Paths
                         if (File.Exists(GlobalFunc.FILE_LOCAL_MEDIA))
@@ -106,9 +108,11 @@ namespace Shelf
                         (gridPathLocal.Columns[2] as DataGridViewComboBoxColumn).DataSource = System.Enum.GetValues(typeof(MediaAniManga));
                         Log("Initialized Local Media Paths!");
                     });
-                });
-            }
-            catch (Exception ex) { GlobalFunc.Alert("Some UI are not initialized!"); Logs.Err(ex); }
+                    return true;
+                }
+                catch (Exception ex) { GlobalFunc.Alert("Some UI are not initialized!"); Logs.Err(ex); }
+                return false;
+            });            
         }
 
         private async Task LoadTachiyomiBackupFiles()
@@ -515,28 +519,30 @@ namespace Shelf
         // ####################################################################### Events
         private void frmMain_Load(object sender, EventArgs e)
         {
-            var form = new frmLoading("Loading", "Form Loading");
-            form.BackgroundWorker.DoWork += (sender1, e1) =>
+            var form = Msg.Load("Loading", "Form Loading");
+            form.BackgroundWorker.DoWork += async (sender1, e1)=>
             {
-                this.Invoke(new Action(async () =>
+                this.Invoke(new Action(() =>
                 {
                     GlobalFunc.InitializedApp(); // Initialize directory and files
                     AnilistRequest.Initialize(); // Initialize config
                     Setting = AppSettings.AppConfig;
-                    await InitializeObjects();
-                    await LoadTachiyomiBackupFiles();
-
-                    Log("Click on 'Refresh Token' to start!");
-                    TokenDate = DateTime.Now.AddMinutes(-61);
-                    Log($"Date of Token: {TokenDate}");
-                    IsRefreshing = false;
-                    if (Setting.isAutoFetchTkn)
-                    {
-                        RefreshToken(); // Fetch access code and token
-                    }
                 }));
+                var success = InitializeObjects().Result;
+                LoadTachiyomiBackupFiles().Wait();
             };
+            form.SetIcon(Msg.LoadIcons.Default);
             form.ShowDialog(this);
+            Log("Click on 'Refresh Token' to start!");
+            TokenDate = DateTime.Now.AddMinutes(-61);
+            IsRefreshing = false;
+            if (Setting.isAutoFetchTkn)
+            {
+                RefreshToken(); // Fetch access code and token
+            }
+            CenterToScreen();
+            Focus();
+            Select();
         }
         private void frmMain_Resize(object sender, EventArgs e)
         {

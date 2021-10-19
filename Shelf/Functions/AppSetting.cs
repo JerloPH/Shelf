@@ -12,6 +12,7 @@ using Newtonsoft.Json.Serialization;
 using Shelf.CustomEnums;
 using Shelf.Views;
 using Shelf.Attributes;
+using JerloPH_CSharp;
 
 namespace Shelf.Functions
 {
@@ -96,8 +97,8 @@ namespace Shelf.Functions
                 // and remove below code.
                 if (isLoadForm)
                 {
-                    var form = new frmSettings();
-                    form.Show();
+                    //var form = new frmSettings();
+                    //form.Show();
                 }
             }
             catch (Exception ex) { Logs.Err(ex); }

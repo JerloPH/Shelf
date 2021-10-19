@@ -17,6 +17,7 @@ using System.Diagnostics;
 using Shelf.Anilist;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Shelf.CustomEnums;
+using JerloPH_CSharp;
 
 namespace Shelf.Functions
 {

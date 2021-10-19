@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using Shelf.Functions;
 using Shelf.Json;
 using Shelf.Anilist;
+using JerloPH_CSharp;
 
 namespace Shelf
 {

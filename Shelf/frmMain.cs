@@ -536,7 +536,12 @@ namespace Shelf
             Log("Click on 'Refresh Token' to start!");
             TokenDate = DateTime.Now.AddMinutes(-61);
             IsRefreshing = false;
-            if (Setting.isAutoFetchTkn)
+            if (Setting.isAutoRefreshmedia)
+            {
+                RefreshToken(); // Fetch access code and token
+                btnFetchMedia_Click(btnFetchMedia, new EventArgs());
+            }
+            else if (Setting.isAutoFetchTkn)
             {
                 RefreshToken(); // Fetch access code and token
             }

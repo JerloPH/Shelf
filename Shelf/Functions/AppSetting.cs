@@ -171,7 +171,7 @@ namespace Shelf.Functions
 
         [DisplayName("Automatically Refresh Media"), Description("Refresh Media List upon Load"),
             CustomSettingAttrib(IsRequiredRestart = true)]
-        public bool isAutoRefreshmedia { get; set; } // TODO: Apply setting
+        public bool isAutoRefreshmedia { get; set; }
 
         [DisplayName("Always Display Romaji"), Description("Only use Romaji title of Entry")]
         public bool isAlwaysUseRomaji { get; set; }

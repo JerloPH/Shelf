@@ -139,7 +139,7 @@ namespace Shelf
                     
                         cmbTachiBackup.DisplayMember = "Name";
                         cmbTachiBackup.ValueMember = "File";
-                        cmbTachiBackup.SelectedIndex = 0;
+                        cmbTachiBackup.SelectedIndex = cmbTachiBackup.Items.Count - 1;
                     });
                     Log("Loaded Tachiyomi backup files.");
                 }

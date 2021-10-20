@@ -88,7 +88,7 @@ namespace Shelf.Anilist
         {
             return (index == 0) ? AniClient : AniSecret;
         }
-        public static async Task<string> RequestPublicToken(string authCode)
+        public static async Task<string> RequestPublicToken(string authCode, bool isSaveTkn)
         {
             if (String.IsNullOrWhiteSpace(authCode))
                 throw new Exception("No Authorization Code!");
@@ -118,7 +118,8 @@ namespace Shelf.Anilist
                     var content = response.Content; // Raw content as string
                     var returnJsonObject = JObject.Parse(content);
                     returnString = (string)returnJsonObject["access_token"];
-                    FileHelper.WriteFile(GlobalFunc.FILE_PUB_TKN, content);
+                    if (isSaveTkn)
+                        FileHelper.WriteFile(GlobalFunc.FILE_PUB_TKN, content);
                 }
                 else
                 {

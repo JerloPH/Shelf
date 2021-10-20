@@ -154,7 +154,7 @@ namespace Shelf.Functions
         {
             tachibackup = "";
             isAlwaysDownloadCover = false;
-            isAutoFetchTkn = false;
+            isSaveToken = false;
             isAutoRefreshmedia = false;
             isAlwaysUseRomaji = false;
             isAutoSkipTachi = false;
@@ -165,13 +165,13 @@ namespace Shelf.Functions
         [DisplayName("Always Download Cover"), Description("Always download cover from Anilist")]
         public bool isAlwaysDownloadCover { get; set; }
 
-        [DisplayName("Automatically Fetch Token"), Description("Fetch token upon Load"),
-            CustomSettingAttrib(IsRequiredRestart = true)]
-        public bool isAutoFetchTkn { get; set; }
-
         [DisplayName("Automatically Refresh Media"), Description("Refresh Media List upon Load"),
             CustomSettingAttrib(IsRequiredRestart = true)]
         public bool isAutoRefreshmedia { get; set; }
+
+        [DisplayName("Load and Save Token"), Description("Load/Save Token after fetching"),
+            CustomSettingAttrib(IsRequiredRestart = true)]
+        public bool isSaveToken { get; set; }
 
         [DisplayName("Always Display Romaji"), Description("Only use Romaji title of Entry")]
         public bool isAlwaysUseRomaji { get; set; }

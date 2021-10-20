@@ -221,21 +221,21 @@ namespace Shelf
             return await Task.Run(async delegate
             {
                 string token = "";
-                Log("Loading Authorization Code..");
                 // Get Authorization Code
                 if (String.IsNullOrWhiteSpace(AuthCode))
                 {
-                    if (File.Exists(GlobalFunc.FILE_AUTH_CODE))
+                    Log("Loading Authorization Code..");
+                    if (File.Exists(GlobalFunc.FILE_AUTH_CODE) && Setting.isSaveToken)
                         AuthCode = FileHelper.ReadFromFile(GlobalFunc.FILE_AUTH_CODE);
 
                     if (String.IsNullOrWhiteSpace(AuthCode))
                         AuthCode = await RequestAuthCode();
                 }
-                Log("Requesting token..");
                 // Request Access Token, using Auth code
                 try
                 {
-                    token = await AnilistRequest.RequestPublicToken(AuthCode);
+                    Log("Requesting token..");
+                    token = await AnilistRequest.RequestPublicToken(AuthCode, Setting.isSaveToken);
                 }
                 catch (Exception ex) { Logs.Err(ex); token = ""; }
                 if (String.IsNullOrWhiteSpace(token))
@@ -520,7 +520,7 @@ namespace Shelf
         private void frmMain_Load(object sender, EventArgs e)
         {
             var form = Msg.Load("Loading", "Form Loading");
-            form.BackgroundWorker.DoWork += async (sender1, e1)=>
+            form.BackgroundWorker.DoWork += (sender1, e1) =>
             {
                 this.Invoke(new Action(() =>
                 {
@@ -540,10 +540,6 @@ namespace Shelf
             {
                 RefreshToken(); // Fetch access code and token
                 btnFetchMedia_Click(btnFetchMedia, new EventArgs());
-            }
-            else if (Setting.isAutoFetchTkn)
-            {
-                RefreshToken(); // Fetch access code and token
             }
             CenterToScreen();
             Focus();
@@ -579,7 +575,10 @@ namespace Shelf
                     }
                 }
                 else
-                    Log("No Token!");
+                {
+                    Log("No Token! WIll fetch..");
+                    RefreshToken();
+                }
 
                 IsFetchingMedia = false;
                 btnFetchMedia.Enabled = true;

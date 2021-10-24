@@ -16,6 +16,7 @@ using System.ComponentModel;
 using Shelf.Entity;
 using Newtonsoft.Json;
 using JerloPH_CSharp;
+using Shelf.Views;
 
 namespace Shelf
 {
@@ -561,6 +562,12 @@ namespace Shelf
             {
                 IsFetchingMedia = true;
                 btnFetchMedia.Enabled = false;
+
+                if (String.IsNullOrWhiteSpace(PublicTkn))
+                {
+                    Log("No Token! Will fetch..");
+                    RefreshToken();
+                }
                 if (!String.IsNullOrWhiteSpace(PublicTkn))
                 {
                     // // Get media, and write to json file
@@ -573,11 +580,6 @@ namespace Shelf
                         await RequestMedia("ANIME", AnilistUserId, PublicTkn);
                         await RequestMedia("MANGA", AnilistUserId, PublicTkn);
                     }
-                }
-                else
-                {
-                    Log("No Token! WIll fetch..");
-                    RefreshToken();
                 }
 
                 IsFetchingMedia = false;
@@ -806,6 +808,13 @@ namespace Shelf
             btnTachiRefresh.Enabled = false;
             await LoadTachiyomiBackupFiles();
             btnTachiRefresh.Enabled = true;
+        }
+
+        private void bnConfigSetting_Click(object sender, EventArgs e)
+        {
+            // TODO: Add button on main form to show settings
+            var form = new frmSettings();
+            form.Show();
         }
     }
 }

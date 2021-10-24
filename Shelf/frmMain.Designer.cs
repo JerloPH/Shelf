@@ -51,6 +51,7 @@ namespace Shelf
             this.panelTachiSkip = new System.Windows.Forms.Panel();
             this.cblistTachiSkip = new System.Windows.Forms.CheckedListBox();
             this.panelTachi = new System.Windows.Forms.Panel();
+            this.btnTachiRefresh = new System.Windows.Forms.Button();
             this.cmbTachiBackup = new System.Windows.Forms.ComboBox();
             this.cbReplaceTachiLib = new System.Windows.Forms.CheckBox();
             this.tpgLocal = new System.Windows.Forms.TabPage();
@@ -72,7 +73,7 @@ namespace Shelf
             this.lvLocalManga = new System.Windows.Forms.ListView();
             this.cbMediaRefresh = new System.Windows.Forms.ComboBox();
             this.cbEntryMode = new System.Windows.Forms.ComboBox();
-            this.btnTachiRefresh = new System.Windows.Forms.Button();
+            this.bnConfigSetting = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.tpgBasic.SuspendLayout();
             this.tpgConfig.SuspendLayout();
@@ -278,6 +279,7 @@ namespace Shelf
             // tpgConfig
             // 
             this.tpgConfig.AllowDrop = true;
+            this.tpgConfig.Controls.Add(this.bnConfigSetting);
             this.tpgConfig.Controls.Add(this.btnChangeConfig);
             this.tpgConfig.Controls.Add(this.btnRefresh);
             this.tpgConfig.Location = new System.Drawing.Point(4, 29);
@@ -333,6 +335,17 @@ namespace Shelf
             this.panelTachi.Name = "panelTachi";
             this.panelTachi.Size = new System.Drawing.Size(417, 232);
             this.panelTachi.TabIndex = 0;
+            // 
+            // btnTachiRefresh
+            // 
+            this.btnTachiRefresh.Font = new System.Drawing.Font("Segoe UI Semibold", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnTachiRefresh.Location = new System.Drawing.Point(227, 78);
+            this.btnTachiRefresh.Name = "btnTachiRefresh";
+            this.btnTachiRefresh.Size = new System.Drawing.Size(174, 52);
+            this.btnTachiRefresh.TabIndex = 20;
+            this.btnTachiRefresh.Text = "Refresh";
+            this.btnTachiRefresh.UseVisualStyleBackColor = true;
+            this.btnTachiRefresh.Click += new System.EventHandler(this.btnTachiRefresh_Click);
             // 
             // cmbTachiBackup
             // 
@@ -551,16 +564,16 @@ namespace Shelf
             this.cbEntryMode.Size = new System.Drawing.Size(179, 39);
             this.cbEntryMode.TabIndex = 22;
             // 
-            // btnTachiRefresh
+            // bnConfigSetting
             // 
-            this.btnTachiRefresh.Font = new System.Drawing.Font("Segoe UI Semibold", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnTachiRefresh.Location = new System.Drawing.Point(227, 78);
-            this.btnTachiRefresh.Name = "btnTachiRefresh";
-            this.btnTachiRefresh.Size = new System.Drawing.Size(174, 52);
-            this.btnTachiRefresh.TabIndex = 20;
-            this.btnTachiRefresh.Text = "Refresh";
-            this.btnTachiRefresh.UseVisualStyleBackColor = true;
-            this.btnTachiRefresh.Click += new System.EventHandler(this.btnTachiRefresh_Click);
+            this.bnConfigSetting.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.bnConfigSetting.Location = new System.Drawing.Point(21, 178);
+            this.bnConfigSetting.Name = "bnConfigSetting";
+            this.bnConfigSetting.Size = new System.Drawing.Size(242, 52);
+            this.bnConfigSetting.TabIndex = 11;
+            this.bnConfigSetting.Text = "Setting";
+            this.bnConfigSetting.UseVisualStyleBackColor = true;
+            this.bnConfigSetting.Click += new System.EventHandler(this.bnConfigSetting_Click);
             // 
             // frmMain
             // 
@@ -647,6 +660,7 @@ namespace Shelf
         private System.Windows.Forms.CheckedListBox cblistTachiSkip;
         private System.Windows.Forms.ComboBox cmbTachiBackup;
         private System.Windows.Forms.Button btnTachiRefresh;
+        private System.Windows.Forms.Button bnConfigSetting;
     }
 }
 

@@ -93,13 +93,6 @@ namespace Shelf.Functions
                         //Logs.Debug($"Item added:\n{content}");
                     }
                 }
-                // TODO: Add button on main form to show settings
-                // and remove below code.
-                if (isLoadForm)
-                {
-                    //var form = new frmSettings();
-                    //form.Show();
-                }
             }
             catch (Exception ex) { Logs.Err(ex); }
         }

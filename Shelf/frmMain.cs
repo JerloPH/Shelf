@@ -480,11 +480,14 @@ namespace Shelf
                     {
                         try
                         {
-                            Log("Requesting user Id..");
-                            AnilistUserId = await AnilistRequest.RequestUserId(PublicTkn);
-                            Log($"User found! User ID: {AnilistUserId}");
+                            Log("Requesting user info..");
+                            var reqUserResult = await AnilistRequest.RequestUser(PublicTkn);
+                            AnilistUserId = reqUserResult.Item1;
+                            Log($"User found! User Id: {AnilistUserId}, Username: {reqUserResult.Item2}");
+                            if (String.IsNullOrWhiteSpace(txtUsername.Text))
+                                txtUsername.Text = reqUserResult.Item2;
                         }
-                        catch (Exception ex) { Logs.Err(ex); Log("User Id not fetched!"); };
+                        catch (Exception ex) { Logs.Err(ex); Log("User info not fetched!"); };
                     }
                 }
                 else

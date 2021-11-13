@@ -132,12 +132,12 @@ namespace Shelf.Anilist
             catch { throw; }
             return returnString;
         }
-        public static async Task<string> RequestUserId(string pubTkn)
+        public static async Task<Tuple<string, string>> RequestUser(string pubTkn)
         {
             if (String.IsNullOrWhiteSpace(pubTkn))
                 throw new Exception("No Public Token!");
 
-            string returnString = "";
+            string id = "", name = "";
             try
             {
                 var client = new RestClient("https://graphql.anilist.co");
@@ -147,7 +147,7 @@ namespace Shelf.Anilist
                 request.Timeout = 0;
                 request.AddJsonBody(new
                 {
-                    query = "{Viewer{id}}"
+                    query = "{Viewer{id, name}}"
                 });
                 request.AddHeader("Authorization", $"Bearer {pubTkn}");
                 request.RequestFormat = DataFormat.Json;
@@ -159,11 +159,15 @@ namespace Shelf.Anilist
                 {
                     var content = response.Content; // Raw content as string
                     var json = JObject.Parse(content);
-                    returnString = (string)json["data"]["Viewer"]["id"];
+                    if (json != null)
+                    {
+                        id = (string)json["data"]?["Viewer"]?["id"];
+                        name = (string)json["data"]?["Viewer"]?["name"];
+                    }
                 }
             }
             catch { throw; }
-            return returnString;
+            return new Tuple<string, string>(id, name);
         }
         public static async Task<AnilistAnimeManga> RequestMediaList(string publicTkn, string userId, string MEDIA = "ANIME")
         {

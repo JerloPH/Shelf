@@ -184,19 +184,14 @@ namespace Shelf.Views
             if (isSuccess)
             {
                 gridSetting.Refresh();
-                GlobalFunc.Alert("Changes applied!");
+                Msg.ShowInfo("Changes applied!");
             }
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
             AppSettings.SaveAppConfig();
-            if (requireRestart)
-            {
-                GlobalFunc.Alert("Required App Restart for\nsome Settings to take effect.");
-            }
-            else
-                GlobalFunc.Alert("Changes Saved!");
+            Msg.ShowInfo(requireRestart ? "Required App Restart for\nsome Settings to take effect." : "Changes Saved!");
         }
 
         private void btnReset_Click(object sender, EventArgs e)

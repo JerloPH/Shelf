@@ -81,7 +81,7 @@ namespace Shelf.Functions
                 FILE_LOCAL_MEDIA = Path.Combine(DIR_DATA, "LocalMediaPaths.json");
                 AppSettings.LoadAppConfig(true);
             }
-            catch (Exception ex) { Logs.Err(ex); GlobalFunc.Alert("Some files are not initialized!"); }
+            catch (Exception ex) { Logs.Err(ex); Msg.ShowWarning("Some files are not initialized!"); }
             try
             {
                 if (!File.Exists(FILE_ANILIST_CONFIG))
@@ -113,6 +113,10 @@ namespace Shelf.Functions
                 return (attributes.Length > 0) ? attributes[0].Description : value.ToString();
             }
             return "";
+        }
+        public static void ShowErr(string msg, Exception ex, Form parent)
+        {
+            Msg.ShowError("", msg, parent, ex, false);
         }
         #region File IO
         public static bool WriteObjectToJson(string file, object data)
@@ -242,7 +246,7 @@ namespace Shelf.Functions
             catch (Exception ex)
             {
                 Logs.Err(ex);
-                Alert("Cannot Browse to file!");
+                Msg.ShowWarning("Cannot Browse to file!");
             }
             return false;
         }
@@ -268,21 +272,6 @@ namespace Shelf.Functions
         }
         #endregion
         #region Messages
-        public static DialogResult Alert(string message, string caption, Form parent)
-        {
-            if (!String.IsNullOrWhiteSpace(caption))
-                caption = "Shelf";
-
-            return MessageBox.Show(parent, message, caption);
-        }
-        public static DialogResult Alert(string message, Form parent)
-        {
-            return Alert(message, "", parent);
-        }
-        public static DialogResult Alert(string message)
-        {
-            return Alert(message, "", null);
-        }
         #endregion
         // ############################################################ End of Class
     }

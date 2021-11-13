@@ -244,7 +244,7 @@ namespace Shelf.Functions
                 catch (Exception ex)
                 {
                     Logs.Err(ex);
-                    GlobalFunc.Alert("Error loading Tachiyomi backup file!");
+                    Msg.ShowWarning("Error loading Tachiyomi backup file!");
                     tachiloaded = false;
                     tachilist.Clear(); // Micro optimization
                     mangalist.Clear();
@@ -328,7 +328,7 @@ namespace Shelf.Functions
                                 FileHelper.Compress(outputProto);
                             }
                         }
-                        catch (Exception ex) { Logs.Err(ex); GlobalFunc.Alert("Cannot serialize proto backup file!"); }
+                        catch (Exception ex) { Logs.Err(ex); Msg.ShowWarning("Cannot serialize proto backup file!"); }
                         // Serialize to json file
                         try
                         {
@@ -339,10 +339,10 @@ namespace Shelf.Functions
                                 backupTachiJson.Mangas = backupMangaJson;
                                 backupTachiJson.Categories.Add(new object[] { categoryName, categoryId });
                                 if (!GlobalFunc.WriteObjectToJson(outputJson, backupTachiJson))
-                                    GlobalFunc.Alert("Cannot serialize json backup file!");
+                                    Msg.ShowWarning("Cannot serialize json backup file!");
                             }
                         }
-                        catch (Exception ex) { Logs.Err(ex); GlobalFunc.Alert("Cannot serialize json backup file!\nError occured."); };
+                        catch (Exception ex) { Logs.Err(ex); Msg.ShowWarning("Cannot serialize json backup file!\nError occured."); };
                     }
                     backupmangalist.Clear();
                     backupMangaJson.Clear();

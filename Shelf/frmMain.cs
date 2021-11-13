@@ -111,7 +111,7 @@ namespace Shelf
                     });
                     return true;
                 }
-                catch (Exception ex) { GlobalFunc.Alert("Some UI are not initialized!"); Logs.Err(ex); }
+                catch (Exception ex) { GlobalFunc.ShowErr("Some UI are not initialized!", ex , this); }
                 return false;
             });            
         }
@@ -280,7 +280,7 @@ namespace Shelf
                 else
                     Log($"No {media} found!");
             }
-            catch (Exception ex) { Logs.Err(ex); GlobalFunc.Alert($"Error occured on fetching {media}!\nTry again."); }
+            catch (Exception ex) { Logs.Err(ex); Msg.ShowWarning($"Error occured on fetching {media}!\nTry again."); }
             return false;
         }
         public async Task<bool> RefreshMedia(MediaType type, List<Entry> medias, ListView lv, ImageList imglist, bool IsClearCover)
@@ -633,7 +633,7 @@ namespace Shelf
                     outputAnimeNonMal = Path.Combine(GlobalFunc.DIR_OUTPUT, $"anime_NonMal_{GlobalFunc.DATE_TODAY}.json");
                     FileHelper.WriteFile(outputAnime, "");
                 }
-                catch (Exception ex) { Logs.Err(ex); GlobalFunc.Alert("Cannot create Anime output!"); return; }
+                catch (Exception ex) { Logs.Err(ex); Msg.ShowWarning("Cannot create Anime output!"); return; }
             }
             if (processManga)
             {
@@ -643,7 +643,7 @@ namespace Shelf
                     outputMangaNonMal = Path.Combine(GlobalFunc.DIR_OUTPUT, $"manga_NonMal_{GlobalFunc.DATE_TODAY}.json");
                     FileHelper.WriteFile(outputManga, "");
                 }
-                catch (Exception ex) { Logs.Err(ex); GlobalFunc.Alert("Cannot create Manga output!"); return; }
+                catch (Exception ex) { Logs.Err(ex); Msg.ShowWarning("Cannot create Manga output!"); return; }
             }
 
             await Task.Run((Action)async delegate
@@ -671,7 +671,7 @@ namespace Shelf
                     // End of Manga entries
                 }
             });
-            GlobalFunc.Alert("Done!");
+            Msg.ShowInfo("Done!");
             btnMALExport.Enabled = true;
         }
 
@@ -694,19 +694,19 @@ namespace Shelf
                             await RefreshMedia(MediaType.MANGA, entries, lvTachi, mangaCoverList, false);
                         }
                         SetStatus("Idle");
-                        GlobalFunc.Alert((entries?.Count > 0) ? "Done generating Tachiyomi backup file!" : "All Anilist entries are\non your Tachiyomi library!");
+                        Msg.ShowInfo((entries?.Count > 0) ? "Done generating Tachiyomi backup file!" : "All Anilist entries are\non your Tachiyomi library!");
                     }
                     else
-                        GlobalFunc.Alert($"Tachiyomi file isn't supported!\nOnly '{String.Join('/', ext)}' files are accepted.");
+                        Msg.ShowWarning($"Tachiyomi file isn't supported!\nOnly '{String.Join('/', ext)}' files are accepted.");
                 }
                 catch (Exception ex)
                 {
                     Logs.Err(ex);
-                    GlobalFunc.Alert("Error occured on loading Tachiyomi!");
+                    Msg.ShowWarning("Error occured on loading Tachiyomi!");
                 }
             }
             else
-                GlobalFunc.Alert("Tachiyomi backup file does not exists!");
+                Msg.ShowWarning("Tachiyomi backup file does not exists!");
 
             btnGenTachi.Enabled = true;
         }

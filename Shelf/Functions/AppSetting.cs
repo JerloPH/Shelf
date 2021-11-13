@@ -20,7 +20,6 @@ namespace Shelf.Functions
     {
         public static AppSettingsEntity AppConfig { get; set; } = null;
         public static List<AppSettingsListEntity> AppConfigList { get; set; } = new List<AppSettingsListEntity>();
-        public static List<String> AppConfigRequiredRestart { get; set; } = new List<string>();
 
         public static void SaveAppConfig()
         {
@@ -37,15 +36,6 @@ namespace Shelf.Functions
             try
             {
                 AppConfig = GlobalFunc.JsonDecode<AppSettingsEntity>(jsonfile); // Load settings
-                // Add settings properties name that requires restart on change.
-                AppConfigRequiredRestart.Clear();
-                string file = Path.Combine(GlobalFunc.DIR_RES, "requiredRestart.txt");
-                string content = FileHelper.ReadFromFile(file);
-                if (!String.IsNullOrWhiteSpace(content))
-                {
-                    string[] items = content.Split('*');
-                    AppConfigRequiredRestart.AddRange(items);
-                }
             }
             catch (Exception ex) { Logs.Err(ex); }
             if (AppConfig == null)

@@ -312,9 +312,10 @@ namespace Shelf
                         {
                             count += 1;
                             SetStatus($"Adding item..{count}/{max}");
+                            //Log($"Adding item with ID ->  {item.Media.Id}..");
                             await AddItemToListView(lv, imglist, item, type, count);
                             Thread.Sleep(10);
-                            if (count >= 10 && GlobalFunc.DEBUG)
+                            if (count >= 20 && GlobalFunc.DEBUG)
                                 break;
                         }
                     }

@@ -497,6 +497,9 @@ namespace Shelf
                 btnRefresh.Enabled = true;
                 IsRefreshing = false;
                 btnFetchMedia.Enabled = true; // Enable fetching media files
+
+                if (Setting.isAutoRefreshmedia)
+                    btnFetchMedia_Click(btnFetchMedia, new EventArgs());
             }
             else
                 Log("Wait for previous refresh to finish!");
@@ -541,11 +544,9 @@ namespace Shelf
             Log("Click on 'Refresh Token' to start!");
             TokenDate = DateTime.Now.AddMinutes(-61);
             IsRefreshing = false;
-            if (Setting.isAutoRefreshmedia)
-            {
+            if (Setting.isAutoFetchToken)
                 RefreshToken(); // Fetch access code and token
-                btnFetchMedia_Click(btnFetchMedia, new EventArgs());
-            }
+            
             CenterToScreen();
             Focus();
             Select();
@@ -562,32 +563,35 @@ namespace Shelf
 
         private async void btnFetchMedia_Click(object sender, EventArgs e)
         {
-            if (!IsFetchingMedia)
+            if (String.IsNullOrWhiteSpace(PublicTkn))
             {
-                IsFetchingMedia = true;
-                btnFetchMedia.Enabled = false;
-
-                if (String.IsNullOrWhiteSpace(PublicTkn))
+                Log("No Token! Will fetch..");
+                RefreshToken();
+            }
+            else
+            {
+                if (!IsFetchingMedia)
                 {
-                    Log("No Token! Will fetch..");
-                    RefreshToken();
-                }
-                if (!String.IsNullOrWhiteSpace(PublicTkn))
-                {
-                    // // Get media, and write to json file
-                    if (cbMedia.SelectedIndex > 0)
-                    {
-                        await RequestMedia(cbMedia.Text, AnilistUserId, PublicTkn);
-                    }
-                    else // Get all media
-                    {
-                        await RequestMedia("ANIME", AnilistUserId, PublicTkn);
-                        await RequestMedia("MANGA", AnilistUserId, PublicTkn);
-                    }
-                }
+                    IsFetchingMedia = true;
+                    btnFetchMedia.Enabled = false;
 
-                IsFetchingMedia = false;
-                btnFetchMedia.Enabled = true;
+                    if (!String.IsNullOrWhiteSpace(PublicTkn))
+                    {
+                        // Get specified media, and write to json file
+                        if (cbMedia.SelectedIndex > 0)
+                        {
+                            await RequestMedia(cbMedia.Text, AnilistUserId, PublicTkn);
+                        }
+                        else // Get all media
+                        {
+                            await RequestMedia("ANIME", AnilistUserId, PublicTkn);
+                            await RequestMedia("MANGA", AnilistUserId, PublicTkn);
+                        }
+                    }
+
+                    IsFetchingMedia = false;
+                    btnFetchMedia.Enabled = true;
+                }
             }
         }
 

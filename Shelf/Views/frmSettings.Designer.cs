@@ -60,7 +60,7 @@ namespace Shelf.Views
             this.panelGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelGrid.Location = new System.Drawing.Point(0, 0);
             this.panelGrid.Name = "panelGrid";
-            this.panelGrid.Size = new System.Drawing.Size(632, 413);
+            this.panelGrid.Size = new System.Drawing.Size(662, 433);
             this.panelGrid.TabIndex = 0;
             // 
             // gridSetting
@@ -84,9 +84,10 @@ namespace Shelf.Views
             this.gridSetting.RowHeadersWidth = 51;
             this.gridSetting.RowTemplate.Height = 29;
             this.gridSetting.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.gridSetting.Size = new System.Drawing.Size(632, 413);
+            this.gridSetting.Size = new System.Drawing.Size(662, 433);
             this.gridSetting.TabIndex = 1;
             this.gridSetting.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.gridSetting_CellFormatting);
+            this.gridSetting.CellMouseEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridSetting_CellMouseEnter);
             this.gridSetting.SelectionChanged += new System.EventHandler(this.gridSetting_SelectionChanged);
             // 
             // colName
@@ -141,9 +142,9 @@ namespace Shelf.Views
             this.panelControls.Controls.Add(this.panelValueSet);
             this.panelControls.Controls.Add(this.panelDesc);
             this.panelControls.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelControls.Location = new System.Drawing.Point(0, 252);
+            this.panelControls.Location = new System.Drawing.Point(0, 272);
             this.panelControls.Name = "panelControls";
-            this.panelControls.Size = new System.Drawing.Size(632, 161);
+            this.panelControls.Size = new System.Drawing.Size(662, 161);
             this.panelControls.TabIndex = 1;
             // 
             // panelAction
@@ -153,7 +154,7 @@ namespace Shelf.Views
             this.panelAction.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelAction.Location = new System.Drawing.Point(0, 97);
             this.panelAction.Name = "panelAction";
-            this.panelAction.Size = new System.Drawing.Size(632, 64);
+            this.panelAction.Size = new System.Drawing.Size(662, 64);
             this.panelAction.TabIndex = 2;
             // 
             // btnSave
@@ -174,7 +175,7 @@ namespace Shelf.Views
             this.btnReset.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnReset.Dock = System.Windows.Forms.DockStyle.Right;
             this.btnReset.Font = new System.Drawing.Font("Segoe UI Semibold", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnReset.Location = new System.Drawing.Point(431, 0);
+            this.btnReset.Location = new System.Drawing.Point(461, 0);
             this.btnReset.Name = "btnReset";
             this.btnReset.Size = new System.Drawing.Size(201, 64);
             this.btnReset.TabIndex = 3;
@@ -189,14 +190,14 @@ namespace Shelf.Views
             this.panelValueSet.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelValueSet.Location = new System.Drawing.Point(0, 41);
             this.panelValueSet.Name = "panelValueSet";
-            this.panelValueSet.Size = new System.Drawing.Size(632, 56);
+            this.panelValueSet.Size = new System.Drawing.Size(662, 56);
             this.panelValueSet.TabIndex = 1;
             // 
             // btnApply
             // 
             this.btnApply.Dock = System.Windows.Forms.DockStyle.Right;
             this.btnApply.Font = new System.Drawing.Font("Segoe UI Semibold", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnApply.Location = new System.Drawing.Point(470, 0);
+            this.btnApply.Location = new System.Drawing.Point(500, 0);
             this.btnApply.Name = "btnApply";
             this.btnApply.Size = new System.Drawing.Size(162, 56);
             this.btnApply.TabIndex = 2;
@@ -212,7 +213,7 @@ namespace Shelf.Views
             this.panelValue.Location = new System.Drawing.Point(0, 0);
             this.panelValue.Margin = new System.Windows.Forms.Padding(4);
             this.panelValue.Name = "panelValue";
-            this.panelValue.Size = new System.Drawing.Size(632, 56);
+            this.panelValue.Size = new System.Drawing.Size(662, 56);
             this.panelValue.TabIndex = 0;
             // 
             // panelDesc
@@ -221,7 +222,7 @@ namespace Shelf.Views
             this.panelDesc.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelDesc.Location = new System.Drawing.Point(0, 0);
             this.panelDesc.Name = "panelDesc";
-            this.panelDesc.Size = new System.Drawing.Size(632, 41);
+            this.panelDesc.Size = new System.Drawing.Size(662, 41);
             this.panelDesc.TabIndex = 0;
             // 
             // lblDesc
@@ -230,7 +231,7 @@ namespace Shelf.Views
             this.lblDesc.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.lblDesc.Location = new System.Drawing.Point(0, 0);
             this.lblDesc.Name = "lblDesc";
-            this.lblDesc.Size = new System.Drawing.Size(632, 41);
+            this.lblDesc.Size = new System.Drawing.Size(662, 41);
             this.lblDesc.TabIndex = 0;
             this.lblDesc.Text = "Description";
             this.lblDesc.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -239,7 +240,7 @@ namespace Shelf.Views
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(632, 413);
+            this.ClientSize = new System.Drawing.Size(662, 433);
             this.Controls.Add(this.panelControls);
             this.Controls.Add(this.panelGrid);
             this.MinimumSize = new System.Drawing.Size(650, 460);

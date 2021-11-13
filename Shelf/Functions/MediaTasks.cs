@@ -294,10 +294,12 @@ namespace Shelf.Functions
                                     backupMangaJson.Add(jsonEntry);
 
                                     // Add entry to result list
-                                    var newEntry = new Entry();
-                                    newEntry.Media.Id = 0;
-                                    newEntry.Media.Title.Romaji = entry.Title;
-                                    listEntries.Add(newEntry);
+                                    //var newEntry = new Entry();
+                                    //newEntry.Media.Id = item.Media.Id;
+                                    //newEntry.Media.Title.Romaji = entry.Title;
+                                    //newEntry.Media.CoverImage = item.Media.CoverImage;
+                                    //listEntries.Add(newEntry);
+                                    listEntries.Add(item);
                                 }
                             }
                         }

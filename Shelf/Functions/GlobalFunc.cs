@@ -18,6 +18,8 @@ using Shelf.Anilist;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Shelf.CustomEnums;
 using JerloPH_CSharp;
+using System.Reflection;
+using System.ComponentModel;
 
 namespace Shelf.Functions
 {
@@ -100,6 +102,17 @@ namespace Shelf.Functions
                 Logs.Err(ex);
                 return "1.0.0.0-alpha";
             }
+        }
+        public static string GetEnumDesc(Enum value)
+        {
+            if (value != null)
+            {
+                FieldInfo fi = value.GetType().GetField(value.ToString());
+                DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
+
+                return (attributes.Length > 0) ? attributes[0].Description : value.ToString();
+            }
+            return "";
         }
         #region File IO
         public static bool WriteObjectToJson(string file, object data)

@@ -54,10 +54,12 @@ namespace Shelf
             {
                 if (String.IsNullOrWhiteSpace(txtAuthCode.Text))
                 {
-                    GlobalFunc.Alert("Access Token textbox is empty!");
-                    txtAuthCode.Focus();
-                    e.Cancel = true;
-                    return;
+                    if (!Msg.ShowYesNo("Access Token textbox is empty!\nProceed?", this))
+                    {
+                        txtAuthCode.Focus();
+                        e.Cancel = true;
+                        return;
+                    }
                 }
                 AuthCode = txtAuthCode.Text;
             }

@@ -592,6 +592,8 @@ namespace Shelf
                     IsFetchingMedia = false;
                     btnFetchMedia.Enabled = true;
                 }
+                else
+                    Log("Wait for current media to be fetched.");
             }
         }
 
@@ -820,7 +822,6 @@ namespace Shelf
 
         private void bnConfigSetting_Click(object sender, EventArgs e)
         {
-            // TODO: Add button on main form to show settings
             var form = new frmSettings();
             form.Show();
         }

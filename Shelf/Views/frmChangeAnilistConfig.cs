@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using JerloPH_CSharp;
 using Shelf.Anilist;
 using Shelf.Functions;
 
@@ -31,23 +32,23 @@ namespace Shelf
         {
             if (String.IsNullOrWhiteSpace(txtClientId.Text))
             {
-                GlobalFunc.Alert("No Client Id!", this);
+                Msg.ShowWarning("No Client Id!", "", this);
                 txtClientId.Focus();
                 return;
             }
             if (String.IsNullOrWhiteSpace(txtClientSecret.Text))
             {
-                GlobalFunc.Alert("No Client Secret!", this);
+                Msg.ShowWarning("No Client Secret!", "", this);
                 txtClientSecret.Focus();
                 return;
             }
             if (AnilistRequest.UpdateConfig(txtClientId.Text, txtClientSecret.Text))
             {
-                GlobalFunc.Alert("Successfully saved!", this);
+                Msg.ShowInfo("Successfully saved!", "", this);
                 Close();
             }
             else
-                GlobalFunc.Alert("Invalid Config!\nCheck your credentials.", this);
+                Msg.ShowWarning("Invalid Config!\nCheck your credentials.", "", this);
         }
 
         private void frmChangeAnilistConfig_FormClosing(object sender, FormClosingEventArgs e)

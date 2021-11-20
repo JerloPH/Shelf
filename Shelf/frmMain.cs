@@ -45,6 +45,7 @@ namespace Shelf
             InitializeComponent();
             localMedia = new LocalMedia();
             TachiBackups = new List<TachiBackupFile>();
+            Msg.SetDefaultParent(this);
         }
         private async Task<bool> InitializeObjects()
         {

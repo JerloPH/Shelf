@@ -47,6 +47,7 @@ namespace Shelf
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tpgBasic = new System.Windows.Forms.TabPage();
             this.tpgConfig = new System.Windows.Forms.TabPage();
+            this.bnConfigSetting = new System.Windows.Forms.Button();
             this.tpgTachi = new System.Windows.Forms.TabPage();
             this.panelTachiSkip = new System.Windows.Forms.Panel();
             this.cblistTachiSkip = new System.Windows.Forms.CheckedListBox();
@@ -73,7 +74,6 @@ namespace Shelf
             this.lvLocalManga = new System.Windows.Forms.ListView();
             this.cbMediaRefresh = new System.Windows.Forms.ComboBox();
             this.cbEntryMode = new System.Windows.Forms.ComboBox();
-            this.bnConfigSetting = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.tpgBasic.SuspendLayout();
             this.tpgConfig.SuspendLayout();
@@ -93,7 +93,7 @@ namespace Shelf
             // btnRefresh
             // 
             this.btnRefresh.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.btnRefresh.Location = new System.Drawing.Point(21, 95);
+            this.btnRefresh.Location = new System.Drawing.Point(21, 75);
             this.btnRefresh.Name = "btnRefresh";
             this.btnRefresh.Size = new System.Drawing.Size(242, 52);
             this.btnRefresh.TabIndex = 3;
@@ -289,6 +289,17 @@ namespace Shelf
             this.tpgConfig.TabIndex = 1;
             this.tpgConfig.Text = "Config";
             this.tpgConfig.UseVisualStyleBackColor = true;
+            // 
+            // bnConfigSetting
+            // 
+            this.bnConfigSetting.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.bnConfigSetting.Location = new System.Drawing.Point(21, 133);
+            this.bnConfigSetting.Name = "bnConfigSetting";
+            this.bnConfigSetting.Size = new System.Drawing.Size(242, 52);
+            this.bnConfigSetting.TabIndex = 11;
+            this.bnConfigSetting.Text = "Setting";
+            this.bnConfigSetting.UseVisualStyleBackColor = true;
+            this.bnConfigSetting.Click += new System.EventHandler(this.bnConfigSetting_Click);
             // 
             // tpgTachi
             // 
@@ -563,17 +574,6 @@ namespace Shelf
             this.cbEntryMode.Name = "cbEntryMode";
             this.cbEntryMode.Size = new System.Drawing.Size(179, 39);
             this.cbEntryMode.TabIndex = 22;
-            // 
-            // bnConfigSetting
-            // 
-            this.bnConfigSetting.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.bnConfigSetting.Location = new System.Drawing.Point(21, 178);
-            this.bnConfigSetting.Name = "bnConfigSetting";
-            this.bnConfigSetting.Size = new System.Drawing.Size(242, 52);
-            this.bnConfigSetting.TabIndex = 11;
-            this.bnConfigSetting.Text = "Setting";
-            this.bnConfigSetting.UseVisualStyleBackColor = true;
-            this.bnConfigSetting.Click += new System.EventHandler(this.bnConfigSetting_Click);
             // 
             // frmMain
             // 

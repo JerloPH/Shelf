@@ -74,6 +74,7 @@ namespace Shelf
             this.lvLocalManga = new System.Windows.Forms.ListView();
             this.cbMediaRefresh = new System.Windows.Forms.ComboBox();
             this.cbEntryMode = new System.Windows.Forms.ComboBox();
+            this.btnGotoOutput = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.tpgBasic.SuspendLayout();
             this.tpgConfig.SuspendLayout();
@@ -279,6 +280,7 @@ namespace Shelf
             // tpgConfig
             // 
             this.tpgConfig.AllowDrop = true;
+            this.tpgConfig.Controls.Add(this.btnGotoOutput);
             this.tpgConfig.Controls.Add(this.bnConfigSetting);
             this.tpgConfig.Controls.Add(this.btnChangeConfig);
             this.tpgConfig.Controls.Add(this.btnRefresh);
@@ -575,6 +577,17 @@ namespace Shelf
             this.cbEntryMode.Size = new System.Drawing.Size(179, 39);
             this.cbEntryMode.TabIndex = 22;
             // 
+            // btnGotoOutput
+            // 
+            this.btnGotoOutput.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.btnGotoOutput.Location = new System.Drawing.Point(21, 191);
+            this.btnGotoOutput.Name = "btnGotoOutput";
+            this.btnGotoOutput.Size = new System.Drawing.Size(242, 52);
+            this.btnGotoOutput.TabIndex = 12;
+            this.btnGotoOutput.Text = "Open Output";
+            this.btnGotoOutput.UseVisualStyleBackColor = true;
+            this.btnGotoOutput.Click += new System.EventHandler(this.btnGotoOutput_Click);
+            // 
             // frmMain
             // 
             this.AllowDrop = true;
@@ -661,6 +674,7 @@ namespace Shelf
         private System.Windows.Forms.ComboBox cmbTachiBackup;
         private System.Windows.Forms.Button btnTachiRefresh;
         private System.Windows.Forms.Button bnConfigSetting;
+        private System.Windows.Forms.Button btnGotoOutput;
     }
 }
 

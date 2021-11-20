@@ -782,7 +782,7 @@ namespace Shelf
         {
             string file = ((TachiBackupFile)cmbTachiBackup.SelectedItem).File;
             if (File.Exists(file))
-                GlobalFunc.FileOpeninExplorer(file);
+                GlobalFunc.FileOpeninExplorer(file, true);
         }
 
         private void tpgTachi_DragDrop(object sender, DragEventArgs e)
@@ -825,6 +825,13 @@ namespace Shelf
         {
             var form = new frmSettings();
             form.Show();
+        }
+
+        private void btnGotoOutput_Click(object sender, EventArgs e)
+        {
+            string dir = GlobalFunc.DIR_OUTPUT;
+            if (Directory.Exists(dir))
+                GlobalFunc.FileOpeninExplorer(dir, false);
         }
     }
 }

@@ -236,11 +236,15 @@ namespace Shelf.Functions
             catch { throw; }
             return ret;
         }
-        public static bool FileOpeninExplorer(string filePath)
+        public static bool FileOpeninExplorer(string filePath, bool isSelected)
         {
             try
             {
-                Process.Start("explorer.exe", @"/select," + $"{ filePath }" + '"');
+                if (isSelected)
+                    Process.Start("explorer.exe", @"/select," + $"{ filePath }" + '"');
+                else
+                    Process.Start("explorer.exe", filePath);
+
                 return true;
             }
             catch (Exception ex)

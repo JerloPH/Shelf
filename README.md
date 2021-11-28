@@ -2,7 +2,7 @@
 A .NET WinForm app to display your Anilist items, with additional tools.
 
 # Releases
-[![GitHub current release version](https://img.shields.io/github/release/JerloPH/Shelf)](https://GitHub.com/JerloPH/Shelf/releases/)
+[![GitHub current release version](https://img.shields.io/github/v/release/JerloPH/Shelf)](https://GitHub.com/JerloPH/Shelf/releases/)
 [![Github all releases](https://img.shields.io/github/downloads/JerloPH/Shelf/total.svg)](https://GitHub.com/JerloPH/Shelf/releases/)
 [![Github latest release](https://img.shields.io/github/downloads/JerloPH/Shelf/latest/total.svg)](https://GitHub.com/JerloPH/Shelf/releases/latest/)
 

@@ -7,6 +7,7 @@
     <StartupObject>Shelf.Program</StartupObject>
     <Authors>JerloPH</Authors>
     <Version>0.0.1</Version>
+    <ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>

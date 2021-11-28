@@ -2,6 +2,10 @@ name: Build App
 
 on:
   workflow_dispatch:
+    inputs:
+      v-tag:
+        description: Tag version without the 'v'.
+        required: true
 
 jobs:
 
@@ -23,10 +27,9 @@ jobs:
         run:  |
           echo "Working Path: ${Env:GITHUB_WORKSPACE}"
           echo "COMMIT_COUNT=$(git rev-list --count main)" >> $Env:GITHUB_ENV
-          echo "VERSION_TAG=${Env:GITHUB_REF/refs\/tags\//}" >> $Env:GITHUB_ENV
         env:
           COMMIT_COUNT: ${{ env.COMMIT_COUNT }}
-          VERSION_TAG:  ${{ env.VERSION_TAG }}
+          VERSION_TAG:  ${{ github.event.inputs.v-tag }}
           
       - name: Setup Nuget
         uses: Nuget/setup-nuget@v1.0.5

@@ -1,0 +1,66 @@
+name: Build App
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    tags:
+      - v*
+
+jobs:
+
+  create_release:
+    name: Create GitHub Release
+    runs-on: windows-2019
+    steps:
+      - name: Install 7Zip PowerShell Module
+        shell: powershell
+        run: Install-Module 7Zip4PowerShell -Force -Verbose
+        
+      - name: Checkout repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup variables for tagging
+        if: startsWith(github.ref, 'refs/tags/') && github.repository == 'JerloPH/Shelf'
+        run:  |
+          echo "Working Path: ${Env:GITHUB_WORKSPACE}"
+          echo "COMMIT_COUNT=$(git rev-list --count main)" >> $Env:GITHUB_ENV
+          echo "VERSION_TAG=${Env:GITHUB_REF/refs\/tags\//}" >> $Env:GITHUB_ENV
+          
+      - name: Setup Nuget
+        uses: Nuget/setup-nuget@v1.0.5
+      - name: Restore nuget packages
+        run: nuget restore Shelf\Shelf.csproj
+        
+      - name: Build Binary
+        shell: cmd
+        run: call .\Build.cmd
+      - name: Build Artifact
+        shell: cmd
+        run: call .\ArtifactBuild.cmd
+        
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.VERSION_TAG }}
+          release_name: Shelf ${{ env.VERSION_TAG }} r${{ env.COMMIT_COUNT }}
+          body: |
+            [Release notes here](https://github.com/JerloPH/Shelf/blob/main/docs/VERSION_HISTORY.md)
+          draft: false
+          prerelease: false
+          
+      - name: Upload Release Asset (Any CPU)
+        id: upload-release-asset-any-cpu
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./Shelf_win10.zip
+          asset_name: Shelf_win10.zip
+          asset_content_type: application/zip

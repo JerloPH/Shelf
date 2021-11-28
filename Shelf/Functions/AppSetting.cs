@@ -35,7 +35,8 @@ namespace Shelf.Functions
             string jsonfile = GlobalFunc.FILE_APPCONFIG;
             try
             {
-                AppConfig = GlobalFunc.JsonDecode<AppSettingsEntity>(jsonfile); // Load settings
+                if (File.Exists(jsonfile))
+                    AppConfig = GlobalFunc.JsonDecode<AppSettingsEntity>(jsonfile); // Load settings
             }
             catch (Exception ex) { Logs.Err(ex); }
             if (AppConfig == null)

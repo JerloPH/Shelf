@@ -27,9 +27,6 @@ jobs:
         run:  |
           echo "Working Path: ${Env:GITHUB_WORKSPACE}"
           echo "COMMIT_COUNT=$(git rev-list --count main)" >> $Env:GITHUB_ENV
-        env:
-          COMMIT_COUNT: ${{ env.COMMIT_COUNT }}
-          VERSION_TAG:  ${{ github.event.inputs.v-tag }}
           
       - name: Setup Nuget
         uses: Nuget/setup-nuget@v1.0.5
@@ -49,8 +46,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ env.VERSION_TAG }}
-          release_name: Shelf ${{ env.VERSION_TAG }} r${{ env.COMMIT_COUNT }}
+          tag_name: v${{ github.event.inputs.v-tag }}
+          release_name: Shelf v${{ github.event.inputs.v-tag }} r${{ env.COMMIT_COUNT }}
           body: |
             [Release notes here](https://github.com/JerloPH/Shelf/blob/main/docs/VERSION_HISTORY.md)
           draft: false

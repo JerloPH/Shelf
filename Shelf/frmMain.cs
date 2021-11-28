@@ -558,6 +558,7 @@ namespace Shelf
         {
             tabMedia.Width = this.ClientRectangle.Width - tabMedia.Left - 16;
             tabMedia.Height = this.ClientRectangle.Height - tabMedia.Top - 16;
+            txtLog.Height = this.ClientRectangle.Height - txtLog.Top - 16;
         }
         private void btnRefresh_Click(object sender, EventArgs e)
         {

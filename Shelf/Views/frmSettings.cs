@@ -26,6 +26,7 @@ namespace Shelf.Views
         public frmSettings()
         {
             InitializeComponent();
+            this.Icon = Shelf.Properties.Resources.MainAppIcon;
             UIHelper.BindLocalMediaToDataGrid(gridSetting, AppSettings.AppConfigList, null);
             gridSetting.RowHeadersVisible = false;
             // Set font

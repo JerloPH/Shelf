@@ -20,6 +20,7 @@ namespace Shelf
         {
             InitializeComponent();
             Caller = parent;
+            this.Icon = Shelf.Properties.Resources.MainAppIcon;
         }
 
         private void frmChangeAnilistConfig_Load(object sender, EventArgs e)

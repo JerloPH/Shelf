@@ -27,6 +27,7 @@ namespace Shelf
         public frmGetAuthCode()
         {
             InitializeComponent();
+            this.Icon = Shelf.Properties.Resources.MainAppIcon;
             // Initialize vars
             ANICLIENT = AnilistRequest.GetConfig(0);
             ANISECRET = AnilistRequest.GetConfig(1);

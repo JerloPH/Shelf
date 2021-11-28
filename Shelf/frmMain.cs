@@ -44,6 +44,7 @@ namespace Shelf
         {
             InitializeComponent();
             this.Text = $"Shelf v{GlobalFunc.GetAppVersion()}";
+            this.Icon = Shelf.Properties.Resources.MainAppIcon;
             localMedia = new LocalMedia();
             TachiBackups = new List<TachiBackupFile>();
             Msg.SetDefaultParent(this);

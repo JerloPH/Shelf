@@ -1,5 +1,8 @@
-# Shelf v0.0.1 r157
+# Shelf v0.0.2 r165
++ Added Icon to App.
++ Minor UI changes and fixes.
 
+# Shelf v0.0.1 r157
 + First public release.
 + Features:
   + Fetch list from Anilist. (Both Public and Private).

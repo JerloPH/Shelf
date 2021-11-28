@@ -22,8 +22,9 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+          submodules: recursive
+          
       - name: Setup variables for tagging
-        if: startsWith(github.ref, 'refs/tags/') && github.repository == 'JerloPH/Shelf'
         run:  |
           echo "Working Path: ${Env:GITHUB_WORKSPACE}"
           echo "COMMIT_COUNT=$(git rev-list --count main)" >> $Env:GITHUB_ENV

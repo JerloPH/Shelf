@@ -5,13 +5,12 @@ on:
   push:
     branches:
       - main
-    tags:
-      - v*
 
 jobs:
 
   create_release:
     name: Create GitHub Release
+    if: "contains(github.event.commits[0].message, 'Release v')"
     runs-on: windows-2019
     steps:
       - name: Install 7Zip PowerShell Module

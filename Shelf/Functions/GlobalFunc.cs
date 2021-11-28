@@ -100,7 +100,7 @@ namespace Shelf.Functions
             catch (Exception ex)
             {
                 Logs.Err(ex);
-                return "1.0.0.0-alpha";
+                return "0.0.1-alpha";
             }
         }
         public static string GetEnumDesc(Enum value)

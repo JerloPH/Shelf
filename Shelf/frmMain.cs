@@ -43,6 +43,7 @@ namespace Shelf
         public frmMain()
         {
             InitializeComponent();
+            this.Text = $"Shelf v{GlobalFunc.GetAppVersion()}";
             localMedia = new LocalMedia();
             TachiBackups = new List<TachiBackupFile>();
             Msg.SetDefaultParent(this);

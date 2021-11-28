@@ -35,16 +35,17 @@ namespace Shelf
             this.txtAuthCode = new System.Windows.Forms.TextBox();
             this.btnOK = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.webView)).BeginInit();
             this.SuspendLayout();
             // 
             // webView
             // 
             this.webView.CreationProperties = null;
+            this.webView.DefaultBackgroundColor = System.Drawing.Color.White;
             this.webView.Location = new System.Drawing.Point(12, 44);
             this.webView.Name = "webView";
             this.webView.Size = new System.Drawing.Size(928, 444);
             this.webView.TabIndex = 0;
-            //this.webView.Text = "webView21";
             this.webView.ZoomFactor = 1D;
             // 
             // txtAuthCode
@@ -89,9 +90,10 @@ namespace Shelf
             this.Controls.Add(this.webView);
             this.MinimizeBox = false;
             this.Name = "frmGetAuthCode";
-            this.Text = "frmGetAccessTkn";
+            this.Text = "Authorize App";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmGetAuthCode_FormClosing);
             this.Resize += new System.EventHandler(this.frmGetAccessTkn_Resize);
+            ((System.ComponentModel.ISupportInitialize)(this.webView)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

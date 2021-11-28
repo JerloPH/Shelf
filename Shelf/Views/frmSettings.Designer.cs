@@ -245,7 +245,7 @@ namespace Shelf.Views
             this.Controls.Add(this.panelGrid);
             this.MinimumSize = new System.Drawing.Size(650, 460);
             this.Name = "frmSettings";
-            this.Text = "frmSettings";
+            this.Text = "Settings";
             this.panelGrid.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gridSetting)).EndInit();
             this.panelControls.ResumeLayout(false);
